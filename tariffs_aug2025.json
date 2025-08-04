@@ -1,0 +1,306 @@
+[
+  {
+    "supplier": "Budget Energy",
+    "tariff": "Keypad Economy 7",
+    "method": "Prepayment",
+    "day": 38.714,
+    "night": 18.886,
+    "standing": 22.559
+  },
+  {
+    "supplier": "Budget Energy",
+    "tariff": "Bill Pay Economy 7",
+    "method": "Direct Debit e-bill",
+    "day": 41.262,
+    "night": 17.441,
+    "standing": 24.036
+  },
+  {
+    "supplier": "Budget Energy",
+    "tariff": "Bill Pay Economy 7",
+    "method": "Direct Debit postal bill",
+    "day": 41.262,
+    "night": 17.441,
+    "standing": 24.036
+  },
+  {
+    "supplier": "Budget Energy",
+    "tariff": "Bill Pay Economy 7",
+    "method": "Pay on receipt of e-bill",
+    "day": 41.262,
+    "night": 17.441,
+    "standing": 24.036
+  },
+  {
+    "supplier": "Budget Energy",
+    "tariff": "Bill Pay Economy 7",
+    "method": "Pay on receipt of bill",
+    "day": 41.262,
+    "night": 17.441,
+    "standing": 24.036
+  },
+  {
+    "supplier": "Click Energy",
+    "tariff": "E7 Saver",
+    "method": "Prepayment",
+    "day": 30.179,
+    "night": 13.997,
+    "standing": 12.363
+  },
+  {
+    "supplier": "Click Energy",
+    "tariff": "E7 Saver",
+    "method": "Direct Debit e-bill",
+    "day": 30.179,
+    "night": 13.997,
+    "standing": 9.873
+  },
+  {
+    "supplier": "Click Energy",
+    "tariff": "E7 Saver",
+    "method": "Direct Debit postal bill",
+    "day": 30.179,
+    "night": 13.997,
+    "standing": 9.873
+  },
+  {
+    "supplier": "Click Energy",
+    "tariff": "E7 Saver",
+    "method": "Pay on receipt of e-bill",
+    "day": 30.179,
+    "night": 13.997,
+    "standing": 9.873
+  },
+  {
+    "supplier": "Click Energy",
+    "tariff": "E7 Saver",
+    "method": "Pay on receipt of bill",
+    "day": 30.179,
+    "night": 13.997,
+    "standing": 9.873
+  },
+  {
+    "supplier": "Click Energy",
+    "tariff": "Economy 7",
+    "method": "Prepayment",
+    "day": 35.092,
+    "night": 15.051,
+    "standing": 12.363
+  },
+  {
+    "supplier": "Click Energy",
+    "tariff": "Economy 7",
+    "method": "Direct Debit e-bill",
+    "day": 35.092,
+    "night": 15.051,
+    "standing": 9.873
+  },
+  {
+    "supplier": "Click Energy",
+    "tariff": "Economy 7",
+    "method": "Direct Debit postal bill",
+    "day": 35.092,
+    "night": 15.051,
+    "standing": 9.873
+  },
+  {
+    "supplier": "Click Energy",
+    "tariff": "Economy 7",
+    "method": "Pay on receipt of e-bill",
+    "day": 35.092,
+    "night": 15.051,
+    "standing": 9.873
+  },
+  {
+    "supplier": "Click Energy",
+    "tariff": "Economy 7",
+    "method": "Pay on receipt of bill",
+    "day": 35.092,
+    "night": 15.051,
+    "standing": 9.873
+  },
+  {
+    "supplier": "Electric Ireland",
+    "tariff": "Simpler Living",
+    "method": "Prepayment",
+    "day": 37.254,
+    "night": 18.144,
+    "standing": 14.13
+  },
+  {
+    "supplier": "Electric Ireland",
+    "tariff": "Simpler Living",
+    "method": "Direct Debit e-bill",
+    "day": 37.254,
+    "night": 18.144,
+    "standing": 14.13
+  },
+  {
+    "supplier": "Electric Ireland",
+    "tariff": "Simpler Living",
+    "method": "Direct Debit postal bill",
+    "day": 37.254,
+    "night": 18.144,
+    "standing": 14.13
+  },
+  {
+    "supplier": "Electric Ireland",
+    "tariff": "Simpler Living",
+    "method": "Pay on receipt of e-bill",
+    "day": 37.254,
+    "night": 18.144,
+    "standing": 14.13
+  },
+  {
+    "supplier": "Electric Ireland",
+    "tariff": "Simpler Living",
+    "method": "Pay on receipt of bill",
+    "day": 37.254,
+    "night": 18.144,
+    "standing": 14.13
+  },
+  {
+    "supplier": "Power NI",
+    "tariff": "Keypad Discount",
+    "method": "Prepayment",
+    "day": 35.0,
+    "night": 16.73,
+    "standing": 13.31
+  },
+  {
+    "supplier": "Power NI",
+    "tariff": "Monthly DD",
+    "method": "Direct Debit e-bill",
+    "day": 33.74,
+    "night": 16.13,
+    "standing": 12.84
+  },
+  {
+    "supplier": "Power NI",
+    "tariff": "Quarterly DD",
+    "method": "Direct Debit e-bill",
+    "day": 34.27,
+    "night": 16.38,
+    "standing": 13.05
+  },
+  {
+    "supplier": "Power NI",
+    "tariff": "Monthly DD",
+    "method": "Direct Debit postal bill",
+    "day": 34.45,
+    "night": 16.47,
+    "standing": 13.11
+  },
+  {
+    "supplier": "Power NI",
+    "tariff": "Quarterly DD",
+    "method": "Direct Debit postal bill",
+    "day": 34.99,
+    "night": 16.73,
+    "standing": 13.32
+  },
+  {
+    "supplier": "Power NI",
+    "tariff": "Standard Rate",
+    "method": "Pay on receipt of e-bill",
+    "day": 35.17,
+    "night": 16.81,
+    "standing": 13.39
+  },
+  {
+    "supplier": "Power NI",
+    "tariff": "Standard Rate",
+    "method": "Pay on receipt of bill",
+    "day": 35.89,
+    "night": 17.16,
+    "standing": 13.66
+  },
+  {
+    "supplier": "SSE Airtricity",
+    "tariff": "26% Discount",
+    "method": "Direct Debit e-bill",
+    "day": 27.87,
+    "night": 15.8,
+    "standing": 10.22
+  },
+  {
+    "supplier": "SSE Airtricity",
+    "tariff": "22% Discount",
+    "method": "Direct Debit postal bill",
+    "day": 29.38,
+    "night": 16.17,
+    "standing": 10.22
+  },
+  {
+    "supplier": "SSE Airtricity",
+    "tariff": "17% + \u00a370 Credit",
+    "method": "Prepayment",
+    "day": 31.26,
+    "night": 15.26,
+    "standing": 10.22
+  },
+  {
+    "supplier": "SSE Airtricity",
+    "tariff": "16% Discount",
+    "method": "Pay on receipt of e-bill",
+    "day": 31.64,
+    "night": 16.73,
+    "standing": 10.22
+  },
+  {
+    "supplier": "SSE Airtricity",
+    "tariff": "13% + \u00a3130 Credit",
+    "method": "Direct Debit e-bill",
+    "day": 32.77,
+    "night": 16.73,
+    "standing": 10.22
+  },
+  {
+    "supplier": "SSE Airtricity",
+    "tariff": "Smartsaver 4%",
+    "method": "Direct Debit e-bill",
+    "day": 36.16,
+    "night": 18.38,
+    "standing": 10.22
+  },
+  {
+    "supplier": "SSE Airtricity",
+    "tariff": "Smartsaver Standard",
+    "method": "Pay on receipt of bill",
+    "day": 37.66,
+    "night": 18.38,
+    "standing": 10.22
+  },
+  {
+    "supplier": "Share Energy",
+    "tariff": "Share Eco 7",
+    "method": "Prepayment",
+    "day": 28.6,
+    "night": 13.89,
+    "standing": 16.67
+  },
+  {
+    "supplier": "Share Energy",
+    "tariff": "Share Eco 7",
+    "method": "Direct Debit e-bill",
+    "day": 28.6,
+    "night": 13.89,
+    "standing": 13.33
+  },
+  {
+    "supplier": "Share Energy",
+    "tariff": "Share Eco 7",
+    "method": "Pay on receipt of e-bill",
+    "day": 28.6,
+    "night": 13.89,
+    "standing": 13.33
+  },
+  {
+    "supplier": "Share Energy",
+    "tariff": "Share Eco 7",
+    "method": "Pay on receipt of bill",
+    "day": 28.6,
+    "night": 13.89,
+    "standing": 13.33
+  }
+]

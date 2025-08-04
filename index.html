@@ -40,7 +40,7 @@
       padding: 5px;
       margin-top: 5px;
       width: 100%;
-      max-width: 200px;
+      max-width: 250px;
     }
     button {
       padding: 10px 15px;
@@ -52,38 +52,6 @@
     }
     button:hover {
       background-color: #0056b3;
-    }
-    @media (max-width: 600px) {
-      table, thead, tbody, th, td, tr {
-        display: block;
-      }
-      th {
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-      }
-      td {
-        border: none;
-        position: relative;
-        padding-left: 50%;
-        text-align: right;
-      }
-      td:before {
-        position: absolute;
-        top: 8px;
-        left: 8px;
-        width: 45%;
-        white-space: nowrap;
-        font-weight: bold;
-        text-align: left;
-      }
-      td:nth-of-type(1):before { content: "Supplier"; }
-      td:nth-of-type(2):before { content: "Tariff Name"; }
-      td:nth-of-type(3):before { content: "Payment Method"; }
-      td:nth-of-type(4):before { content: "Day Rate (p)"; }
-      td:nth-of-type(5):before { content: "Night Rate (p)"; }
-      td:nth-of-type(6):before { content: "Standing Charge (p/day)"; }
-      td:nth-of-type(7):before { content: "Monthly Cost (£)"; }
     }
   </style>
 </head>
@@ -103,7 +71,7 @@
     <input type="number" id="days" value="30">
   </div>
   <div class="input-group">
-    <label for="paymentMethod">Payment Method:</label>
+    <label for="paymentMethod">Filter by Payment Method:</label>
     <select id="paymentMethod">
       <option value="">All</option>
     </select>
@@ -126,18 +94,7 @@
   </table>
 
   <script>
-    const tariffs = [
-      { supplier: "Share Energy", tariff: "Share Eco 7", method: "Direct Debit e-bill", day: 28.6, night: 13.89, standing: 13.33 },
-      { supplier: "Share Energy", tariff: "Share Eco 7 PAYG", method: "Prepayment meter", day: 29.1, night: 14.1, standing: 14.0 },
-      { supplier: "SSE Airtricity", tariff: "26% Discount", method: "Direct Debit e-bill", day: 27.87, night: 15.8, standing: 10.22 },
-      { supplier: "SSE Airtricity", tariff: "Standard E7", method: "Standard credit", day: 30.0, night: 17.0, standing: 12.0 },
-      { supplier: "Click Energy", tariff: "Economy 7 Saver", method: "Prepayment meter", day: 30.179, night: 13.997, standing: 12.363 },
-      { supplier: "Click Energy", tariff: "Economy 7 Direct", method: "Direct Debit e-bill", day: 29.5, night: 13.6, standing: 11.8 },
-      { supplier: "Power NI", tariff: "Monthly DD (E7)", method: "Direct Debit e-bill", day: 33.74, night: 16.13, standing: 12.84 },
-      { supplier: "Power NI", tariff: "Keypad (E7)", method: "Prepayment meter", day: 32.0, night: 15.5, standing: 13.0 },
-      { supplier: "Electric Ireland", tariff: "Simpler Living Standard", method: "Direct Debit e-bill", day: 37.254, night: 18.144, standing: 14.13 },
-      { supplier: "Electric Ireland", tariff: "Simpler Living Keypad", method: "Prepayment meter", day: 36.5, night: 17.9, standing: 14.5 }
-    ];
+    let tariffs = [];
 
     function populatePaymentMethods() {
       const select = document.getElementById("paymentMethod");
@@ -170,7 +127,8 @@
           const cost = (energyCost + standingCost).toFixed(2);
           return { ...t, total: parseFloat(cost) };
         })
-        .sort((a, b) => a.total - b.total);
+        .sort((a, b) => a.total - b.total)
+        .slice(0, 10); // top 10 only
 
       for (const t of results) {
         const row = `<tr>
@@ -187,8 +145,13 @@
     }
 
     window.onload = () => {
-      populatePaymentMethods();
-      calculateCosts();
+      fetch("tariffs_aug2025.json")
+        .then(res => res.json())
+        .then(data => {
+          tariffs = data;
+          populatePaymentMethods();
+          calculateCosts();
+        });
     };
   </script>
 </body>
