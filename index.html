@@ -36,7 +36,7 @@
       margin-right: 10px;
       display: block;
     }
-    input {
+    input, select {
       padding: 5px;
       margin-top: 5px;
       width: 100%;
@@ -102,6 +102,12 @@
     <label for="days">Billing Period (days):</label>
     <input type="number" id="days" value="30">
   </div>
+  <div class="input-group">
+    <label for="paymentMethod">Payment Method:</label>
+    <select id="paymentMethod">
+      <option value="">All</option>
+    </select>
+  </div>
   <button onclick="calculateCosts()">Compare Tariffs</button>
 
   <table id="results">
@@ -122,16 +128,33 @@
   <script>
     const tariffs = [
       { supplier: "Share Energy", tariff: "Share Eco 7", method: "Direct Debit e-bill", day: 28.6, night: 13.89, standing: 13.33 },
+      { supplier: "Share Energy", tariff: "Share Eco 7 PAYG", method: "Prepayment meter", day: 29.1, night: 14.1, standing: 14.0 },
       { supplier: "SSE Airtricity", tariff: "26% Discount", method: "Direct Debit e-bill", day: 27.87, night: 15.8, standing: 10.22 },
+      { supplier: "SSE Airtricity", tariff: "Standard E7", method: "Standard credit", day: 30.0, night: 17.0, standing: 12.0 },
       { supplier: "Click Energy", tariff: "Economy 7 Saver", method: "Prepayment meter", day: 30.179, night: 13.997, standing: 12.363 },
+      { supplier: "Click Energy", tariff: "Economy 7 Direct", method: "Direct Debit e-bill", day: 29.5, night: 13.6, standing: 11.8 },
       { supplier: "Power NI", tariff: "Monthly DD (E7)", method: "Direct Debit e-bill", day: 33.74, night: 16.13, standing: 12.84 },
-      { supplier: "Electric Ireland", tariff: "Simpler Living Standard", method: "Direct Debit e-bill", day: 37.254, night: 18.144, standing: 14.13 }
+      { supplier: "Power NI", tariff: "Keypad (E7)", method: "Prepayment meter", day: 32.0, night: 15.5, standing: 13.0 },
+      { supplier: "Electric Ireland", tariff: "Simpler Living Standard", method: "Direct Debit e-bill", day: 37.254, night: 18.144, standing: 14.13 },
+      { supplier: "Electric Ireland", tariff: "Simpler Living Keypad", method: "Prepayment meter", day: 36.5, night: 17.9, standing: 14.5 }
     ];
+
+    function populatePaymentMethods() {
+      const select = document.getElementById("paymentMethod");
+      const methods = [...new Set(tariffs.map(t => t.method))];
+      for (const m of methods) {
+        const option = document.createElement("option");
+        option.value = m;
+        option.textContent = m;
+        select.appendChild(option);
+      }
+    }
 
     function calculateCosts() {
       const dayUsage = parseFloat(document.getElementById("dayUsage").value);
       const nightUsage = parseFloat(document.getElementById("nightUsage").value);
       const days = parseInt(document.getElementById("days").value);
+      const method = document.getElementById("paymentMethod").value;
 
       const totalDay = dayUsage * days;
       const totalNight = nightUsage * days;
@@ -140,6 +163,7 @@
       tbody.innerHTML = "";
 
       const results = tariffs
+        .filter(t => !method || t.method === method)
         .map(t => {
           const energyCost = (t.day * totalDay + t.night * totalNight) / 100;
           const standingCost = (t.standing * days) / 100;
@@ -162,7 +186,10 @@
       }
     }
 
-    window.onload = calculateCosts;
+    window.onload = () => {
+      populatePaymentMethods();
+      calculateCosts();
+    };
   </script>
 </body>
 </html>
