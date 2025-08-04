@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NI Economy 7 Electricity Price Comparison</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f8f8f8;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+      font-size: 0.95rem;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #e0e0e0;
+    }
+    .input-group {
+      margin-bottom: 15px;
+    }
+    label {
+      margin-right: 10px;
+      display: block;
+    }
+    input, select {
+      padding: 5px;
+      margin-top: 5px;
+      width: 100%;
+      max-width: 250px;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>NI Economy 7 Electricity Price Comparison</h1>
+
+  <div class="input-group">
+    <label for="dayUsage">Day Usage (kWh/day):</label>
+    <input type="number" id="dayUsage" value="3.56">
+  </div>
+  <div class="input-group">
+    <label for="nightUsage">Night Usage (kWh/day):</label>
+    <input type="number" id="nightUsage" value="5.33">
+  </div>
+  <div class="input-group">
+    <label for="days">Billing Period (days):</label>
+    <input type="number" id="days" value="30">
+  </div>
+  <div class="input-group">
+    <label for="paymentMethod">Filter by Payment Method:</label>
+    <select id="paymentMethod">
+      <option value="">All</option>
+    </select>
+  </div>
+  <button onclick="calculateCosts()">Compare Tariffs</button>
+
+  <table id="results">
+    <thead>
+      <tr>
+        <th>Supplier</th>
+        <th>Tariff Name</th>
+        <th>Payment Method</th>
+        <th>Day Rate (p)</th>
+        <th>Night Rate (p)</th>
+        <th>Standing Charge (p/day)</th>
+        <th>Estimated Monthly Cost (£)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    let tariffs = [];
+
+    function populatePaymentMethods() {
+      const select = document.getElementById("paymentMethod");
+      const methods = [...new Set(tariffs.map(t => t.method))];
+      for (const m of methods) {
+        const option = document.createElement("option");
+        option.value = m;
+        option.textContent = m;
+        select.appendChild(option);
+      }
+    }
+
+    function calculateCosts() {
+      const dayUsage = parseFloat(document.getElementById("dayUsage").value);
+      const nightUsage = parseFloat(document.getElementById("nightUsage").value);
+      const days = parseInt(document.getElementById("days").value);
+      const method = document.getElementById("paymentMethod").value;
+
+      const totalDay = dayUsage * days;
+      const totalNight = nightUsage * days;
+
+      const tbody = document.querySelector("#results tbody");
+      tbody.innerHTML = "";
+
+      const results = tariffs
+        .filter(t => !method || t.method === method)
+        .map(t => {
+          const energyCost = (t.day * totalDay + t.night * totalNight) / 100;
+          const standingCost = (t.standing * days) / 100;
+          const cost = (energyCost + standingCost).toFixed(2);
+          return { ...t, total: parseFloat(cost) };
+        })
+        .sort((a, b) => a.total - b.total)
+        .slice(0, 10); // top 10 only
+
+      for (const t of results) {
+        const row = `<tr>
+          <td>${t.supplier}</td>
+          <td>${t.tariff}</td>
+          <td>${t.method}</td>
+          <td>${t.day.toFixed(3)}</td>
+          <td>${t.night.toFixed(3)}</td>
+          <td>${t.standing.toFixed(3)}</td>
+          <td><strong>£${t.total.toFixed(2)}</strong></td>
+        </tr>`;
+        tbody.innerHTML += row;
+      }
+    }
+
+    window.onload = () => {
+      fetch("tariffs_aug2025.json")
+        .then(res => res.json())
+        .then(data => {
+          tariffs = data;
+          populatePaymentMethods();
+          calculateCosts();
+        });
+    };
+  </script>
+</body>
+</html>
