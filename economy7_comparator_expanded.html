@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NI Economy 7 Electricity Price Comparison</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f8f8f8;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+      font-size: 0.95rem;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #e0e0e0;
+    }
+    .input-group {
+      margin-bottom: 15px;
+    }
+    label {
+      margin-right: 10px;
+      display: block;
+    }
+    input {
+      padding: 5px;
+      margin-top: 5px;
+      width: 100%;
+      max-width: 200px;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    @media (max-width: 600px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+      th {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+      }
+      td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+        text-align: right;
+      }
+      td:before {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        width: 45%;
+        white-space: nowrap;
+        font-weight: bold;
+        text-align: left;
+      }
+      td:nth-of-type(1):before { content: "Supplier"; }
+      td:nth-of-type(2):before { content: "Tariff Name"; }
+      td:nth-of-type(3):before { content: "Payment Method"; }
+      td:nth-of-type(4):before { content: "Day Rate (p)"; }
+      td:nth-of-type(5):before { content: "Night Rate (p)"; }
+      td:nth-of-type(6):before { content: "Standing Charge (p/day)"; }
+      td:nth-of-type(7):before { content: "Monthly Cost (£)"; }
+    }
+  </style>
+</head>
+<body>
+  <h1>NI Economy 7 Electricity Price Comparison</h1>
+
+  <div class="input-group">
+    <label for="dayUsage">Day Usage (kWh):</label>
+    <input type="number" id="dayUsage" value="106.7">
+  </div>
+  <div class="input-group">
+    <label for="nightUsage">Night Usage (kWh):</label>
+    <input type="number" id="nightUsage" value="160">
+  </div>
+  <div class="input-group">
+    <label for="days">Billing Period (days):</label>
+    <input type="number" id="days" value="30">
+  </div>
+  <button onclick="calculateCosts()">Compare Tariffs</button>
+
+  <table id="results">
+    <thead>
+      <tr>
+        <th>Supplier</th>
+        <th>Tariff Name</th>
+        <th>Payment Method</th>
+        <th>Day Rate (p)</th>
+        <th>Night Rate (p)</th>
+        <th>Standing Charge (p/day)</th>
+        <th>Estimated Monthly Cost (£)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const tariffs = [
+      { supplier: "Share Energy", tariff: "Share Eco 7", method: "Direct Debit e-bill", day: 28.6, night: 13.89, standing: 13.33 },
+      { supplier: "SSE Airtricity", tariff: "26% Discount", method: "Direct Debit e-bill", day: 27.87, night: 15.8, standing: 10.22 },
+      { supplier: "Click Energy", tariff: "Economy 7 Saver", method: "Prepayment meter", day: 30.179, night: 13.997, standing: 12.363 },
+      { supplier: "Power NI", tariff: "Monthly DD (E7)", method: "Direct Debit e-bill", day: 33.74, night: 16.13, standing: 12.84 },
+      { supplier: "Electric Ireland", tariff: "Simpler Living Standard", method: "Direct Debit e-bill", day: 37.254, night: 18.144, standing: 14.13 }
+    ];
+
+    function calculateCosts() {
+      const dayUsage = parseFloat(document.getElementById("dayUsage").value);
+      const nightUsage = parseFloat(document.getElementById("nightUsage").value);
+      const days = parseInt(document.getElementById("days").value);
+
+      const tbody = document.querySelector("#results tbody");
+      tbody.innerHTML = "";
+
+      const results = tariffs.map(t => {
+        const cost = ((t.day * dayUsage + t.night * nightUsage) / 100 + (t.standing * days) / 100).toFixed(2);
+        return { ...t, total: parseFloat(cost) };
+      }).sort((a, b) => a.total - b.total);
+
+      for (const t of results) {
+        const row = `<tr>
+          <td>${t.supplier}</td>
+          <td>${t.tariff}</td>
+          <td>${t.method}</td>
+          <td>${t.day.toFixed(3)}</td>
+          <td>${t.night.toFixed(3)}</td>
+          <td>${t.standing.toFixed(3)}</td>
+          <td><strong>£${t.total.toFixed(2)}</strong></td>
+        </tr>`;
+        tbody.innerHTML += row;
+      }
+    }
+
+    window.onload = calculateCosts;
+  </script>
+</body>
+</html>
