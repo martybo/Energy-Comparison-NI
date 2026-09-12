@@ -194,3 +194,81 @@ test('a negative total renders with a minus sign rather than as nonsense', () =>
   assert.equal(gbp(NaN), '—');
   assert.equal(gbp(undefined), '—');
 });
+
+// --- adjustment scope, caps and cross-references ---------------------------
+
+test('an unrecognised `applies` scope is rejected, not silently dropped', () => {
+  const r = validateDataset(datasetOf({ ...fx.plain, adjustments: [
+    { type: 'welcome_credit', amount_gbp: 130, applies: 'frist_year', timing: 'unspecified' }
+  ] }));
+  assert.ok(codes(r).includes('applies_invalid'));
+  assert.equal(r.valid.length, 0, 'the record is refused rather than costed without its credit');
+});
+
+test('every legitimate `applies` scope is accepted', () => {
+  for (const applies of ['first_year', 'ongoing', 'intro_period']) {
+    const r = validateDataset(datasetOf({ ...fx.plain, adjustments: [
+      { type: 'welcome_credit', amount_gbp: 10, applies, timing: 'unspecified' }
+    ] }));
+    assert.equal(r.errors.length, 0, `${applies} should be valid`);
+  }
+});
+
+test('an omitted `applies` still defaults rather than failing', () => {
+  const r = validateDataset(datasetOf({ ...fx.plain, adjustments: [
+    { type: 'welcome_credit', amount_gbp: 10, timing: 'unspecified' }
+  ] }));
+  assert.equal(r.errors.length, 0);
+});
+
+test('a discount cap must declare a basis, a positive threshold and a standard rate', () => {
+  const bad = (patch) => validateDataset(datasetOf(fx.capStandard, { ...fx.withDiscountCap,
+    adjustments: [{ ...fx.withDiscountCap.adjustments[0], ...patch }] }));
+  assert.ok(codes(bad({ basis: 'vibes' })).includes('cap_basis_invalid'));
+  assert.ok(codes(bad({ threshold_gbp: 0 })).includes('cap_threshold_invalid'));
+  assert.ok(codes(bad({ threshold_gbp: -100 })).includes('cap_threshold_invalid'));
+  assert.ok(codes(bad({ threshold_gbp: '1000' })).includes('cap_threshold_invalid'));
+  assert.ok(codes(bad({ standard_rate_ref: '' })).includes('cap_reference_missing'));
+  assert.ok(codes(bad({ max_saving_gbp: -1 })).includes('cap_max_saving_invalid'));
+});
+
+test('a valid discount cap passes', () => {
+  const r = validateDataset(datasetOf(fx.capStandard, fx.withDiscountCap));
+  assert.equal(r.errors.length, 0, JSON.stringify(r.errors));
+  assert.equal(r.valid.length, 2);
+});
+
+test('a cap pointing at a missing tariff is rejected: the price would be too low', () => {
+  const r = validateDataset(datasetOf({ ...fx.withDiscountCap,
+    adjustments: [{ ...fx.withDiscountCap.adjustments[0], standard_rate_ref: 'not-here' }] }));
+  assert.ok(codes(r).includes('cap_reference_unresolved'));
+  assert.equal(r.valid.length, 0, 'excluded rather than under-priced');
+});
+
+test('a dangling reverts_to is a warning: Year 1 is still correct', () => {
+  const r = validateDataset(datasetOf({ ...fx.withShortIntro, reverts_to: 'not-here' }));
+  assert.equal(r.errors.length, 0, 'not fatal');
+  assert.equal(r.valid.length, 1, 'the tariff stays priceable');
+  assert.ok(r.warnings.some((w) => w.code === 'reverts_to_unresolved'));
+});
+
+test('a withdrawn tariff may have no rates; an active one may not', () => {
+  assert.equal(validateDataset(datasetOf(fx.withdrawnTariff)).errors.length, 0);
+  const active = validateDataset(datasetOf({ ...fx.withdrawnTariff, status: 'active' }));
+  assert.ok(codes(active).includes('rates_missing'));
+});
+
+test('an invalid headline discount wording is rejected', () => {
+  const r = validateDataset(datasetOf({ ...fx.plain, headline_discount_wording: 'roughly' }));
+  assert.ok(codes(r).includes('headline_wording_invalid'));
+  for (const w of ['exact', 'up_to', null]) {
+    assert.equal(validateDataset(datasetOf({ ...fx.plain, headline_discount_wording: w })).errors.length, 0);
+  }
+});
+
+test('amounts over a thousand pounds are readable', () => {
+  assert.equal(gbp(1626.564), '£1,626.56');
+  assert.equal(gbp(1000), '£1,000.00');
+  assert.equal(gbp(999.994), '£999.99');
+  assert.equal(gbp(-1234.5), '−£1,234.50');
+});

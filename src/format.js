@@ -9,7 +9,11 @@
 export function gbp(value, { signed = false } = {}) {
   if (typeof value !== 'number' || !Number.isFinite(value)) return '—';
   const sign = value < 0 ? '−' : signed ? '+' : '';
-  return `${sign}£${Math.abs(value).toFixed(2)}`;
+  const amount = Math.abs(value).toLocaleString('en-GB', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+  return `${sign}£${amount}`;
 }
 
 export function pence(value, dp = 3) {
@@ -91,4 +95,30 @@ export function datasetStatus(meta, now = new Date()) {
     return { level: 'warn', age, message: `These rates are from ${meta.effective_from} and may have changed.` };
   }
   return { level: 'ok', age, message: `Rates effective from ${meta.effective_from}.` };
+}
+
+/**
+ * How to describe the payment method for a result.
+ *
+ * Where several methods cost exactly the same, naming one would imply the
+ * customer must switch to it. The tie is stated instead (finding: the method
+ * shown was previously decided by the order of the rates array).
+ */
+export function paymentMethodSummary(result, labels = {}) {
+  const label = (m) => labels[m] || m;
+  if (result.allPaymentMethodsTie) return 'Same price across all available payment methods';
+  if (result.paymentMethodTie) {
+    return `Same price on ${result.tiedPaymentMethods.map(label).join(', ')}`;
+  }
+  return label(result.paymentMethod);
+}
+
+/** Explains a usage-threshold discount cap, when one bites at this usage. */
+export function capSummary(result) {
+  const cap = result.discountCap;
+  if (!cap) return null;
+  if (!cap.applied) {
+    return `Discount applies to the first ${gbp(cap.thresholdGbp)} of annual cost; your estimated usage is below that.`;
+  }
+  return `Discount is capped at the first ${gbp(cap.thresholdGbp)} of annual cost, so ${gbp(cap.adjustmentGbp)} of your usage is charged at the standard rate.`;
 }

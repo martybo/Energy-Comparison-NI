@@ -107,6 +107,10 @@ One of `prepayment`, `direct_debit_ebill`, `direct_debit_postal`,
 `on_receipt_ebill`, `on_receipt_postal`. Display labels live in the dataset's
 `payment_methods` map, not in code.
 
+Where several payment methods cost exactly the same, the engine reports the tie
+rather than naming one: the choice would otherwise depend on the order of the
+`rates` array, and naming one would imply the customer must switch to it.
+
 **A payment method absent from `rates` means the tariff is genuinely not sold on
 it.** If a method is missing because it was not captured from the source, say so
 in `notes` or set `status: "incomplete"` — a transcription gap must never look
@@ -124,9 +128,31 @@ comparison for exactly that reason.
 | `welcome_credit` | `amount_gbp`, `timing` | One-off. Subtracted from the Year 1 total. Never spread across months. |
 | `fixed_credit` | `amount_gbp`, `timing` | As above. |
 | `recurring_credit` | `amount_gbp`, `frequency` (`monthly`/`annual`) | Genuinely recurs, so it does spread across months. |
+| `discount_cap` | `basis`, `threshold_gbp`, `standard_rate_ref`, `max_saving_gbp` | The discount applies only to the first `threshold_gbp` of annual spend at the standard rate; above it the standard rate is charged. |
 | `fixed_charge` | `amount_gbp`, `frequency` (`once`/`annual`) | Added, not subtracted. |
 
-`applies` is `first_year`, `ongoing` or `intro_period`.
+`applies` is `first_year`, `ongoing` or `intro_period`. **Any other value is a
+validation error**, not a default: an unrecognised scope would silently remove
+the adjustment from every calculation, which is how a credit could go missing.
+
+### Usage-threshold discount caps
+
+Some suppliers discount only the first N pounds of annual spend. The rule is
+expressed generically so no supplier needs its own code:
+
+```
+covered = threshold_gbp / standard_cost
+total   = discounted_cost x covered + standard_cost x (1 - covered)
+```
+
+`standard_rate_ref` names the tariff whose rates are the undiscounted ones.
+A reference that does not resolve is a **rejection**, not a warning: without it
+the tariff would be priced too cheaply and could outrank genuinely cheaper
+options. (A dangling `reverts_to` is only a warning, because Year 1 is still
+priced correctly and the ongoing figure simply becomes unknown.)
+
+`max_saving_gbp` records the cap the source states in its own words, and the
+test suite asserts the computed saving never exceeds it.
 
 `timing` on a one-off credit is either `"unspecified"` or `{ "month": 1 }`. A
 credit with a stated month appears in that billing period alone. A credit with
@@ -168,7 +194,9 @@ either figure.
 3. Update rates. Keep each tariff's `id` stable so months can be compared; only
    mint a new id for a genuinely new product.
 4. Mark tariffs no longer sold as `"status": "withdrawn"` rather than deleting
-   them, so historical snapshots stay readable.
+   them, so historical snapshots stay readable. A withdrawn record may have an
+   empty `rates` array, since the source stops publishing rates for it; the
+   engine never prices it.
 5. Record incentives in `adjustments`, never in `name`.
 6. Set `conditions_verified: true` only once contract terms, exit fees and
    eligibility have actually been checked against the supplier.

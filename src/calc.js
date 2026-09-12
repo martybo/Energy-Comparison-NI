@@ -11,6 +11,8 @@
  */
 
 export const DAYS_PER_YEAR = 365;
+/** Costs within a hundredth of a penny are the same price, not a ranking. */
+export const TIE_EPSILON = 1e-4;
 export const MONTHS_PER_YEAR = 12;
 
 /** Build a usage object from average daily kWh. */
@@ -113,6 +115,51 @@ function cashAdjustments(tariff, scope) {
   return { oneOffCredit, recurringCreditPerYear, chargesPerYear, items };
 }
 
+/**
+ * Usage-threshold discount cap.
+ *
+ * Some suppliers apply a discount only to the first N pounds of annual spend at
+ * their standard rate, charging the standard rate above it. The rule is
+ * expressed generically: the discount covers the fraction of the year's
+ * standard-rate spend that falls under the threshold, and the remainder is
+ * charged at the standard rate.
+ *
+ *   f     = threshold / standard_cost           (share of the year covered)
+ *   total = discounted_cost * f + standard_cost * (1 - f)
+ *
+ * Working from the two cost figures rather than a percentage means the rule
+ * needs no supplier-specific arithmetic: any tariff naming a standard-rate
+ * reference and a threshold is handled by the same code.
+ */
+function applyDiscountCap(tariff, rateRow, usage, scope, discountedCost, byId, warnings) {
+  const cap = (tariff.adjustments || []).find(
+    (a) => a.type === 'discount_cap' && appliesInScope(a, scope)
+  );
+  if (!cap) return null;
+  const standard = byId.get(cap.standard_rate_ref);
+  if (!standard) {
+    warnings.push({ code: 'cap_standard_rate_missing', tariffId: tariff.id, message: `discount_cap references "${cap.standard_rate_ref}", which is not in the dataset; the cap could not be applied.` });
+    return null;
+  }
+  const standardRate = findRate(standard, rateRow.payment_method) || standard.rates[0];
+  if (!standardRate) return null;
+  const b = annualBase(standard, standardRate, usage, scope);
+  const standardCost = b.energy + b.standing;
+  if (standardCost <= cap.threshold_gbp) {
+    return { applied: false, adjustmentGbp: 0, standardCost, thresholdGbp: cap.threshold_gbp, savingGbp: standardCost - discountedCost, maxSavingGbp: cap.max_saving_gbp ?? null };
+  }
+  const covered = cap.threshold_gbp / standardCost;
+  const capped = discountedCost * covered + standardCost * (1 - covered);
+  return {
+    applied: true,
+    adjustmentGbp: capped - discountedCost,
+    standardCost,
+    thresholdGbp: cap.threshold_gbp,
+    savingGbp: standardCost - capped,
+    maxSavingGbp: cap.max_saving_gbp ?? null
+  };
+}
+
 function findRate(tariff, paymentMethod) {
   if (!tariff.rates || tariff.rates.length === 0) return null;
   if (!paymentMethod) return null;
@@ -182,7 +229,9 @@ export function costFor(tariff, rateRow, usage, context = {}) {
     }
   }
 
-  const year1Gross = year1Energy + year1Standing + cash.chargesPerYear;
+  const cap = applyDiscountCap(tariff, rateRow, usage, 'first_year', year1Energy + year1Standing, byId, warnings);
+  const year1CapAdjustment = cap ? cap.adjustmentGbp : 0;
+  const year1Gross = year1Energy + year1Standing + cash.chargesPerYear + year1CapAdjustment;
   const year1Credits = cash.oneOffCredit + cash.recurringCreditPerYear;
   const year1Total = year1Gross - year1Credits;
 
@@ -192,12 +241,14 @@ export function costFor(tariff, rateRow, usage, context = {}) {
     const ongoingCash = cashAdjustments(tariff, 'ongoing');
     if (intro === 0) {
       const b = annualBase(tariff, rateRow, usage, 'ongoing');
+      const ongoingCap = applyDiscountCap(tariff, rateRow, usage, 'ongoing', b.energy + b.standing, byId, []);
       ongoing = {
         energyCost: b.energy,
         standingCost: b.standing,
         charges: ongoingCash.chargesPerYear,
         credits: ongoingCash.recurringCreditPerYear,
-        total: b.energy + b.standing + ongoingCash.chargesPerYear - ongoingCash.recurringCreditPerYear,
+        capAdjustment: ongoingCap ? ongoingCap.adjustmentGbp : 0,
+        total: b.energy + b.standing + ongoingCash.chargesPerYear + (ongoingCap ? ongoingCap.adjustmentGbp : 0) - ongoingCash.recurringCreditPerYear,
         basis: 'same_rates'
       };
     } else if (reversion) {
@@ -238,8 +289,10 @@ export function costFor(tariff, rateRow, usage, context = {}) {
       averageMonthly: year1Total / MONTHS_PER_YEAR,
       creditExceedsCost: year1Credits > year1Gross, // R4: reported, never clamped
       blendedWithReversion: blended,
+      capAdjustment: year1CapAdjustment,
       complete: year1Complete
     },
+    discountCap: cap,
     ongoing,
     ongoingKnown: ongoing !== null,
     introPeriodMonths: introKnown ? intro : null,
@@ -253,7 +306,7 @@ export function costFor(tariff, rateRow, usage, context = {}) {
       newCustomersOnly: tariff.eligibility?.new_customers_only ?? null,
       notes: [tariff.notes, ...(tariff.eligibility?.notes || [])].filter(Boolean)
     },
-    schedule: buildSchedule({ monthlyBase, charges: cash.chargesPerYear, items: cash.items }),
+    schedule: buildSchedule({ monthlyBase, charges: cash.chargesPerYear + year1CapAdjustment, items: cash.items }),
     warnings
   };
 }
@@ -351,12 +404,27 @@ export function compare(dataset, options = {}) {
     }
 
     // Cheapest payment method wins the slot; the alternatives ride along.
-    priced.sort((a, b) => a.year1.total - b.year1.total);
+    //
+    // Where several methods cost exactly the same there is no cheapest one, so
+    // the tie is recorded rather than resolved arbitrarily. Ordering falls back
+    // to the method slug, which makes the choice independent of the order the
+    // rates happen to appear in the data file.
+    priced.sort(
+      (a, b) => a.year1.total - b.year1.total || a.paymentMethod.localeCompare(b.paymentMethod)
+    );
     const best = priced[0];
+    const tied = priced
+      .filter((p) => Math.abs(p.year1.total - best.year1.total) < TIE_EPSILON)
+      .map((p) => p.paymentMethod)
+      .sort();
+    best.tiedPaymentMethods = tied;
+    best.paymentMethodTie = tied.length > 1;
+    best.allPaymentMethodsTie = tied.length > 1 && tied.length === priced.length;
     best.alternativePaymentMethods = priced.slice(1).map((p) => ({
       paymentMethod: p.paymentMethod,
       year1Total: p.year1.total,
-      standingPPerDay: p.rates.standingPPerDay
+      standingPPerDay: p.rates.standingPPerDay,
+      sameCost: Math.abs(p.year1.total - best.year1.total) < TIE_EPSILON
     }));
     results.push(best);
   }

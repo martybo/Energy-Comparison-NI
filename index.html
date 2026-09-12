@@ -116,7 +116,7 @@
 <script type="module">
 import { compare, usageFromDaily, usageFromAnnualSplit } from './src/calc.js';
 import { loadValidated } from './src/validate.js';
-import { gbp, pence, year1Headline, year1Monthly, ongoingHeadline, ongoingMonthly, creditSummary, conditionSummary, datasetStatus } from './src/format.js';
+import { gbp, pence, year1Monthly, ongoingHeadline, ongoingMonthly, creditSummary, conditionSummary, datasetStatus, paymentMethodSummary, capSummary } from './src/format.js';
 
 const $ = (id) => document.getElementById(id);
 let active = null;
@@ -178,7 +178,7 @@ function renderResult(result, rank, labels) {
   const left = el('div');
   left.appendChild(el('span', 'rank', `${rank}. `));
   left.appendChild(el('span', 'name', result.name));
-  left.appendChild(el('div', 'supplier', `${result.supplier} · ${labels[result.paymentMethod] || result.paymentMethod}`));
+  left.appendChild(el('div', 'supplier', `${result.supplier} · ${paymentMethodSummary(result, labels)}`));
   const right = el('div', 'headline', gbp(result.year1.total));
   right.appendChild(el('small', null, 'estimated Year 1'));
   header.appendChild(left);
@@ -201,6 +201,8 @@ function renderResult(result, rank, labels) {
   if (result.year1.creditExceedsCost) {
     lines.appendChild(el('div', 'credit', 'The credit is worth more than the estimated Year 1 cost at this usage.'));
   }
+  const cap = capSummary(result);
+  if (cap) lines.appendChild(el('div', result.discountCap.applied ? 'unknown' : null, cap));
   card.appendChild(lines);
 
   const conditions = conditionSummary(result);
@@ -208,10 +210,9 @@ function renderResult(result, rank, labels) {
 
   const rates = el('div', 'rates',
     `Day ${pence(result.rates.dayPPerKwh)}/kWh · Night ${pence(result.rates.nightPPerKwh)}/kWh · Standing charge ${pence(result.rates.standingPPerDay)}/day`);
-  if (result.alternativePaymentMethods?.length) {
-    const alts = result.alternativePaymentMethods
-      .map((a) => `${labels[a.paymentMethod] || a.paymentMethod} ${gbp(a.year1Total)}`)
-      .join(' · ');
+  const dearer = (result.alternativePaymentMethods || []).filter((a) => !a.sameCost);
+  if (dearer.length) {
+    const alts = dearer.map((a) => `${labels[a.paymentMethod] || a.paymentMethod} ${gbp(a.year1Total)}`).join(' · ');
     rates.appendChild(el('div', null, `Also sold on: ${alts}`));
   }
   card.appendChild(rates);
@@ -273,6 +274,16 @@ async function init() {
     : report.dataset.vat_treatment === 'exclusive'
       ? 'Rates exclude VAT, so your bill will be higher than the figures shown.'
       : 'Whether these rates include VAT is not recorded in the dataset, so the totals may be understated.';
+
+  const supplierNotes = Object.entries(active.dataset.supplier_notes || {});
+  if (supplierNotes.length) {
+    const ul = el('ul');
+    ul.style.cssText = 'margin:8px 0 0;padding-left:18px';
+    for (const [supplier, note] of supplierNotes) {
+      ul.appendChild(el('li', null, `${supplier}: ${note}`));
+    }
+    $('conditionsNote').after(ul);
+  }
 
   $('conditionsNote').textContent = report.dataset.conditions_verified === false
     ? 'Contract lengths, exit fees and eligibility rules are not verified in this dataset. A tariff shown here may not be available to you, and any discount may last only for an introductory period.'

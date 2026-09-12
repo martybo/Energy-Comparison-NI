@@ -26,10 +26,16 @@ export const ADJUSTMENT_TYPES = [
   'welcome_credit',
   'fixed_credit',
   'recurring_credit',
-  'fixed_charge'
+  'fixed_charge',
+  'discount_cap'
 ];
 
 const RATE_BASES = ['standard', 'discounted'];
+/** Scope an adjustment applies in. An unrecognised value would silently drop
+ *  the adjustment from every calculation, so it is an error, not a default. */
+export const APPLIES_SCOPES = ['first_year', 'ongoing', 'intro_period'];
+const CAP_BASES = ['annual_spend_at_standard_rate'];
+const DISCOUNT_WORDINGS = ['exact', 'up_to'];
 const STATUSES = ['active', 'withdrawn', 'incomplete'];
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -114,9 +120,11 @@ export function validateDataset(dataset) {
       notes.push({ code: 'reversion_unknown', message: 'An introductory period is declared but reverts_to is not set; ongoing cost cannot be estimated.' });
     }
 
-    // Rates
-    if (!Array.isArray(tariff.rates) || tariff.rates.length === 0) {
-      problems.push({ code: 'rates_missing', message: 'At least one rate row is required.' });
+    // Rates. A withdrawn tariff is a historical record and need not carry any,
+    // since the source stops publishing rates for it.
+    const withdrawn = tariff.status === 'withdrawn';
+    if (!Array.isArray(tariff.rates) || (tariff.rates.length === 0 && !withdrawn)) {
+      problems.push({ code: 'rates_missing', message: 'At least one rate row is required unless the tariff is withdrawn.' });
     } else {
       const seenMethods = new Set();
       for (const [ri, rate] of tariff.rates.entries()) {
@@ -154,6 +162,26 @@ export function validateDataset(dataset) {
       }
       if (!ADJUSTMENT_TYPES.includes(adj.type)) {
         problems.push({ code: 'adjustment_type_invalid', message: `${at}.type "${adj.type}" is not a recognised adjustment type.` });
+        continue;
+      }
+      // An unrecognised scope silently removes the adjustment from every
+      // calculation, so a typo here would quietly delete a credit.
+      if (adj.applies !== undefined && !APPLIES_SCOPES.includes(adj.applies)) {
+        problems.push({ code: 'applies_invalid', message: `${at}.applies "${adj.applies}" is not one of ${APPLIES_SCOPES.join(', ')}. An unrecognised scope would silently drop this adjustment from the calculation.` });
+      }
+      if (adj.type === 'discount_cap') {
+        if (!CAP_BASES.includes(adj.basis)) {
+          problems.push({ code: 'cap_basis_invalid', message: `${at}.basis must be one of ${CAP_BASES.join(', ')}.` });
+        }
+        if (!isNumber(adj.threshold_gbp) || adj.threshold_gbp <= 0) {
+          problems.push({ code: 'cap_threshold_invalid', message: `${at}.threshold_gbp must be a positive number.` });
+        }
+        if (typeof adj.standard_rate_ref !== 'string' || adj.standard_rate_ref.trim() === '') {
+          problems.push({ code: 'cap_reference_missing', message: `${at}.standard_rate_ref is required so the standard rate above the threshold can be priced.` });
+        }
+        if (adj.max_saving_gbp !== undefined && adj.max_saving_gbp !== null && (!isNumber(adj.max_saving_gbp) || adj.max_saving_gbp < 0)) {
+          problems.push({ code: 'cap_max_saving_invalid', message: `${at}.max_saving_gbp must be a non-negative number when present.` });
+        }
         continue;
       }
       if (adj.type === 'percentage_discount') {
@@ -197,6 +225,9 @@ export function validateDataset(dataset) {
     if (tariff.headline_discount_pct !== null && tariff.headline_discount_pct !== undefined && !isNumber(tariff.headline_discount_pct)) {
       problems.push({ code: 'headline_discount_invalid', message: 'headline_discount_pct must be a number or null.' });
     }
+    if (tariff.headline_discount_wording !== null && tariff.headline_discount_wording !== undefined && !DISCOUNT_WORDINGS.includes(tariff.headline_discount_wording)) {
+      problems.push({ code: 'headline_wording_invalid', message: `headline_discount_wording must be one of ${DISCOUNT_WORDINGS.join(', ')} or null.` });
+    }
 
     const exitFee = tariff.contract?.exit_fee_gbp;
     if (exitFee !== null && exitFee !== undefined && (!isNumber(exitFee) || exitFee < 0)) {
@@ -208,6 +239,35 @@ export function validateDataset(dataset) {
     } else {
       valid.push(tariff);
       for (const n of notes) warnings.push({ ...n, tariffId: tariff.id });
+    }
+  }
+
+  // Cross-record references can only be checked once every id is known. A
+  // dangling reference means an ongoing cost or a capped rate cannot be priced.
+  const validIds = new Set(valid.map((t) => t.id));
+  for (let i = valid.length - 1; i >= 0; i--) {
+    const tariff = valid[i];
+    const fatal = [];
+
+    // A dangling reverts_to costs only the ongoing figure; Year 1 is still
+    // priced correctly and the engine reports ongoing as unknown. Rejecting the
+    // record would hide a perfectly priceable tariff from the comparison, so
+    // this is a warning.
+    if (tariff.reverts_to && !validIds.has(tariff.reverts_to)) {
+      warnings.push({ code: 'reverts_to_unresolved', tariffId: tariff.id, message: `reverts_to "${tariff.reverts_to}" does not match any valid tariff; ongoing cost will be reported as unknown.` });
+    }
+
+    // A dangling cap reference is different: the discount cap cannot be applied,
+    // so the tariff would be priced too cheaply and could be ranked above
+    // tariffs that are genuinely cheaper. That must not reach a consumer.
+    for (const adj of tariff.adjustments || []) {
+      if (adj.type === 'discount_cap' && adj.standard_rate_ref && !validIds.has(adj.standard_rate_ref)) {
+        fatal.push({ code: 'cap_reference_unresolved', message: `discount_cap.standard_rate_ref "${adj.standard_rate_ref}" does not match any valid tariff, so the cap cannot be applied and the tariff would be priced too cheaply.` });
+      }
+    }
+    if (fatal.length > 0) {
+      valid.splice(i, 1);
+      rejected.push({ where: tariff.id, supplier: tariff.supplier, name: tariff.name, problems: fatal });
     }
   }
 

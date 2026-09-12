@@ -128,3 +128,49 @@ export function datasetOf(...tariffs) {
     tariffs
   };
 }
+
+/** Standard rate a capped tariff is measured against.
+ *  At USAGE: (20*1000 + 10*2000)/100 = 400 energy + 36.50 standing = 436.50 */
+export const capStandard = {
+  ...plain,
+  id: 'acme-standard',
+  name: 'Standard',
+  rates: [{ payment_method: 'direct_debit_ebill', day_p_per_kwh: 20, night_p_per_kwh: 10, standing_p_per_day: 10 }]
+};
+
+/** 10% off the standard rate, but only on the first £200 of annual cost.
+ *  Uncapped: (18*1000 + 9*2000)/100 = 360 + 32.85 = 392.85
+ *  Capped at £200 of a £436.50 standard year:
+ *    covered = 200/436.50, total = 392.85*covered + 436.50*(1-covered) = 416.50
+ *    saving  = 436.50 - 416.50 = 20.00, i.e. exactly 10% of the £200 threshold */
+export const withDiscountCap = {
+  ...plain,
+  id: 'acme-capped',
+  name: 'Capped Discount',
+  rate_basis: 'discounted',
+  headline_discount_pct: 10,
+  rates: [{ payment_method: 'direct_debit_ebill', day_p_per_kwh: 18, night_p_per_kwh: 9, standing_p_per_day: 9 }],
+  adjustments: [{
+    type: 'discount_cap', applies: 'ongoing', basis: 'annual_spend_at_standard_rate',
+    threshold_gbp: 200, standard_rate_ref: 'acme-standard', max_saving_gbp: 20
+  }]
+};
+
+/** Same tariff, threshold above the customer's whole year: cap must not bite. */
+export const withUnreachedCap = {
+  ...withDiscountCap,
+  id: 'acme-uncapped',
+  name: 'Uncapped Discount',
+  adjustments: [{ ...withDiscountCap.adjustments[0], threshold_gbp: 1000, max_saving_gbp: 100 }]
+};
+
+/** A tariff the source no longer publishes rates for. */
+export const withdrawnTariff = {
+  ...plain,
+  id: 'acme-gone',
+  name: 'Discontinued Saver',
+  status: 'withdrawn',
+  intro_period_months: null,
+  rates: [],
+  notes: 'Withdrawn by the supplier; no rates published.'
+};
