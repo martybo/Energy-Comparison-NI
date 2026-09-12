@@ -1,0 +1,4 @@
+{
+  "comment": "Pointer to the current tariff dataset. Publishing a new month means adding a dated file alongside and changing the filename here. No application code changes.",
+  "dataset": "tariffs-2025-08.json"
+}

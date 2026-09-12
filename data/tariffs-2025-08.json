@@ -1,0 +1,676 @@
+{
+  "schema_version": 1,
+  "dataset": {
+    "effective_from": "2025-08-01",
+    "published": "2025-08-04",
+    "source": "Consumer Council for Northern Ireland - domestic electricity price comparison",
+    "source_url": null,
+    "vat_treatment": "unknown",
+    "rate_unit": "pence_per_kwh",
+    "standing_unit": "pence_per_day",
+    "currency": "GBP",
+    "conditions_verified": false,
+    "notes": "Prototype dataset migrated from tariffs_aug2025.json. Unit rates are carried over unchanged. Contract terms, exit fees and eligibility were not recorded in the source snapshot and are null (unknown), not zero. Must not be presented as current tariff data."
+  },
+  "payment_methods": {
+    "prepayment": "Prepayment",
+    "direct_debit_ebill": "Direct Debit (e-bill)",
+    "direct_debit_postal": "Direct Debit (postal bill)",
+    "on_receipt_ebill": "Pay on receipt of e-bill",
+    "on_receipt_postal": "Pay on receipt of bill"
+  },
+  "tariffs": [
+    {
+      "id": "budget-energy-bill-pay-economy-7",
+      "supplier": "Budget Energy",
+      "name": "Bill Pay Economy 7",
+      "meter_type": "economy7",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "intro_period_months": 0,
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "day_p_per_kwh": 41.262,
+          "night_p_per_kwh": 17.441,
+          "standing_p_per_day": 24.036
+        },
+        {
+          "payment_method": "direct_debit_postal",
+          "day_p_per_kwh": 41.262,
+          "night_p_per_kwh": 17.441,
+          "standing_p_per_day": 24.036
+        },
+        {
+          "payment_method": "on_receipt_ebill",
+          "day_p_per_kwh": 41.262,
+          "night_p_per_kwh": 17.441,
+          "standing_p_per_day": 24.036
+        },
+        {
+          "payment_method": "on_receipt_postal",
+          "day_p_per_kwh": 41.262,
+          "night_p_per_kwh": 17.441,
+          "standing_p_per_day": 24.036
+        }
+      ],
+      "adjustments": [],
+      "notes": null
+    },
+    {
+      "id": "budget-energy-keypad-economy-7",
+      "supplier": "Budget Energy",
+      "name": "Keypad Economy 7",
+      "meter_type": "economy7",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "intro_period_months": 0,
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "prepayment",
+          "day_p_per_kwh": 38.714,
+          "night_p_per_kwh": 18.886,
+          "standing_p_per_day": 22.559
+        }
+      ],
+      "adjustments": [],
+      "notes": null
+    },
+    {
+      "id": "click-energy-e7-saver",
+      "supplier": "Click Energy",
+      "name": "E7 Saver",
+      "meter_type": "economy7",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "intro_period_months": 0,
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "day_p_per_kwh": 30.179,
+          "night_p_per_kwh": 13.997,
+          "standing_p_per_day": 9.873
+        },
+        {
+          "payment_method": "direct_debit_postal",
+          "day_p_per_kwh": 30.179,
+          "night_p_per_kwh": 13.997,
+          "standing_p_per_day": 9.873
+        },
+        {
+          "payment_method": "on_receipt_ebill",
+          "day_p_per_kwh": 30.179,
+          "night_p_per_kwh": 13.997,
+          "standing_p_per_day": 9.873
+        },
+        {
+          "payment_method": "on_receipt_postal",
+          "day_p_per_kwh": 30.179,
+          "night_p_per_kwh": 13.997,
+          "standing_p_per_day": 9.873
+        },
+        {
+          "payment_method": "prepayment",
+          "day_p_per_kwh": 30.179,
+          "night_p_per_kwh": 13.997,
+          "standing_p_per_day": 12.363
+        }
+      ],
+      "adjustments": [],
+      "notes": null
+    },
+    {
+      "id": "click-energy-economy-7",
+      "supplier": "Click Energy",
+      "name": "Economy 7",
+      "meter_type": "economy7",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "intro_period_months": 0,
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "day_p_per_kwh": 35.092,
+          "night_p_per_kwh": 15.051,
+          "standing_p_per_day": 9.873
+        },
+        {
+          "payment_method": "direct_debit_postal",
+          "day_p_per_kwh": 35.092,
+          "night_p_per_kwh": 15.051,
+          "standing_p_per_day": 9.873
+        },
+        {
+          "payment_method": "on_receipt_ebill",
+          "day_p_per_kwh": 35.092,
+          "night_p_per_kwh": 15.051,
+          "standing_p_per_day": 9.873
+        },
+        {
+          "payment_method": "on_receipt_postal",
+          "day_p_per_kwh": 35.092,
+          "night_p_per_kwh": 15.051,
+          "standing_p_per_day": 9.873
+        },
+        {
+          "payment_method": "prepayment",
+          "day_p_per_kwh": 35.092,
+          "night_p_per_kwh": 15.051,
+          "standing_p_per_day": 12.363
+        }
+      ],
+      "adjustments": [],
+      "notes": null
+    },
+    {
+      "id": "electric-ireland-simpler-living",
+      "supplier": "Electric Ireland",
+      "name": "Simpler Living",
+      "meter_type": "economy7",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "intro_period_months": 0,
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "day_p_per_kwh": 37.254,
+          "night_p_per_kwh": 18.144,
+          "standing_p_per_day": 14.13
+        },
+        {
+          "payment_method": "direct_debit_postal",
+          "day_p_per_kwh": 37.254,
+          "night_p_per_kwh": 18.144,
+          "standing_p_per_day": 14.13
+        },
+        {
+          "payment_method": "on_receipt_ebill",
+          "day_p_per_kwh": 37.254,
+          "night_p_per_kwh": 18.144,
+          "standing_p_per_day": 14.13
+        },
+        {
+          "payment_method": "on_receipt_postal",
+          "day_p_per_kwh": 37.254,
+          "night_p_per_kwh": 18.144,
+          "standing_p_per_day": 14.13
+        },
+        {
+          "payment_method": "prepayment",
+          "day_p_per_kwh": 37.254,
+          "night_p_per_kwh": 18.144,
+          "standing_p_per_day": 14.13
+        }
+      ],
+      "adjustments": [],
+      "notes": null
+    },
+    {
+      "id": "power-ni-keypad-discount",
+      "supplier": "Power NI",
+      "name": "Keypad Discount",
+      "meter_type": "economy7",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": null,
+      "intro_period_months": null,
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "prepayment",
+          "day_p_per_kwh": 35,
+          "night_p_per_kwh": 16.73,
+          "standing_p_per_day": 13.31
+        }
+      ],
+      "adjustments": [],
+      "notes": "Source states the headline discount but not its duration or what the rate reverts to; ongoing cost is therefore unknown."
+    },
+    {
+      "id": "power-ni-monthly-direct-debit",
+      "supplier": "Power NI",
+      "name": "Monthly Direct Debit",
+      "meter_type": "economy7",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "intro_period_months": 0,
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "day_p_per_kwh": 33.74,
+          "night_p_per_kwh": 16.13,
+          "standing_p_per_day": 12.84
+        },
+        {
+          "payment_method": "direct_debit_postal",
+          "day_p_per_kwh": 34.45,
+          "night_p_per_kwh": 16.47,
+          "standing_p_per_day": 13.11
+        }
+      ],
+      "adjustments": [],
+      "notes": null
+    },
+    {
+      "id": "power-ni-quarterly-direct-debit",
+      "supplier": "Power NI",
+      "name": "Quarterly Direct Debit",
+      "meter_type": "economy7",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "intro_period_months": 0,
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "day_p_per_kwh": 34.27,
+          "night_p_per_kwh": 16.38,
+          "standing_p_per_day": 13.05
+        },
+        {
+          "payment_method": "direct_debit_postal",
+          "day_p_per_kwh": 34.99,
+          "night_p_per_kwh": 16.73,
+          "standing_p_per_day": 13.32
+        }
+      ],
+      "adjustments": [],
+      "notes": null
+    },
+    {
+      "id": "power-ni-standard-rate",
+      "supplier": "Power NI",
+      "name": "Standard Rate",
+      "meter_type": "economy7",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "intro_period_months": 0,
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "on_receipt_ebill",
+          "day_p_per_kwh": 35.17,
+          "night_p_per_kwh": 16.81,
+          "standing_p_per_day": 13.39
+        },
+        {
+          "payment_method": "on_receipt_postal",
+          "day_p_per_kwh": 35.89,
+          "night_p_per_kwh": 17.16,
+          "standing_p_per_day": 13.66
+        }
+      ],
+      "adjustments": [],
+      "notes": null
+    },
+    {
+      "id": "share-energy-share-eco-7",
+      "supplier": "Share Energy",
+      "name": "Share Eco 7",
+      "meter_type": "economy7",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "intro_period_months": 0,
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "day_p_per_kwh": 28.6,
+          "night_p_per_kwh": 13.89,
+          "standing_p_per_day": 13.33
+        },
+        {
+          "payment_method": "on_receipt_ebill",
+          "day_p_per_kwh": 28.6,
+          "night_p_per_kwh": 13.89,
+          "standing_p_per_day": 13.33
+        },
+        {
+          "payment_method": "on_receipt_postal",
+          "day_p_per_kwh": 28.6,
+          "night_p_per_kwh": 13.89,
+          "standing_p_per_day": 13.33
+        },
+        {
+          "payment_method": "prepayment",
+          "day_p_per_kwh": 28.6,
+          "night_p_per_kwh": 13.89,
+          "standing_p_per_day": 16.67
+        }
+      ],
+      "adjustments": [],
+      "notes": "\"Direct Debit postal bill\" was not present in the August 2025 source snapshot; availability on that payment method is unconfirmed."
+    },
+    {
+      "id": "sse-airtricity-13-discount",
+      "supplier": "SSE Airtricity",
+      "name": "13% Discount",
+      "meter_type": "economy7",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 13,
+      "intro_period_months": null,
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "day_p_per_kwh": 32.77,
+          "night_p_per_kwh": 16.73,
+          "standing_p_per_day": 10.22
+        }
+      ],
+      "adjustments": [
+        {
+          "type": "welcome_credit",
+          "amount_gbp": 130,
+          "applies": "first_year",
+          "timing": "unspecified",
+          "source_note": "Stated in the source tariff name \"13% + £130 Credit\"."
+        }
+      ],
+      "notes": "Source states the headline discount but not its duration or what the rate reverts to; ongoing cost is therefore unknown."
+    },
+    {
+      "id": "sse-airtricity-16-discount",
+      "supplier": "SSE Airtricity",
+      "name": "16% Discount",
+      "meter_type": "economy7",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 16,
+      "intro_period_months": null,
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "on_receipt_ebill",
+          "day_p_per_kwh": 31.64,
+          "night_p_per_kwh": 16.73,
+          "standing_p_per_day": 10.22
+        }
+      ],
+      "adjustments": [],
+      "notes": "Source states the headline discount but not its duration or what the rate reverts to; ongoing cost is therefore unknown."
+    },
+    {
+      "id": "sse-airtricity-17-discount",
+      "supplier": "SSE Airtricity",
+      "name": "17% Discount",
+      "meter_type": "economy7",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 17,
+      "intro_period_months": null,
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "prepayment",
+          "day_p_per_kwh": 31.26,
+          "night_p_per_kwh": 15.26,
+          "standing_p_per_day": 10.22
+        }
+      ],
+      "adjustments": [
+        {
+          "type": "welcome_credit",
+          "amount_gbp": 70,
+          "applies": "first_year",
+          "timing": "unspecified",
+          "source_note": "Stated in the source tariff name \"17% + £70 Credit\"."
+        }
+      ],
+      "notes": "Source states the headline discount but not its duration or what the rate reverts to; ongoing cost is therefore unknown."
+    },
+    {
+      "id": "sse-airtricity-22-discount",
+      "supplier": "SSE Airtricity",
+      "name": "22% Discount",
+      "meter_type": "economy7",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 22,
+      "intro_period_months": null,
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_postal",
+          "day_p_per_kwh": 29.38,
+          "night_p_per_kwh": 16.17,
+          "standing_p_per_day": 10.22
+        }
+      ],
+      "adjustments": [],
+      "notes": "Source states the headline discount but not its duration or what the rate reverts to; ongoing cost is therefore unknown."
+    },
+    {
+      "id": "sse-airtricity-26-discount",
+      "supplier": "SSE Airtricity",
+      "name": "26% Discount",
+      "meter_type": "economy7",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 26,
+      "intro_period_months": null,
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "day_p_per_kwh": 27.87,
+          "night_p_per_kwh": 15.8,
+          "standing_p_per_day": 10.22
+        }
+      ],
+      "adjustments": [],
+      "notes": "Source states the headline discount but not its duration or what the rate reverts to; ongoing cost is therefore unknown."
+    },
+    {
+      "id": "sse-airtricity-smartsaver-4",
+      "supplier": "SSE Airtricity",
+      "name": "Smartsaver 4%",
+      "meter_type": "economy7",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 4,
+      "intro_period_months": null,
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "day_p_per_kwh": 36.16,
+          "night_p_per_kwh": 18.38,
+          "standing_p_per_day": 10.22
+        }
+      ],
+      "adjustments": [],
+      "notes": "Source states the headline discount but not its duration or what the rate reverts to; ongoing cost is therefore unknown."
+    },
+    {
+      "id": "sse-airtricity-smartsaver-standard",
+      "supplier": "SSE Airtricity",
+      "name": "Smartsaver Standard",
+      "meter_type": "economy7",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "intro_period_months": 0,
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "on_receipt_postal",
+          "day_p_per_kwh": 37.66,
+          "night_p_per_kwh": 18.38,
+          "standing_p_per_day": 10.22
+        }
+      ],
+      "adjustments": [],
+      "notes": null
+    }
+  ]
+}
