@@ -272,3 +272,31 @@ test('amounts over a thousand pounds are readable', () => {
   assert.equal(gbp(999.994), '£999.99');
   assert.equal(gbp(-1234.5), '−£1,234.50');
 });
+
+// --- intro_period_basis: the guard against the Click E7 Saver class of error
+
+test('an unrecognised intro_period_basis is rejected', () => {
+  assert.ok(codes(validateDataset(datasetOf({ ...fx.plain, intro_period_basis: 'probably' }))).includes('intro_basis_invalid'));
+  for (const b of ['stated_no_fixed_term', 'stated_fixed_term', 'no_incentive_advertised', 'unstated']) {
+    const t = { ...fx.plain, intro_period_basis: b, intro_period_months: b === 'unstated' ? null : 0 };
+    assert.equal(validateDataset(datasetOf(t)).errors.length, 0, `${b} should be valid`);
+  }
+});
+
+test('an unstated basis cannot carry an inferred number', () => {
+  const r = validateDataset(datasetOf({ ...fx.plain, intro_period_basis: 'unstated', intro_period_months: 0 }));
+  assert.ok(codes(r).includes('intro_basis_contradiction'));
+  assert.equal(r.valid.length, 0);
+});
+
+test('a tariff advertising an incentive cannot claim none was advertised', () => {
+  const withDiscount = { ...fx.plain, intro_period_basis: 'no_incentive_advertised', headline_discount_pct: 12 };
+  assert.ok(codes(validateDataset(datasetOf(withDiscount))).includes('intro_basis_unsupported'));
+
+  const withCreditAdj = { ...fx.plain, intro_period_basis: 'no_incentive_advertised',
+    adjustments: [{ type: 'welcome_credit', amount_gbp: 60, applies: 'first_year', timing: 'unspecified' }] };
+  assert.ok(codes(validateDataset(datasetOf(withCreditAdj))).includes('intro_basis_unsupported'));
+
+  const plainTariff = { ...fx.plain, intro_period_basis: 'no_incentive_advertised' };
+  assert.equal(validateDataset(datasetOf(plainTariff)).errors.length, 0, 'a genuinely plain tariff is fine');
+});

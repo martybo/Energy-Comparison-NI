@@ -36,6 +36,20 @@ const RATE_BASES = ['standard', 'discounted'];
 export const APPLIES_SCOPES = ['first_year', 'ongoing', 'intro_period'];
 const CAP_BASES = ['annual_spend_at_standard_rate'];
 const DISCOUNT_WORDINGS = ['exact', 'up_to'];
+/**
+ * Why intro_period_months holds the value it does.
+ *
+ * A bare 0 used to mean two different things — the source says there is no
+ * fixed term, or nobody found an incentive so we assumed there wasn't one.
+ * That ambiguity is what let a 12-month introductory discount be recorded as
+ * a perpetual rate in the previous dataset. The basis is now explicit.
+ */
+export const INTRO_PERIOD_BASES = [
+  'stated_no_fixed_term',
+  'stated_fixed_term',
+  'no_incentive_advertised',
+  'unstated'
+];
 const STATUSES = ['active', 'withdrawn', 'incomplete'];
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -115,6 +129,23 @@ export function validateDataset(dataset) {
     }
     if (intro === null || intro === undefined) {
       notes.push({ code: 'ongoing_cost_unknown', message: 'intro_period_months is unknown, so ongoing cost cannot be estimated.' });
+    }
+
+    // intro_period_basis records where the value came from.
+    const basis = tariff.intro_period_basis;
+    if (basis !== undefined && !INTRO_PERIOD_BASES.includes(basis)) {
+      problems.push({ code: 'intro_basis_invalid', message: `intro_period_basis must be one of ${INTRO_PERIOD_BASES.join(', ')}.` });
+    }
+    if (basis === 'unstated' && intro !== null && intro !== undefined) {
+      problems.push({ code: 'intro_basis_contradiction', message: 'intro_period_basis is "unstated", so intro_period_months must be null rather than an inferred value.' });
+    }
+    // The guard that makes the previous dataset's error impossible: a tariff
+    // advertising a discount or a credit cannot claim no incentive was found.
+    const advertisesIncentive =
+      (tariff.headline_discount_pct !== null && tariff.headline_discount_pct !== undefined) ||
+      (tariff.adjustments || []).some((a) => a.type === 'welcome_credit' || a.type === 'fixed_credit' || a.type === 'percentage_discount');
+    if (basis === 'no_incentive_advertised' && advertisesIncentive) {
+      problems.push({ code: 'intro_basis_unsupported', message: 'intro_period_basis is "no_incentive_advertised" but this tariff advertises a discount or credit. Its duration must come from the source, or intro_period_months must be null.' });
     }
     if (isNumber(intro) && intro > 0 && !tariff.reverts_to) {
       notes.push({ code: 'reversion_unknown', message: 'An introductory period is declared but reverts_to is not set; ongoing cost cannot be estimated.' });

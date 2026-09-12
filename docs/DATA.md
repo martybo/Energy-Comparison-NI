@@ -20,8 +20,8 @@ Publishing a new month means adding a dated file and changing one filename in
 
 ```json
 "dataset": {
-  "effective_from": "2025-08-01",
-  "published":      "2025-08-04",
+  "effective_from": "2026-09-12",
+  "published":      "2026-09-12",
   "source":         "Consumer Council for Northern Ireland - domestic electricity price comparison",
   "source_url":     null,
   "vat_treatment":  "inclusive",
@@ -204,23 +204,59 @@ either figure.
 8. Run `npm test`. The suite validates the shipped dataset and fails on
    malformed records, duplicate ids and double-counted discounts.
 
-## Known gaps in the August 2025 snapshot
+## `intro_period_months` and `intro_period_basis`
 
-This snapshot was migrated from the original `tariffs_aug2025.json` prototype.
-Unit rates were carried across unchanged and verified row by row.
+A bare `0` used to mean two different things — *the source says there is no
+fixed term* and *nobody found an incentive so we assumed there wasn't one*.
+That ambiguity let a 12-month introductory discount be recorded as a perpetual
+rate in an earlier dataset. `intro_period_basis` records where the value came
+from:
 
-- `vat_treatment` is unknown; the source snapshot did not record it.
-- `conditions_verified` is `false`. Contract terms, exit fees and eligibility
-  were not captured, so they are `null` rather than invented.
-- `intro_period_months` is `null` for every tariff whose name advertises a
-  discount or a cash incentive, because the source stated the headline figure
-  but not its duration. Those tariffs report no ongoing cost.
-- Tariffs with plainly descriptive names carry `intro_period_months: 0`,
-  reflecting that no introductory incentive appears in the source data.
-- SSE Airtricity's `17% + £70 Credit` and `13% + £130 Credit` were renamed to
-  `17% Discount` and `13% Discount`, with the credits moved into `adjustments`.
-- Share Energy's `Direct Debit (postal bill)` was absent from the source; this
-  is recorded in `notes` as unconfirmed rather than treated as unavailable.
+| Basis | `intro_period_months` | Meaning |
+|---|---|---|
+| `stated_no_fixed_term` | `0` | The source says "No fixed term contract" or "No contract". |
+| `stated_fixed_term` | the stated term | The source states a fixed term or a one-year discount. |
+| `no_incentive_advertised` | `0` | The source says nothing about a term **and** advertises no discount or credit, so nothing can expire. |
+| `unstated` | `null` | The source advertises an incentive but states no duration, or says nothing at all. Ongoing cost is reported as unknown. |
 
-**The data is over a year old and must be refreshed before the tool is offered
-to anyone.**
+Two validator rules make the old error structurally impossible:
+
+- `no_incentive_advertised` is **refused** on any tariff carrying a headline
+  discount, a welcome credit or a percentage discount. If something is
+  advertised, its duration must come from the source or the field must be null.
+- `unstated` with a non-null `intro_period_months` is **refused**: an unstated
+  duration cannot be an inferred number.
+
+## What `conditions_verified` means
+
+`conditions_verified: true` means the source's conditions column was
+transcribed for **every** record. It does **not** mean every condition is
+known. Fields the source leaves unstated stay `null` on the individual tariff,
+and the page says so on those cards. The dataset flag and the per-record fields
+answer different questions: *did we read the source* versus *did the source say*.
+
+## Known limitation: quarterly discount thresholds
+
+Power NI's discount cap is stated by the source both per quarter (£250) and per
+year (£1,000). The calculator models the annual threshold, because it does not
+collect quarterly consumption. Results for strongly seasonal consumption may
+therefore differ from the supplier's actual annual bill — by roughly £12–£19 a
+year at 4,000 kWh on a winter-weighted profile.
+
+Manufacturing a quarterly split from an annual figure would replace one
+assumption with another, so the limitation is documented rather than modelled.
+Collecting quarterly consumption is a later decision, not an MVP requirement.
+
+The stated maximum saving (`max_saving_gbp`) is recorded for reference and is
+**not** used in the calculation; only `threshold_gbp` drives the arithmetic. The
+two forms of the source's rule are not exactly equivalent — they differ by £1 on
+two of the five capped tariffs — so neither is derived from the other.
+
+## The current dataset
+
+`data/tariffs-2026-09-12.json` is transcribed from the Consumer Council table
+dated 12/09/2026, including its ADDITIONAL INFORMATION column. See
+[`RECONCILIATION-2026-09-12.md`](RECONCILIATION-2026-09-12.md) for a row-by-row
+trace from the PDF to the dataset, every merge, every field left null, and every
+source ambiguity. `source-rows-2026-09-12.json` is the machine-readable row
+trace the reconciliation is generated from.

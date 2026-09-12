@@ -116,7 +116,7 @@
 <script type="module">
 import { compare, usageFromDaily, usageFromAnnualSplit } from './src/calc.js';
 import { loadValidated } from './src/validate.js';
-import { gbp, pence, year1Monthly, ongoingHeadline, ongoingMonthly, creditSummary, conditionSummary, datasetStatus, paymentMethodSummary, capSummary } from './src/format.js';
+import { gbp, pence, year1Monthly, ongoingHeadline, ongoingMonthly, creditSummary, conditionSummary, datasetStatus, paymentMethodSummary, capSummary, capLimitation } from './src/format.js';
 
 const $ = (id) => document.getElementById(id);
 let active = null;
@@ -202,7 +202,10 @@ function renderResult(result, rank, labels) {
     lines.appendChild(el('div', 'credit', 'The credit is worth more than the estimated Year 1 cost at this usage.'));
   }
   const cap = capSummary(result);
-  if (cap) lines.appendChild(el('div', result.discountCap.applied ? 'unknown' : null, cap));
+  if (cap) {
+    lines.appendChild(el('div', result.discountCap.applied ? 'unknown' : null, cap));
+    lines.appendChild(el('div', 'cond', capLimitation(result)));
+  }
   card.appendChild(lines);
 
   const conditions = conditionSummary(result);

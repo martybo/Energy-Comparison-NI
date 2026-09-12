@@ -297,6 +297,7 @@ export function costFor(tariff, rateRow, usage, context = {}) {
     ongoingKnown: ongoing !== null,
     introPeriodMonths: introKnown ? intro : null,
     introPeriodKnown: introKnown,
+    introPeriodBasis: tariff.intro_period_basis ?? null,
     credits: cash.items.filter((i) => i.type !== 'fixed_charge'),
     charges: cash.items.filter((i) => i.type === 'fixed_charge'),
     conditions: {

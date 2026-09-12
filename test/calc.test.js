@@ -563,3 +563,73 @@ test('the shipped dataset does not claim an ongoing cost it cannot know', () => 
   const promo = res.find((r) => r.id === 'budget-energy-keypad-promotional-1-economy-7');
   assert.equal(promo.ongoingKnown, false, 'a promotional discount of unstated duration has no knowable ongoing cost');
 });
+
+// --- provenance and limitations on the shipped dataset ---------------------
+
+test('every shipped record records where its intro period came from', () => {
+  for (const t of liveRaw.tariffs) {
+    assert.ok(t.intro_period_basis, `${t.id} has no intro_period_basis`);
+    if (t.intro_period_basis === 'unstated') {
+      assert.equal(t.intro_period_months, null, `${t.id} must be null when unstated`);
+    }
+    if (t.intro_period_basis === 'no_incentive_advertised') {
+      assert.equal(t.headline_discount_pct, null, `${t.id} claims no incentive but has a headline discount`);
+      assert.equal((t.adjustments || []).filter((a) => a.type !== 'discount_cap').length, 0);
+    }
+  }
+});
+
+test('a discount with no stated duration reports no ongoing cost', () => {
+  const res = compare(live.dataset, { usage: LIVE_USAGE, limit: 0 }).results;
+  const unstated = res.filter((r) => r.introPeriodBasis === 'unstated');
+  assert.ok(unstated.length >= 2, `expected at least two, got ${unstated.length}`);
+  for (const r of unstated) assert.equal(r.ongoingKnown, false, `${r.id} must not claim an ongoing cost`);
+  assert.ok(unstated.some((r) => r.id === 'sse-airtricity-keypad-standard-24hr-2-5-discount-e7'),
+    'the keypad 2.5% discount states no duration and must not be inferred to have none');
+});
+
+test('headline wording matches what the source actually says', () => {
+  for (const t of liveRaw.tariffs) {
+    if (t.headline_discount_pct == null) {
+      assert.equal(t.headline_discount_wording, null, `${t.id} has wording without a headline`);
+      continue;
+    }
+    const saysUpTo = /up to/i.test(t.notes || '');
+    assert.equal(t.headline_discount_wording, saysUpTo ? 'up_to' : 'exact', `${t.id} wording does not match its source text`);
+  }
+});
+
+test('the Power NI cap records the source wording and the modelling limitation', () => {
+  const caps = liveRaw.tariffs.flatMap((t) => (t.adjustments || []).filter((a) => a.type === 'discount_cap'));
+  assert.equal(caps.length, 5);
+  for (const c of caps) {
+    assert.match(c.source_wording, /per quarter/, 'the quarterly wording is retained verbatim');
+    assert.match(c.modelling_note, /annual/, 'the annual-model limitation is recorded');
+  }
+});
+
+test('the stated maximum saving is inert: only the threshold drives the arithmetic', () => {
+  const id = 'power-ni-monthly-direct-debit-with-online-billing-e7';
+  const heavy = usageFromAnnualSplit(6000, 60);
+  const baseline = compare(live.dataset, { usage: heavy, limit: 0 }).results.find((r) => r.id === id).year1.total;
+  for (const mx of [1, 60, 1e6, null]) {
+    const clone = JSON.parse(JSON.stringify(liveRaw));
+    clone.tariffs.find((t) => t.id === id).adjustments.find((a) => a.type === 'discount_cap').max_saving_gbp = mx;
+    const r = compare(loadValidated(clone).dataset, { usage: heavy, limit: 0 }).results.find((x) => x.id === id);
+    near(r.year1.total, baseline, `max_saving_gbp=${mx} must not change the total`);
+  }
+});
+
+test('the row trace accounts for every payment-method slot in the source', () => {
+  const rows = JSON.parse(readFileSync(new URL('../docs/source-rows-2026-09-12.json', import.meta.url), 'utf8'));
+  const slots = rows.reduce((s, [, m]) => s + m, 0);
+  const rateRows = liveRaw.tariffs.reduce((s, t) => s + t.rates.length, 0);
+  assert.equal(slots, rateRows, 'printed payment-method slots must equal dataset rate rows');
+  const ids = new Set(liveRaw.tariffs.map((t) => t.id));
+  const reached = new Set(rows.flatMap(([, , r]) => r));
+  for (const id of reached) assert.ok(ids.has(id), `row trace names unknown product ${id}`);
+  for (const t of liveRaw.tariffs) {
+    if (t.status === 'active') assert.ok(reached.has(t.id), `${t.id} is not reached by any source row`);
+    else assert.ok(!reached.has(t.id), `withdrawn ${t.id} must not come from a priced row`);
+  }
+});

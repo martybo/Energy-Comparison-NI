@@ -65,7 +65,10 @@ export function conditionSummary(result) {
   const parts = [];
   if (c.newCustomersOnly === true) parts.push('New customers only');
   if (c.contractType === 'fixed' && c.termMonths) parts.push(`${c.termMonths}-month fixed term`);
-  if (c.contractType === 'unknown') parts.push('Contract terms not verified');
+  if (c.contractType === 'unknown') parts.push('Contract terms not stated by the supplier');
+  if (result.introPeriodBasis === 'no_incentive_advertised') {
+    parts.push('No introductory offer listed, and no contract length stated');
+  }
   if (typeof c.exitFeeGbp === 'number' && c.exitFeeGbp > 0) parts.push(`${gbp(c.exitFeeGbp)} exit fee if you leave early`);
   if (c.exitFeeGbp === 0) parts.push('No exit fee');
   if (result.introPeriodKnown && result.introPeriodMonths > 0) parts.push(`Introductory rate for ${result.introPeriodMonths} months`);
@@ -121,4 +124,16 @@ export function capSummary(result) {
     return `Discount applies to the first ${gbp(cap.thresholdGbp)} of annual cost; your estimated usage is below that.`;
   }
   return `Discount is capped at the first ${gbp(cap.thresholdGbp)} of annual cost, so ${gbp(cap.adjustmentGbp)} of your usage is charged at the standard rate.`;
+}
+
+/**
+ * The supplier states this cap per quarter as well as per year. We model the
+ * annual figure because no quarterly consumption is collected, so a seasonal
+ * customer's real bill can differ. Storage heating is seasonal, so this is
+ * worth saying rather than burying.
+ */
+export function capLimitation(result) {
+  return result.discountCap
+    ? 'This supplier also applies the cap per quarter. The estimate uses the annual figure, so a bill that is much higher in winter could cost more than shown.'
+    : null;
 }
