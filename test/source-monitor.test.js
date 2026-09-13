@@ -6,7 +6,7 @@ import { createServer } from 'node:http';
 
 import { selectCurrentPdf, findCandidatePdfLinks, assertIsPdf, SourceDiscoveryError } from '../scripts/source-monitor/discover.mjs';
 import { TARIFF_FAMILIES } from '../scripts/source-monitor/sources.mjs';
-import { sha256Hex } from '../scripts/source-monitor/hash.mjs';
+import { sha256Hex, stableContentBytes } from '../scripts/source-monitor/hash.mjs';
 import { buildStateRecord, compareState } from '../scripts/source-monitor/state.mjs';
 import { fetchText, SourceFetchError } from '../scripts/source-monitor/fetch-utils.mjs';
 
@@ -132,6 +132,39 @@ test('empty landing page content fails safely', () => {
     () => selectCurrentPdf('', BASE_URL, economy7Family),
     (err) => err instanceof SourceDiscoveryError && err.code === 'EMPTY_PAGE'
   );
+});
+
+// --- stable hashing against dynamically-regenerated PDFs (issue #16) ---------
+//
+// Live commissioning found the Consumer Council's print/pdf endpoint
+// regenerates the PDF fresh on every request: fetching the identical,
+// unchanged document twice a few seconds apart produced different raw bytes
+// in exactly three places (/CreationDate, /ModDate, and the trailer's /ID
+// pair), with everything else — including the whole rendered table —
+// byte-for-byte identical. Hashing raw bytes would report "changed" on every
+// run regardless of real content. These fixtures reproduce that exact shape.
+
+const pdfWithMetadata = (creationDate, modDate, id) =>
+  Buffer.from(
+    `%PDF-1.4\n1 0 obj\n<<\n>>\nendobj\n5 0 obj\n<<\n/CreationDate (${creationDate})\n/ModDate (${modDate})\n/Title (Electricity Price Comparison Table)\n>>\nendobj\ntrailer\n<<\n/Root 1 0 R\n/Info 5 0 R\n/ID[<${id}><${id}>]\n>>\nstartxref\n0\n%%EOF`,
+    'latin1'
+  );
+
+test('two fetches of the identical document with only timestamp/ID differences hash the same', () => {
+  const fetch1 = pdfWithMetadata("D:20260913143331+01'00'", "D:20260913143331+01'00'", 'dcdfd63b24697291542ebc68e5d4daea');
+  const fetch2 = pdfWithMetadata("D:20260913143333+01'00'", "D:20260913143333+01'00'", '6a938de6ac85b403b18cce042f1cccce');
+  assert.equal(sha256Hex(stableContentBytes(fetch1)), sha256Hex(stableContentBytes(fetch2)));
+  // sanity check: the raw bytes actually do differ, so this isn't a no-op fixture
+  assert.notEqual(sha256Hex(fetch1), sha256Hex(fetch2));
+});
+
+test('a genuine content change (not just timestamps) still produces a different stable hash', () => {
+  const original = pdfWithMetadata("D:20260913143331+01'00'", "D:20260913143331+01'00'", 'dcdfd63b24697291542ebc68e5d4daea');
+  const editedTitle = Buffer.from(
+    original.toString('latin1').replace('Electricity Price Comparison Table', 'Electricity Price Comparison Table V2'),
+    'latin1'
+  );
+  assert.notEqual(sha256Hex(stableContentBytes(original)), sha256Hex(stableContentBytes(editedTitle)));
 });
 
 // --- change detection ---------------------------------------------------------

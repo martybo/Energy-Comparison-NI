@@ -33,44 +33,6 @@ jobs:
         with:
           node-version: 20
 
-      # TEMPORARY (issue #16 diagnosis): fetches the same PDF twice back to
-      # back and byte-diffs them, to find out why two runs ~40s apart got
-      # different SHA-256 hashes for identical-length downloads. Does not
-      # touch git state or open issues — pure read-only diagnostic. Remove
-      # once the root cause is confirmed and fixed.
-      - name: DEBUG probe content stability
-        run: |
-          node -e "
-          const urls = [
-            'https://www.consumercouncil.org.uk/print/pdf/node/13469',
-            'https://www.consumercouncil.org.uk/print/pdf/node/13468'
-          ];
-          const headers = { 'User-Agent': 'EnergyComparisonNI-SourceMonitor/1.0 (+https://github.com/martybo/Energy-Comparison-NI)', Accept: 'application/pdf' };
-          (async () => {
-            for (const url of urls) {
-              const [r1, r2] = await Promise.all([fetch(url, { headers }), fetch(url, { headers })]);
-              const b1 = Buffer.from(await r1.arrayBuffer());
-              const b2 = Buffer.from(await r2.arrayBuffer());
-              console.log(url, 'len1', b1.length, 'len2', b2.length);
-              if (b1.length !== b2.length) { console.log('LENGTH DIFFERS'); continue; }
-              const diffs = [];
-              for (let i = 0; i < b1.length; i++) if (b1[i] !== b2[i]) diffs.push(i);
-              console.log('diff byte count:', diffs.length);
-              const ranges = [];
-              for (const d of diffs) {
-                if (ranges.length && d === ranges[ranges.length - 1][1] + 1) ranges[ranges.length - 1][1] = d;
-                else ranges.push([d, d]);
-              }
-              console.log('diff ranges:', ranges.length);
-              for (const [s, e] of ranges.slice(0, 20)) {
-                const cs = Math.max(0, s - 25), ce = Math.min(b1.length, e + 25);
-                console.log('range', s, e, 'ctx1:', JSON.stringify(b1.subarray(cs, ce).toString('latin1')));
-                console.log('range', s, e, 'ctx2:', JSON.stringify(b2.subarray(cs, ce).toString('latin1')));
-              }
-            }
-          })();
-          "
-
       - name: Check sources
         id: check
         continue-on-error: true

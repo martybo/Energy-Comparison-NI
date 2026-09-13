@@ -23,7 +23,7 @@ import { fileURLToPath } from 'node:url';
 import { TARIFF_FAMILIES } from './sources.mjs';
 import { fetchText, fetchBinary, SourceFetchError } from './fetch-utils.mjs';
 import { selectCurrentPdf, assertIsPdf, extractLinks, SourceDiscoveryError } from './discover.mjs';
-import { sha256Hex } from './hash.mjs';
+import { sha256Hex, stableContentBytes } from './hash.mjs';
 import { readState, buildStateRecord, compareState, writeStateIfChanged } from './state.mjs';
 
 const LANDING_PAGE_TIMEOUT_MS = 20_000;
@@ -76,7 +76,10 @@ async function checkFamily(family) {
   const { buffer, headers } = await fetchBinary(candidate.url, PDF_TIMEOUT_MS);
   assertIsPdf(buffer, candidate.url);
 
-  const hash = sha256Hex(buffer);
+  // Hash a version with volatile regeneration timestamps/IDs masked, not the
+  // raw bytes — see stableContentBytes() for why. The real, unmodified
+  // `buffer` is still what gets saved to disk/artifact and signature-checked.
+  const hash = sha256Hex(stableContentBytes(buffer));
   const current = buildStateRecord({ family, candidate, hash, length: buffer.length, headers, checkedAt });
   const previous = readState(family.id);
   const comparison = compareState(previous, current);
