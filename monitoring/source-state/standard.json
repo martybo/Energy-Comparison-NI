@@ -1,0 +1,13 @@
+{
+  "tariff_family": "standard",
+  "tariff_family_label": "Standard (24-hour)",
+  "landing_page_url": "https://www.consumercouncil.org.uk/consumers/help-consumers/electricity-oil-and-gas/switching-electricity-or-gas-supplier/electricity-price-comparison-table",
+  "pdf_url": "https://www.consumercouncil.org.uk/print/pdf/node/13468",
+  "discovered_link_text": "View PDF",
+  "content_sha256": "10ca6f8ea7ff4f3a85d08555ed661115603d09151b26f696517b58f50acde84a",
+  "content_length_bytes": 145964,
+  "http_last_modified": null,
+  "http_etag": null,
+  "http_content_type": "application/pdf",
+  "checked_at": "2026-09-13T13:30:24.584Z"
+}
