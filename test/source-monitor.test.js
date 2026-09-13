@@ -2,11 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { createServer } from 'node:http';
 
 import { selectCurrentPdf, findCandidatePdfLinks, assertIsPdf, SourceDiscoveryError } from '../scripts/source-monitor/discover.mjs';
 import { TARIFF_FAMILIES } from '../scripts/source-monitor/sources.mjs';
 import { sha256Hex } from '../scripts/source-monitor/hash.mjs';
 import { buildStateRecord, compareState } from '../scripts/source-monitor/state.mjs';
+import { fetchText, SourceFetchError } from '../scripts/source-monitor/fetch-utils.mjs';
 
 const fixturesRoot = fileURLToPath(new URL('./fixtures/source-monitor/', import.meta.url));
 const fixture = (name) => readFileSync(fixturesRoot + name, 'utf8');
@@ -188,4 +190,41 @@ test('the two tariff families are configured independently with distinct landing
   const economy7Candidate = selectCurrentPdf(fixture('economy7-landing.html'), BASE_URL, economy7Family);
   const standardCandidate = selectCurrentPdf(fixture('standard-landing.html'), BASE_URL, standardFamily);
   assert.notEqual(economy7Candidate.url, standardCandidate.url);
+});
+
+// --- outbound requests identify themselves (issue #16 commissioning finding) --
+
+test('requests send a non-empty User-Agent, so a public site is not treated as an anonymous/bot client', async () => {
+  let receivedHeaders;
+  const server = createServer((req, res) => {
+    receivedHeaders = req.headers;
+    res.writeHead(200, { 'content-type': 'text/html' });
+    res.end('<html><body>ok</body></html>');
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    await fetchText(`http://127.0.0.1:${port}/`, 5000);
+    assert.ok(receivedHeaders['user-agent'], 'expected a User-Agent header to be sent');
+    assert.ok(receivedHeaders['user-agent'].length > 0);
+  } finally {
+    server.close();
+  }
+});
+
+test('a non-2xx response is still reported as a clear SourceFetchError with the HTTP status', async () => {
+  const server = createServer((req, res) => {
+    res.writeHead(403, { 'content-type': 'text/plain' });
+    res.end('Forbidden');
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    await assert.rejects(
+      () => fetchText(`http://127.0.0.1:${port}/`, 5000),
+      (err) => err instanceof SourceFetchError && err.details.status === 403
+    );
+  } finally {
+    server.close();
+  }
 });
