@@ -298,17 +298,18 @@ function run(event) {
   if (res.results.length === 0) {
     $('resultsHeading').textContent = 'No tariffs match';
     results.appendChild(el('p', 'sub', 'No tariff in this dataset is sold on the payment method you selected. Try “all payment methods”.'));
-    $('meterTypeSection').hidden = true;
-    return;
+  } else {
+    $('resultsHeading').textContent = res.results.length < res.totalConsidered
+      ? `Cheapest ${res.results.length} of ${res.totalConsidered} tariffs, by estimated Year 1 cost`
+      : `All ${res.totalConsidered} matching tariffs, by estimated Year 1 cost`;
+    res.results.forEach((r, i) => results.appendChild(renderResult(r, i + 1, res.paymentMethodLabels)));
   }
-  $('resultsHeading').textContent = res.results.length < res.totalConsidered
-    ? `Cheapest ${res.results.length} of ${res.totalConsidered} tariffs, by estimated Year 1 cost`
-    : `All ${res.totalConsidered} matching tariffs, by estimated Year 1 cost`;
-  res.results.forEach((r, i) => results.appendChild(renderResult(r, i + 1, res.paymentMethodLabels)));
 
   // compareMeterTypes only reads the cheapest result (index 0), and compare()
   // always sorts before applying its display limit, so the ten-result cutoff
-  // above never affects which tariff the verdict is drawn from.
+  // above never affects which tariff the verdict is drawn from. Called even
+  // when res.results is empty (e.g. a payment method the economy7 dataset
+  // doesn't sell) so a standard_only verdict can still surface.
   renderMeterTypeSection(usage, paymentMethod, res);
 }
 
