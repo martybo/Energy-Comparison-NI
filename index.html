@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,153 +5,321 @@
   <title>NI Economy 7 Electricity Price Comparison</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background-color: #f8f8f8;
-    }
-    h1 {
-      color: #2c3e50;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      background: white;
-      font-size: 0.95rem;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background-color: #e0e0e0;
-    }
-    .input-group {
-      margin-bottom: 15px;
-    }
-    label {
-      margin-right: 10px;
-      display: block;
-    }
-    input, select {
-      padding: 5px;
-      margin-top: 5px;
-      width: 100%;
-      max-width: 250px;
-    }
-    button {
-      padding: 10px 15px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
+    :root { --ink:#1d2733; --muted:#5a6b7b; --line:#d7dee5; --bg:#f4f6f8; --card:#fff; --accent:#0b5fbe; --warn:#8a5a00; --warnbg:#fff6e0; --errbg:#fdecec; --err:#8c1c1c; }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif; margin:0; padding:16px; background:var(--bg); color:var(--ink); line-height:1.45; }
+    main { max-width: 860px; margin: 0 auto; }
+    h1 { font-size:1.4rem; margin:0 0 4px; }
+    .sub { color:var(--muted); margin:0 0 16px; font-size:0.95rem; }
+    .banner { padding:12px 14px; border-radius:6px; margin-bottom:16px; font-size:0.92rem; border:1px solid transparent; }
+    .banner.warn { background:var(--warnbg); border-color:#e8c97a; color:var(--warn); }
+    .banner.error { background:var(--errbg); border-color:#e8a0a0; color:var(--err); }
+    .banner.ok { background:#eaf4ea; border-color:#a9cfa9; color:#2a5d2a; }
+    fieldset { background:var(--card); border:1px solid var(--line); border-radius:6px; margin:0 0 16px; padding:14px; }
+    legend { font-weight:600; padding:0 6px; font-size:0.95rem; }
+    .row { display:flex; flex-wrap:wrap; gap:14px; }
+    .field { flex:1 1 190px; min-width:0; }
+    label { display:block; font-size:0.86rem; color:var(--muted); margin-bottom:4px; }
+    input, select { width:100%; padding:8px; border:1px solid var(--line); border-radius:4px; font-size:1rem; background:#fff; color:var(--ink); }
+    input:invalid { border-color:#c66; }
+    .hint { font-size:0.82rem; color:var(--muted); margin-top:6px; }
+    .err { font-size:0.86rem; color:var(--err); margin-top:8px; }
+    button { padding:10px 18px; background:var(--accent); color:#fff; border:0; border-radius:4px; cursor:pointer; font-size:1rem; }
+    button:hover { background:#094a95; }
+    .mode { display:flex; gap:16px; font-size:0.9rem; margin-bottom:12px; }
+    .mode label { display:flex; align-items:center; gap:6px; color:var(--ink); margin:0; }
+    .mode input { width:auto; }
+    .result { background:var(--card); border:1px solid var(--line); border-radius:6px; padding:14px; margin-bottom:10px; }
+    .result header { display:flex; flex-wrap:wrap; gap:8px; align-items:baseline; justify-content:space-between; }
+    .rank { color:var(--muted); font-variant-numeric:tabular-nums; font-size:0.9rem; }
+    .name { font-weight:600; }
+    .supplier { color:var(--muted); font-size:0.9rem; }
+    .headline { font-size:1.3rem; font-weight:600; white-space:nowrap; }
+    .headline small { display:block; font-weight:400; font-size:0.8rem; color:var(--muted); white-space:normal; }
+    .lines { margin-top:10px; font-size:0.9rem; }
+    .lines div { padding:2px 0; }
+    .credit { color:#1b6b3a; }
+    .unknown { color:var(--warn); }
+    .cond { color:var(--muted); font-size:0.86rem; margin-top:8px; }
+    .rates { color:var(--muted); font-size:0.84rem; margin-top:8px; border-top:1px solid var(--line); padding-top:8px; }
+    footer { color:var(--muted); font-size:0.84rem; margin-top:24px; border-top:1px solid var(--line); padding-top:12px; }
+    @media (max-width:520px) { .headline { font-size:1.15rem; } }
   </style>
 </head>
 <body>
+<main>
   <h1>NI Economy 7 Electricity Price Comparison</h1>
+  <p class="sub">Ranks tariffs by what your usage would actually cost, not by unit rate alone.</p>
 
-  <div class="input-group">
-    <label for="dayUsage">Day Usage (kWh/day):</label>
-    <input type="number" id="dayUsage" value="3.56">
-  </div>
-  <div class="input-group">
-    <label for="nightUsage">Night Usage (kWh/day):</label>
-    <input type="number" id="nightUsage" value="5.33">
-  </div>
-  <div class="input-group">
-    <label for="days">Billing Period (days):</label>
-    <input type="number" id="days" value="30">
-  </div>
-  <div class="input-group">
-    <label for="paymentMethod">Filter by Payment Method:</label>
-    <select id="paymentMethod">
-      <option value="">All</option>
-    </select>
-  </div>
-  <button onclick="calculateCosts()">Compare Tariffs</button>
+  <div id="dataBanner" class="banner warn">Loading tariff data…</div>
 
-  <table id="results">
-    <thead>
-      <tr>
-        <th>Supplier</th>
-        <th>Tariff Name</th>
-        <th>Payment Method</th>
-        <th>Day Rate (p)</th>
-        <th>Night Rate (p)</th>
-        <th>Standing Charge (p/day)</th>
-        <th>Estimated Monthly Cost (£)</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <form id="form" novalidate>
+    <fieldset>
+      <legend>Your electricity use</legend>
+      <div class="mode">
+        <label><input type="radio" name="mode" value="annual" checked> Annual total</label>
+        <label><input type="radio" name="mode" value="daily"> Average per day</label>
+      </div>
 
-  <script>
-    let tariffs = [];
+      <div class="row" id="annualInputs">
+        <div class="field">
+          <label for="annualKwh">Total electricity used per year (kWh)</label>
+          <input type="number" id="annualKwh" value="3200" min="0" step="1" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="nightShare">Share used at the night rate (%)</label>
+          <input type="number" id="nightShare" value="60" min="0" max="100" step="1" inputmode="decimal">
+        </div>
+      </div>
 
-    function populatePaymentMethods() {
-      const select = document.getElementById("paymentMethod");
-      const methods = [...new Set(tariffs.map(t => t.method))];
-      for (const m of methods) {
-        const option = document.createElement("option");
-        option.value = m;
-        option.textContent = m;
-        select.appendChild(option);
-      }
+      <div class="row" id="dailyInputs" hidden>
+        <div class="field">
+          <label for="dayUsage">Day usage (kWh per day)</label>
+          <input type="number" id="dayUsage" value="3.56" min="0" step="0.01">
+        </div>
+        <div class="field">
+          <label for="nightUsage">Night usage (kWh per day)</label>
+          <input type="number" id="nightUsage" value="5.33" min="0" step="0.01">
+        </div>
+      </div>
+
+      <p class="hint" id="usageHint"></p>
+      <p class="hint">The default is a 3,200 kWh year split 60% to the night rate. It is a starting point only — your own figures, from a recent bill, will give a far better estimate.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Filter (optional)</legend>
+      <div class="row">
+        <div class="field">
+          <label for="paymentMethod">Payment method</label>
+          <select id="paymentMethod"><option value="">All payment methods</option></select>
+        </div>
+      </div>
+      <p class="hint">Leave this on “all” to see whether changing how you pay would save you money.</p>
+    </fieldset>
+
+    <button type="submit">Compare tariffs</button>
+    <p class="err" id="inputError" hidden></p>
+  </form>
+
+  <h2 id="resultsHeading" style="font-size:1.1rem;margin:22px 0 10px;"></h2>
+  <div id="results"></div>
+
+  <footer>
+    <p><strong>All figures are estimates.</strong> They are calculated from the unit rates and standing charge in the dataset above and the usage you entered. They are not quotes, and they do not account for anything the dataset does not record.</p>
+    <p id="vatNote"></p>
+    <p id="conditionsNote"></p>
+  </footer>
+</main>
+
+<script type="module">
+import { compare, usageFromDaily, usageFromAnnualSplit } from './src/calc.js';
+import { loadValidated } from './src/validate.js';
+import { gbp, pence, year1Monthly, ongoingHeadline, ongoingMonthly, creditSummary, conditionSummary, datasetStatus, paymentMethodSummary, capSummary, capLimitation } from './src/format.js';
+
+const $ = (id) => document.getElementById(id);
+let active = null;
+
+/** Build DOM nodes rather than HTML strings: tariff data is never parsed as markup. */
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text != null) node.textContent = text;
+  return node;
+}
+
+function setBanner(node, level, message) {
+  node.className = `banner ${level}`;
+  node.textContent = message;
+}
+
+/** An empty field is missing input, not a zero: Number('') would silently be 0. */
+function numberFrom(id) {
+  const raw = $(id).value.trim();
+  if (raw === '') return null;
+  const value = Number(raw);
+  return Number.isFinite(value) ? value : null;
+}
+
+function readUsage() {
+  const mode = document.querySelector('input[name=mode]:checked').value;
+  if (mode === 'annual') {
+    const annual = numberFrom('annualKwh');
+    const share = numberFrom('nightShare');
+    if (annual === null || annual < 0) return { error: 'Enter the total electricity you use in a year, as a number of kWh (0 or more).' };
+    if (share === null || share < 0 || share > 100) return { error: 'Enter the share used at the night rate, as a percentage between 0 and 100.' };
+    return { usage: usageFromAnnualSplit(annual, share) };
+  }
+  const day = numberFrom('dayUsage');
+  const night = numberFrom('nightUsage');
+  if (day === null || day < 0) return { error: 'Enter your average daily day usage as a number of kWh (0 or more).' };
+  if (night === null || night < 0) return { error: 'Enter your average daily night usage as a number of kWh (0 or more).' };
+  return { usage: usageFromDaily(day, night) };
+}
+
+function updateUsageHint() {
+  const { usage, error } = readUsage();
+  if (error) { $('usageHint').textContent = ''; return; }
+  const total = usage.annualDayKwh + usage.annualNightKwh;
+  const share = total === 0 ? 0 : (usage.annualNightKwh / total) * 100;
+  $('usageHint').textContent =
+    `That is ${Math.round(usage.annualDayKwh).toLocaleString('en-GB')} kWh a year on the day rate and ` +
+    `${Math.round(usage.annualNightKwh).toLocaleString('en-GB')} kWh on the night rate ` +
+    `(${Math.round(total).toLocaleString('en-GB')} kWh total, ${share.toFixed(0)}% at night).`;
+}
+
+function renderResult(result, rank, labels) {
+  const card = el('div', 'result');
+
+  const head = el('div');
+  head.className = '';
+  const header = el('header');
+  const left = el('div');
+  left.appendChild(el('span', 'rank', `${rank}. `));
+  left.appendChild(el('span', 'name', result.name));
+  left.appendChild(el('div', 'supplier', `${result.supplier} · ${paymentMethodSummary(result, labels)}`));
+  const right = el('div', 'headline', gbp(result.year1.total));
+  right.appendChild(el('small', null, 'estimated Year 1'));
+  header.appendChild(left);
+  header.appendChild(right);
+  card.appendChild(header);
+
+  const lines = el('div', 'lines');
+  lines.appendChild(el('div', null, year1Monthly(result)));
+
+  for (const line of creditSummary(result)) lines.appendChild(el('div', 'credit', line));
+
+  if (result.ongoingKnown) {
+    lines.appendChild(el('div', null, `${ongoingHeadline(result)} · ${ongoingMonthly(result)}`));
+  } else {
+    lines.appendChild(el('div', 'unknown', 'Ongoing cost after any introductory period is not known from this data.'));
+  }
+  if (!result.year1.complete) {
+    lines.appendChild(el('div', 'unknown', 'The introductory period ends within Year 1 but the later rate is unknown, so this Year 1 figure is understated.'));
+  }
+  if (result.year1.creditExceedsCost) {
+    lines.appendChild(el('div', 'credit', 'The credit is worth more than the estimated Year 1 cost at this usage.'));
+  }
+  const cap = capSummary(result);
+  if (cap) {
+    lines.appendChild(el('div', result.discountCap.applied ? 'unknown' : null, cap));
+    lines.appendChild(el('div', 'cond', capLimitation(result)));
+  }
+  card.appendChild(lines);
+
+  const conditions = conditionSummary(result);
+  if (conditions.length) card.appendChild(el('div', 'cond', conditions.join(' · ')));
+
+  const rates = el('div', 'rates',
+    `Day ${pence(result.rates.dayPPerKwh)}/kWh · Night ${pence(result.rates.nightPPerKwh)}/kWh · Standing charge ${pence(result.rates.standingPPerDay)}/day`);
+  const dearer = (result.alternativePaymentMethods || []).filter((a) => !a.sameCost);
+  if (dearer.length) {
+    const alts = dearer.map((a) => `${labels[a.paymentMethod] || a.paymentMethod} ${gbp(a.year1Total)}`).join(' · ');
+    rates.appendChild(el('div', null, `Also sold on: ${alts}`));
+  }
+  card.appendChild(rates);
+  return card;
+}
+
+function run(event) {
+  if (event) event.preventDefault();
+  if (!active) return;
+  const results = $('results');
+  results.replaceChildren();
+
+  const { usage, error } = readUsage();
+  const errNode = $('inputError');
+  if (error) {
+    errNode.textContent = error;
+    errNode.hidden = false;
+    $('resultsHeading').textContent = '';
+    return;
+  }
+  errNode.hidden = true;
+  updateUsageHint();
+
+  const res = compare(active.dataset, { usage, paymentMethod: $('paymentMethod').value || null, limit: 10 });
+  if (res.results.length === 0) {
+    $('resultsHeading').textContent = 'No tariffs match';
+    results.appendChild(el('p', 'sub', 'No tariff in this dataset is sold on the payment method you selected. Try “all payment methods”.'));
+    return;
+  }
+  $('resultsHeading').textContent = res.results.length < res.totalConsidered
+    ? `Cheapest ${res.results.length} of ${res.totalConsidered} tariffs, by estimated Year 1 cost`
+    : `All ${res.totalConsidered} matching tariffs, by estimated Year 1 cost`;
+  res.results.forEach((r, i) => results.appendChild(renderResult(r, i + 1, res.paymentMethodLabels)));
+}
+
+async function init() {
+  try {
+    const pointer = await fetch('data/latest.json').then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); });
+    const raw = await fetch(`data/${pointer.dataset}`).then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); });
+    active = loadValidated(raw);
+  } catch (err) {
+    setBanner($('dataBanner'), 'error',
+      `Tariff data could not be loaded (${err.message}). If you opened this file directly from disk, serve it over HTTP instead — for example "python3 -m http.server 8000" in this folder, then visit http://localhost:8000.`);
+    return;
+  }
+
+  const { report } = active;
+  const status = datasetStatus(report.dataset);
+  let message = status.message;
+  if (report.rejected.length) {
+    message += ` ${report.rejected.length} tariff record${report.rejected.length === 1 ? ' was' : 's were'} rejected as malformed and excluded from the comparison.`;
+  }
+  setBanner($('dataBanner'), status.level, message);
+  if (report.rejected.length) console.warn('Rejected tariff records:', report.rejected);
+  if (report.errors.length) console.warn('Dataset errors:', report.errors);
+
+  $('vatNote').textContent = report.dataset.vat_treatment === 'inclusive'
+    ? 'Rates include VAT.'
+    : report.dataset.vat_treatment === 'exclusive'
+      ? 'Rates exclude VAT, so your bill will be higher than the figures shown.'
+      : 'Whether these rates include VAT is not recorded in the dataset, so the totals may be understated.';
+
+  const supplierNotes = Object.entries(active.dataset.supplier_notes || {});
+  if (supplierNotes.length) {
+    const ul = el('ul');
+    ul.style.cssText = 'margin:8px 0 0;padding-left:18px';
+    for (const [supplier, note] of supplierNotes) {
+      ul.appendChild(el('li', null, `${supplier}: ${note}`));
     }
+    $('conditionsNote').after(ul);
+  }
 
-    function calculateCosts() {
-      const dayUsage = parseFloat(document.getElementById("dayUsage").value);
-      const nightUsage = parseFloat(document.getElementById("nightUsage").value);
-      const days = parseInt(document.getElementById("days").value);
-      const method = document.getElementById("paymentMethod").value;
+  $('conditionsNote').textContent = report.dataset.conditions_verified === false
+    ? 'Contract lengths, exit fees and eligibility rules are not verified in this dataset. A tariff shown here may not be available to you, and any discount may last only for an introductory period.'
+    : '';
 
-      const totalDay = dayUsage * days;
-      const totalNight = nightUsage * days;
+  const select = $('paymentMethod');
+  const offered = new Set(active.dataset.tariffs.flatMap((t) => t.rates.map((r) => r.payment_method)));
+  for (const [value, label] of Object.entries(active.dataset.payment_methods || {})) {
+    if (!offered.has(value)) continue;
+    const option = el('option', null, label);
+    option.value = value;
+    select.appendChild(option);
+  }
 
-      const tbody = document.querySelector("#results tbody");
-      tbody.innerHTML = "";
+  $('form').addEventListener('submit', run);
+  $('paymentMethod').addEventListener('change', run);
+  for (const input of document.querySelectorAll('#annualInputs input, #dailyInputs input')) {
+    input.addEventListener('input', updateUsageHint);
+  }
+  for (const radio of document.querySelectorAll('input[name=mode]')) {
+    radio.addEventListener('change', () => {
+      const annual = document.querySelector('input[name=mode]:checked').value === 'annual';
+      $('annualInputs').hidden = !annual;
+      $('dailyInputs').hidden = annual;
+      updateUsageHint();
+      run();
+    });
+  }
+  updateUsageHint();
+  run();
+}
 
-      const results = tariffs
-        .filter(t => !method || t.method === method)
-        .map(t => {
-          const energyCost = (t.day * totalDay + t.night * totalNight) / 100;
-          const standingCost = (t.standing * days) / 100;
-          const cost = (energyCost + standingCost).toFixed(2);
-          return { ...t, total: parseFloat(cost) };
-        })
-        .sort((a, b) => a.total - b.total)
-        .slice(0, 10); // top 10 only
-
-      for (const t of results) {
-        const row = `<tr>
-          <td>${t.supplier}</td>
-          <td>${t.tariff}</td>
-          <td>${t.method}</td>
-          <td>${t.day.toFixed(3)}</td>
-          <td>${t.night.toFixed(3)}</td>
-          <td>${t.standing.toFixed(3)}</td>
-          <td><strong>£${t.total.toFixed(2)}</strong></td>
-        </tr>`;
-        tbody.innerHTML += row;
-      }
-    }
-
-    window.onload = () => {
-      fetch("tariffs_aug2025.json")
-        .then(res => res.json())
-        .then(data => {
-          tariffs = data;
-          populatePaymentMethods();
-          calculateCosts();
-        });
-    };
-  </script>
+init();
+</script>
 </body>
 </html>
