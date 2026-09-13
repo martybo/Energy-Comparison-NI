@@ -22,7 +22,7 @@ import { fileURLToPath } from 'node:url';
 
 import { TARIFF_FAMILIES } from './sources.mjs';
 import { fetchText, fetchBinary, SourceFetchError } from './fetch-utils.mjs';
-import { selectCurrentPdf, assertIsPdf, SourceDiscoveryError } from './discover.mjs';
+import { selectCurrentPdf, assertIsPdf, extractLinks, SourceDiscoveryError } from './discover.mjs';
 import { sha256Hex } from './hash.mjs';
 import { readState, buildStateRecord, compareState, writeStateIfChanged } from './state.mjs';
 
@@ -43,8 +43,22 @@ async function checkFamily(family) {
     if (err instanceof SourceDiscoveryError) {
       // Discovery failures are exactly the case a human needs to see the real
       // page for, to correct sources.mjs's patterns rather than guess blindly.
+      // Saved to the artifact for full inspection, and also summarised
+      // straight into the log (every .pdf-ending link found anywhere on the
+      // page, regardless of family filtering), since the artifact itself may
+      // not always be reachable.
       mkdirSync(DOWNLOADS_DIR, { recursive: true });
       writeFileSync(join(DOWNLOADS_DIR, `${family.id}-landing-page.html`), html, 'utf8');
+
+      const allPdfLinks = extractLinks(html, family.landingPageUrl).filter((l) => /\.pdf(\?|$)/i.test(l.url));
+      console.error(`[${family.id}] DEBUG: ${allPdfLinks.length} .pdf link(s) found anywhere on the page:`);
+      for (const link of allPdfLinks) {
+        console.error(`[${family.id}] DEBUG:   "${link.text}" -> ${link.url}`);
+      }
+      const headings = [...html.matchAll(/<h[1-4][^>]*>([\s\S]*?)<\/h[1-4]>/gi)].map((m) =>
+        m[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+      );
+      console.error(`[${family.id}] DEBUG: headings on page: ${JSON.stringify(headings)}`);
     }
     throw err;
   }
