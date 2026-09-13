@@ -114,6 +114,16 @@ Tariff figures derive from Consumer Council for Northern Ireland price
 comparison material. All figures produced by this tool are estimates, not
 quotes.
 
+## Design
+
+The visual style (a restrained purple/lavender palette, plain-language
+headings, and an accessibility-first approach to colour, focus and contrast)
+takes inspiration from the Consumer Council for Northern Ireland's
+public-facing consumer information design. This is an independent project:
+it is not affiliated with, endorsed by, or produced by the Consumer Council,
+and it does not use their logo, brand colours, or other identifying
+material.
+
 ## Licence
 
 [MIT](LICENSE).
