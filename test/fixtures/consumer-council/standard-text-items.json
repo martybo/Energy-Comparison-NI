@@ -1,0 +1,6520 @@
+{
+ "provenance": {
+  "tariff_family": "standard",
+  "tariff_family_label": "Standard (24-hour)",
+  "landing_page_url": "https://www.consumercouncil.org.uk/consumers/help-consumers/electricity-oil-and-gas/switching-electricity-or-gas-supplier/electricity-price-comparison-table",
+  "pdf_sha256": "144ce846d8a72de0b397114f43859405aad88a47a16a5c686c172686134b70c2",
+  "pdf_bytes": 145964,
+  "source_comparison_date": "2026-09-12",
+  "captured_by": "scripts/extract/dump-text-items.mjs",
+  "note": "Positioned text layer captured from the live Consumer Council PDF. The PDF itself is not committed; see docs/EXTRACTION.md. Raw bytes differ on every download because the endpoint regenerates the document, so pdf_sha256 is the raw hash of this particular capture, not a stable identifier — monitoring/source-state holds the stable content hash."
+ },
+ "pageCount": 11,
+ "fontCount": 2,
+ "items": [
+  {
+   "page": 1,
+   "x": 62.362,
+   "y": 687.856,
+   "fontName": "F2",
+   "fontSize": 22,
+   "text": "Electricity Price Comparison Table"
+  },
+  {
+   "page": 1,
+   "x": 62.362,
+   "y": 642.574,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "See all available electricity tariffs in Northern Ireland and see if you could save by"
+  },
+  {
+   "page": 1,
+   "x": 62.362,
+   "y": 625.673,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "switching supplier, tariff or billing method."
+  },
+  {
+   "page": 1,
+   "x": 62.362,
+   "y": 586.772,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "Our tables compare all electricity tariffs available in Northern Ireland, and they are"
+  },
+  {
+   "page": 1,
+   "x": 62.362,
+   "y": 569.87,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "correct on the day of comparison. Tariffs will be updated on the date when the new"
+  },
+  {
+   "page": 1,
+   "x": 62.362,
+   "y": 552.969,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "increase or decrease comes into effect, not when announced. Please note that our"
+  },
+  {
+   "page": 1,
+   "x": 62.362,
+   "y": 536.068,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "comparisons do not factor in the various supplier incentives such as welcome credit."
+  },
+  {
+   "page": 1,
+   "x": 62.362,
+   "y": 508.167,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "If you want advice on tariff comparisons before the date the increase or decrease"
+  },
+  {
+   "page": 1,
+   "x": 62.362,
+   "y": 491.265,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "comes into effect, you can call us on Freephone 0800 121 6022 and a member of our"
+  },
+  {
+   "page": 1,
+   "x": 62.362,
+   "y": 474.364,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "team will be happy to help."
+  },
+  {
+   "page": 1,
+   "x": 62.362,
+   "y": 440.561,
+   "fontName": "F2",
+   "fontSize": 11,
+   "text": "Find out more about switching suppliers"
+  },
+  {
+   "page": 1,
+   "x": 62.362,
+   "y": 412.66,
+   "fontName": "F2",
+   "fontSize": 11,
+   "text": "To make sure you are on the best deal for you, use our "
+  },
+  {
+   "page": 1,
+   "x": 407.729,
+   "y": 412.66,
+   "fontName": "F2",
+   "fontSize": 11,
+   "text": "electricity price"
+  },
+  {
+   "page": 1,
+   "x": 62.362,
+   "y": 395.759,
+   "fontName": "F2",
+   "fontSize": 11,
+   "text": "comparison tool"
+  },
+  {
+   "page": 2,
+   "x": 62.362,
+   "y": 739.691,
+   "fontName": "F2",
+   "fontSize": 12,
+   "text": "Budget Energy"
+  },
+  {
+   "page": 2,
+   "x": 67.112,
+   "y": 697.186,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "SUPPLIER"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 697.186,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "TARIFF NAME"
+  },
+  {
+   "page": 2,
+   "x": 182.706,
+   "y": 697.186,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PAYMENT &"
+  },
+  {
+   "page": 2,
+   "x": 182.706,
+   "y": 687.967,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "BILLING METHOD"
+  },
+  {
+   "page": 2,
+   "x": 243.683,
+   "y": 697.186,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PRICE IN"
+  },
+  {
+   "page": 2,
+   "x": 243.683,
+   "y": 687.967,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PENCE PER"
+  },
+  {
+   "page": 2,
+   "x": 243.683,
+   "y": 678.748,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "UNIT/KWH"
+  },
+  {
+   "page": 2,
+   "x": 294.697,
+   "y": 697.186,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "STANDING"
+  },
+  {
+   "page": 2,
+   "x": 294.697,
+   "y": 687.967,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "CHARGE PENCE"
+  },
+  {
+   "page": 2,
+   "x": 294.697,
+   "y": 678.748,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PER DAY"
+  },
+  {
+   "page": 2,
+   "x": 348.95,
+   "y": 697.186,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ANNUAL COST"
+  },
+  {
+   "page": 2,
+   "x": 348.95,
+   "y": 687.967,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "USING 3,200"
+  },
+  {
+   "page": 2,
+   "x": 348.95,
+   "y": 678.748,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "UNITS/KWH"
+  },
+  {
+   "page": 2,
+   "x": 408.509,
+   "y": 697.186,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ADDITIONAL INFORMATION"
+  },
+  {
+   "page": 2,
+   "x": 67.112,
+   "y": 659.55,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Budget"
+  },
+  {
+   "page": 2,
+   "x": 67.112,
+   "y": 648.794,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Energy"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 659.55,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Budget Energy Bill"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 648.794,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Pay 29% Discount"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 659.55,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 648.794,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "postal bill"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 638.039,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 627.284,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "e-bill"
+  },
+  {
+   "page": 2,
+   "x": 243.683,
+   "y": 659.55,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "29.830p"
+  },
+  {
+   "page": 2,
+   "x": 294.697,
+   "y": 659.55,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "15.940p"
+  },
+  {
+   "page": 2,
+   "x": 348.95,
+   "y": 659.55,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,013"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 659.55,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "1 Year"
+  },
+  {
+   "page": 2,
+   "x": 441.807,
+   "y": 659.55,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " fixed term discount of"
+  },
+  {
+   "page": 2,
+   "x": 521.299,
+   "y": 659.55,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": " 29%"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 648.794,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " on Budget Energy’s Standard Tariff."
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 638.039,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No Exit Fees  "
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 627.284,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Available to new customers only "
+  },
+  {
+   "page": 2,
+   "x": 67.112,
+   "y": 607.778,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Budget"
+  },
+  {
+   "page": 2,
+   "x": 67.112,
+   "y": 597.023,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Energy"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 607.778,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Billpay 25%"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 597.023,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Discount"
+  },
+  {
+   "page": 2,
+   "x": 182.706,
+   "y": 607.778,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit e-"
+  },
+  {
+   "page": 2,
+   "x": 182.706,
+   "y": 597.023,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "bill"
+  },
+  {
+   "page": 2,
+   "x": 243.683,
+   "y": 607.778,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "31.510p"
+  },
+  {
+   "page": 2,
+   "x": 294.697,
+   "y": 607.778,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "13.220p"
+  },
+  {
+   "page": 2,
+   "x": 348.95,
+   "y": 607.778,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,057"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 607.778,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Variable contract discount of 25"
+  },
+  {
+   "page": 2,
+   "x": 528.824,
+   "y": 607.778,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "%"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 597.023,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " on Budget standard unit rate."
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 586.268,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Includes Standing Charge."
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 575.512,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No Exit Fee."
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 564.757,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "You must be a new customer"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 554.001,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "moving to Budget Energy."
+  },
+  {
+   "page": 2,
+   "x": 67.112,
+   "y": 534.496,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Budget"
+  },
+  {
+   "page": 2,
+   "x": 67.112,
+   "y": 523.741,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Energy"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 534.496,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Keypad Loyalty"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 523.741,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "20% Discount"
+  },
+  {
+   "page": 2,
+   "x": 182.706,
+   "y": 534.496,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Prepayment"
+  },
+  {
+   "page": 2,
+   "x": 182.706,
+   "y": 523.741,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "meter"
+  },
+  {
+   "page": 2,
+   "x": 243.683,
+   "y": 534.496,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "32.940p"
+  },
+  {
+   "page": 2,
+   "x": 294.697,
+   "y": 534.496,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "10.920p"
+  },
+  {
+   "page": 2,
+   "x": 348.95,
+   "y": 534.496,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,094"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 534.496,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Variable contract discount of"
+  },
+  {
+   "page": 2,
+   "x": 517.694,
+   "y": 534.496,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": " 20%"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 523.741,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " on Budget standard prepayment"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 512.985,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "unit rate. "
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 502.23,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No exit fee."
+  },
+  {
+   "page": 2,
+   "x": 67.112,
+   "y": 482.725,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Budget"
+  },
+  {
+   "page": 2,
+   "x": 67.112,
+   "y": 471.969,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Energy"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 482.725,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Budget Energy"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 471.969,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£80 Discount and"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 461.214,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Keypad 20%"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 450.459,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Discount"
+  },
+  {
+   "page": 2,
+   "x": 182.706,
+   "y": 482.725,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Prepayment"
+  },
+  {
+   "page": 2,
+   "x": 182.706,
+   "y": 471.969,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "meter"
+  },
+  {
+   "page": 2,
+   "x": 243.683,
+   "y": 482.725,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "32.940p"
+  },
+  {
+   "page": 2,
+   "x": 294.697,
+   "y": 482.725,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "10.920p"
+  },
+  {
+   "page": 2,
+   "x": 348.95,
+   "y": 482.725,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,094"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 482.725,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "1 Year"
+  },
+  {
+   "page": 2,
+   "x": 441.807,
+   "y": 482.725,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " fixed term discount of "
+  },
+  {
+   "page": 2,
+   "x": 523.525,
+   "y": 482.725,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "20%"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 471.969,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " on Budget standard unit rate."
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 461.214,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "£80 free credit "
+  },
+  {
+   "page": 2,
+   "x": 477.528,
+   "y": 461.214,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "(£40 after"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 450.459,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "switchover and £40 after month 9)"
+  },
+  {
+   "page": 2,
+   "x": 538.715,
+   "y": 450.459,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": " "
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 439.703,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "12 month contract with no exit fee."
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 428.948,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "New customers only."
+  },
+  {
+   "page": 2,
+   "x": 67.112,
+   "y": 409.443,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Budget"
+  },
+  {
+   "page": 2,
+   "x": 67.112,
+   "y": 398.687,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Energy"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 409.443,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Budget Energy"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 398.687,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£100 Loyalty and"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 387.932,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "18% Discount"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 409.443,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 398.687,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "postal bill"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 387.932,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 377.176,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "e-bill"
+  },
+  {
+   "page": 2,
+   "x": 243.683,
+   "y": 409.443,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "34.450p"
+  },
+  {
+   "page": 2,
+   "x": 294.697,
+   "y": 409.443,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "15.940p"
+  },
+  {
+   "page": 2,
+   "x": 348.95,
+   "y": 409.443,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,161"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 409.443,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Variable contract discount of"
+  },
+  {
+   "page": 2,
+   "x": 517.694,
+   "y": 409.443,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": " 18%"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 398.687,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " on Budget standard unit rate."
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 387.932,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "£100 free credit"
+  },
+  {
+   "page": 2,
+   "x": 479.964,
+   "y": 387.932,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " (applied after"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 377.176,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "your first quarterly bill has issued.)"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 366.421,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No exit fee."
+  },
+  {
+   "page": 2,
+   "x": 67.112,
+   "y": 346.916,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Budget"
+  },
+  {
+   "page": 2,
+   "x": 67.112,
+   "y": 336.16,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Energy"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 346.916,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Budget Energy"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 336.16,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Keypad £60"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 325.405,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Loyalty &amp;"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 314.65,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "16% Discount"
+  },
+  {
+   "page": 2,
+   "x": 182.706,
+   "y": 346.916,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Prepayment"
+  },
+  {
+   "page": 2,
+   "x": 182.706,
+   "y": 336.16,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "meter"
+  },
+  {
+   "page": 2,
+   "x": 243.683,
+   "y": 346.916,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "34.580p"
+  },
+  {
+   "page": 2,
+   "x": 294.697,
+   "y": 346.916,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "19.970p"
+  },
+  {
+   "page": 2,
+   "x": 348.95,
+   "y": 346.916,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,179"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 346.916,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Discount 16% & £60 Energy Credit."
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 336.16,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£30 after completion of"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 325.405,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "switchover/renewal and £30 after 9"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 314.65,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Months"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 303.894,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No exit fee"
+  },
+  {
+   "page": 2,
+   "x": 67.112,
+   "y": 284.389,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Budget"
+  },
+  {
+   "page": 2,
+   "x": 67.112,
+   "y": 273.634,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Energy"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 284.389,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Keypad Standard"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 273.634,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "24hr"
+  },
+  {
+   "page": 2,
+   "x": 182.706,
+   "y": 284.389,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Prepayment"
+  },
+  {
+   "page": 2,
+   "x": 182.706,
+   "y": 273.634,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "meter"
+  },
+  {
+   "page": 2,
+   "x": 243.683,
+   "y": 284.389,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "41.175p"
+  },
+  {
+   "page": 2,
+   "x": 294.697,
+   "y": 284.389,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "19.970p"
+  },
+  {
+   "page": 2,
+   "x": 348.95,
+   "y": 284.389,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,390"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 284.389,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No contract. "
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 273.634,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No exit fee. "
+  },
+  {
+   "page": 2,
+   "x": 67.112,
+   "y": 254.128,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Budget"
+  },
+  {
+   "page": 2,
+   "x": 67.112,
+   "y": 243.373,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Energy"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 254.128,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Bill Pay - Standard"
+  },
+  {
+   "page": 2,
+   "x": 107.767,
+   "y": 243.373,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "24hr"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 254.128,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 243.373,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "e-bill"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 232.617,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Pay on"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 221.862,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "receipt of e-"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 211.107,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "bill"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 200.351,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 189.596,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "postal bill"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 178.841,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Pay on"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 168.085,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "receipt of"
+  },
+  {
+   "page": 2,
+   "x": 190.706,
+   "y": 157.33,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "bill"
+  },
+  {
+   "page": 2,
+   "x": 243.683,
+   "y": 254.128,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "42.010p"
+  },
+  {
+   "page": 2,
+   "x": 294.697,
+   "y": 254.128,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "15.940p"
+  },
+  {
+   "page": 2,
+   "x": 348.95,
+   "y": 254.128,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,403"
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 254.128,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No contract. "
+  },
+  {
+   "page": 2,
+   "x": 416.509,
+   "y": 243.373,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No exit fee. "
+  },
+  {
+   "page": 3,
+   "x": 62.362,
+   "y": 722.508,
+   "fontName": "F2",
+   "fontSize": 16.5,
+   "text": "Click Energy tariff removal"
+  },
+  {
+   "page": 3,
+   "x": 62.362,
+   "y": 679.221,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "Due to tensions in the middle east which has greatly increased wholesale gas prices"
+  },
+  {
+   "page": 3,
+   "x": 62.362,
+   "y": 662.32,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "(around 30% of electricity is generated from natural gas), Click Energy have taken the"
+  },
+  {
+   "page": 3,
+   "x": 62.362,
+   "y": 645.419,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "decision to remove all of their discounted tariffs:"
+  },
+  {
+   "page": 3,
+   "x": 92.362,
+   "y": 606.517,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "Bill Pay Round the Clock"
+  },
+  {
+   "page": 3,
+   "x": 92.362,
+   "y": 589.616,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "Keypad Round the Clock"
+  },
+  {
+   "page": 3,
+   "x": 92.362,
+   "y": 572.715,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "Bill Pay Twilight"
+  },
+  {
+   "page": 3,
+   "x": 92.362,
+   "y": 555.814,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "Keypad Twilight"
+  },
+  {
+   "page": 3,
+   "x": 62.362,
+   "y": 523.14,
+   "fontName": "F2",
+   "fontSize": 12,
+   "text": "Click Energy"
+  },
+  {
+   "page": 3,
+   "x": 67.112,
+   "y": 480.635,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "SUPPLIER"
+  },
+  {
+   "page": 3,
+   "x": 111.955,
+   "y": 480.635,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "TARIFF"
+  },
+  {
+   "page": 3,
+   "x": 111.955,
+   "y": 471.416,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "NAME"
+  },
+  {
+   "page": 3,
+   "x": 155.586,
+   "y": 480.635,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PAYMENT & BILLING"
+  },
+  {
+   "page": 3,
+   "x": 155.586,
+   "y": 471.416,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "METHOD"
+  },
+  {
+   "page": 3,
+   "x": 233.27,
+   "y": 480.635,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PRICE IN PENCE PER"
+  },
+  {
+   "page": 3,
+   "x": 233.27,
+   "y": 471.416,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "UNIT/KWH"
+  },
+  {
+   "page": 3,
+   "x": 307.388,
+   "y": 480.635,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "STANDING CHARGE"
+  },
+  {
+   "page": 3,
+   "x": 307.388,
+   "y": 471.416,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PENCE PER DAY"
+  },
+  {
+   "page": 3,
+   "x": 389.828,
+   "y": 480.635,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ANNUAL COST USING"
+  },
+  {
+   "page": 3,
+   "x": 389.828,
+   "y": 471.416,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "3,200 UNITS/KWH"
+  },
+  {
+   "page": 3,
+   "x": 480.654,
+   "y": 480.635,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ADDITIONAL"
+  },
+  {
+   "page": 3,
+   "x": 480.654,
+   "y": 471.416,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "INFORMATION"
+  },
+  {
+   "page": 3,
+   "x": 67.112,
+   "y": 452.218,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Click"
+  },
+  {
+   "page": 3,
+   "x": 67.112,
+   "y": 441.462,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Energy"
+  },
+  {
+   "page": 3,
+   "x": 111.955,
+   "y": 452.218,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Bill Pay"
+  },
+  {
+   "page": 3,
+   "x": 111.955,
+   "y": 441.462,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "24h"
+  },
+  {
+   "page": 3,
+   "x": 163.586,
+   "y": 452.218,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit"
+  },
+  {
+   "page": 3,
+   "x": 163.586,
+   "y": 441.462,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "postal bill"
+  },
+  {
+   "page": 3,
+   "x": 163.586,
+   "y": 430.707,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit e-"
+  },
+  {
+   "page": 3,
+   "x": 163.586,
+   "y": 419.952,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "bill"
+  },
+  {
+   "page": 3,
+   "x": 163.586,
+   "y": 409.196,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Pay on receipt of"
+  },
+  {
+   "page": 3,
+   "x": 163.586,
+   "y": 398.441,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "bill"
+  },
+  {
+   "page": 3,
+   "x": 163.586,
+   "y": 387.686,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Pay on receipt of"
+  },
+  {
+   "page": 3,
+   "x": 163.586,
+   "y": 376.93,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "e-bill"
+  },
+  {
+   "page": 3,
+   "x": 233.27,
+   "y": 452.218,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "38.808p"
+  },
+  {
+   "page": 3,
+   "x": 307.388,
+   "y": 452.218,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "10.219p"
+  },
+  {
+   "page": 3,
+   "x": 389.828,
+   "y": 452.218,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,279"
+  },
+  {
+   "page": 3,
+   "x": 488.654,
+   "y": 452.218,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No contract."
+  },
+  {
+   "page": 3,
+   "x": 488.654,
+   "y": 441.462,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No exit fee. "
+  },
+  {
+   "page": 3,
+   "x": 67.112,
+   "y": 357.425,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Click"
+  },
+  {
+   "page": 3,
+   "x": 67.112,
+   "y": 346.669,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Energy"
+  },
+  {
+   "page": 3,
+   "x": 111.955,
+   "y": 357.425,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Keypad"
+  },
+  {
+   "page": 3,
+   "x": 111.955,
+   "y": 346.669,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "24h"
+  },
+  {
+   "page": 3,
+   "x": 155.586,
+   "y": 357.425,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Prepayment meter"
+  },
+  {
+   "page": 3,
+   "x": 233.27,
+   "y": 357.425,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "38.808p"
+  },
+  {
+   "page": 3,
+   "x": 307.388,
+   "y": 357.425,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "12.795p"
+  },
+  {
+   "page": 3,
+   "x": 389.828,
+   "y": 357.425,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,289"
+  },
+  {
+   "page": 3,
+   "x": 480.654,
+   "y": 350.425,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No contract."
+  },
+  {
+   "page": 3,
+   "x": 480.654,
+   "y": 332.669,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No exit fee."
+  },
+  {
+   "page": 4,
+   "x": 62.362,
+   "y": 738.191,
+   "fontName": "F2",
+   "fontSize": 12,
+   "text": "Power NI"
+  },
+  {
+   "page": 4,
+   "x": 67.112,
+   "y": 685.7,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "SUPPLIER"
+  },
+  {
+   "page": 4,
+   "x": 103.693,
+   "y": 685.7,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "TARIFF NAME"
+  },
+  {
+   "page": 4,
+   "x": 173.351,
+   "y": 685.7,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PAYMENT &"
+  },
+  {
+   "page": 4,
+   "x": 173.351,
+   "y": 676.481,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "BILLING METHOD"
+  },
+  {
+   "page": 4,
+   "x": 236.827,
+   "y": 685.7,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PRICE IN PENCE"
+  },
+  {
+   "page": 4,
+   "x": 236.827,
+   "y": 676.481,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PER UNIT/KWH"
+  },
+  {
+   "page": 4,
+   "x": 291.295,
+   "y": 685.7,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "STANDING"
+  },
+  {
+   "page": 4,
+   "x": 291.295,
+   "y": 676.481,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "CHARGE PENCE"
+  },
+  {
+   "page": 4,
+   "x": 291.295,
+   "y": 667.262,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PER DAY"
+  },
+  {
+   "page": 4,
+   "x": 349.763,
+   "y": 685.7,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ANNUAL COST"
+  },
+  {
+   "page": 4,
+   "x": 349.763,
+   "y": 676.481,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "USING 3,200"
+  },
+  {
+   "page": 4,
+   "x": 349.763,
+   "y": 667.262,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "UNITS/KWH"
+  },
+  {
+   "page": 4,
+   "x": 413.998,
+   "y": 685.7,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ADDITIONAL INFORMATION"
+  },
+  {
+   "page": 4,
+   "x": 67.112,
+   "y": 648.064,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Power"
+  },
+  {
+   "page": 4,
+   "x": 67.112,
+   "y": 637.309,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "NI"
+  },
+  {
+   "page": 4,
+   "x": 103.693,
+   "y": 648.064,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Monthly Direct"
+  },
+  {
+   "page": 4,
+   "x": 103.693,
+   "y": 637.309,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Debit with online"
+  },
+  {
+   "page": 4,
+   "x": 103.693,
+   "y": 626.553,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "billing"
+  },
+  {
+   "page": 4,
+   "x": 173.351,
+   "y": 648.064,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit e-"
+  },
+  {
+   "page": 4,
+   "x": 173.351,
+   "y": 637.309,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "bill"
+  },
+  {
+   "page": 4,
+   "x": 236.827,
+   "y": 648.064,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "32.100p"
+  },
+  {
+   "page": 4,
+   "x": 291.295,
+   "y": 648.064,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 4,
+   "x": 349.763,
+   "y": 648.064,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,027"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 648.064,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Equivalent to "
+  },
+  {
+   "page": 4,
+   "x": 470.599,
+   "y": 648.064,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "6%"
+  },
+  {
+   "page": 4,
+   "x": 482.485,
+   "y": 648.064,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " off Standard"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 637.309,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Rate."
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 626.553,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "Maximum "
+  },
+  {
+   "page": 4,
+   "x": 462.612,
+   "y": 626.553,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "of "
+  },
+  {
+   "page": 4,
+   "x": 471.586,
+   "y": 626.553,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "£60"
+  },
+  {
+   "page": 4,
+   "x": 486.202,
+   "y": 626.553,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " savings per"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 615.798,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "year"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 605.043,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "No"
+  },
+  {
+   "page": 4,
+   "x": 432.666,
+   "y": 605.043,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " fixed term contract"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 594.287,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "No"
+  },
+  {
+   "page": 4,
+   "x": 432.666,
+   "y": 594.287,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " exit fee"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 583.532,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Available to "
+  },
+  {
+   "page": 4,
+   "x": 465.58,
+   "y": 583.532,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "new"
+  },
+  {
+   "page": 4,
+   "x": 481.778,
+   "y": 583.532,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " and "
+  },
+  {
+   "page": 4,
+   "x": 499.404,
+   "y": 583.532,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "existing"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 572.777,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "customers"
+  },
+  {
+   "page": 4,
+   "x": 67.112,
+   "y": 553.271,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Power"
+  },
+  {
+   "page": 4,
+   "x": 67.112,
+   "y": 542.516,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "NI"
+  },
+  {
+   "page": 4,
+   "x": 103.693,
+   "y": 553.271,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Quarterly Direct"
+  },
+  {
+   "page": 4,
+   "x": 103.693,
+   "y": 542.516,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Debit with online"
+  },
+  {
+   "page": 4,
+   "x": 103.693,
+   "y": 531.76,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "billing"
+  },
+  {
+   "page": 4,
+   "x": 173.351,
+   "y": 553.271,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit e-"
+  },
+  {
+   "page": 4,
+   "x": 173.351,
+   "y": 542.516,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "bill"
+  },
+  {
+   "page": 4,
+   "x": 236.827,
+   "y": 553.271,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "32.610p"
+  },
+  {
+   "page": 4,
+   "x": 291.295,
+   "y": 553.271,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 4,
+   "x": 349.763,
+   "y": 553.271,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,044"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 553.271,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Equivalent to "
+  },
+  {
+   "page": 4,
+   "x": 470.599,
+   "y": 553.271,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "4.5%"
+  },
+  {
+   "page": 4,
+   "x": 490.017,
+   "y": 553.271,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " off Standard"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 542.516,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Rate."
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 531.76,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "Maximum "
+  },
+  {
+   "page": 4,
+   "x": 462.612,
+   "y": 531.76,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "of "
+  },
+  {
+   "page": 4,
+   "x": 471.586,
+   "y": 531.76,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "£46"
+  },
+  {
+   "page": 4,
+   "x": 486.202,
+   "y": 531.76,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " savings per"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 521.005,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "year."
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 510.25,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "No"
+  },
+  {
+   "page": 4,
+   "x": 432.666,
+   "y": 510.25,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " fixed term contract"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 499.494,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "No"
+  },
+  {
+   "page": 4,
+   "x": 432.666,
+   "y": 499.494,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " exit fee"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 488.739,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Available to "
+  },
+  {
+   "page": 4,
+   "x": 465.58,
+   "y": 488.739,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "new"
+  },
+  {
+   "page": 4,
+   "x": 481.778,
+   "y": 488.739,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " and "
+  },
+  {
+   "page": 4,
+   "x": 499.404,
+   "y": 488.739,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "existing"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 477.984,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "customers"
+  },
+  {
+   "page": 4,
+   "x": 67.112,
+   "y": 458.478,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Power"
+  },
+  {
+   "page": 4,
+   "x": 67.112,
+   "y": 447.723,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "NI"
+  },
+  {
+   "page": 4,
+   "x": 103.693,
+   "y": 458.478,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Monthly Direct"
+  },
+  {
+   "page": 4,
+   "x": 103.693,
+   "y": 447.723,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Debit"
+  },
+  {
+   "page": 4,
+   "x": 173.351,
+   "y": 458.478,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit"
+  },
+  {
+   "page": 4,
+   "x": 173.351,
+   "y": 447.723,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "postal bill"
+  },
+  {
+   "page": 4,
+   "x": 236.827,
+   "y": 458.478,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "32.780p"
+  },
+  {
+   "page": 4,
+   "x": 291.295,
+   "y": 458.478,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 4,
+   "x": 349.763,
+   "y": 458.478,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,049"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 458.478,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Equivalent to "
+  },
+  {
+   "page": 4,
+   "x": 470.599,
+   "y": 458.478,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "4%"
+  },
+  {
+   "page": 4,
+   "x": 482.485,
+   "y": 458.478,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " off Standard"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 447.723,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Rate."
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 436.968,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "Maximum "
+  },
+  {
+   "page": 4,
+   "x": 462.612,
+   "y": 436.968,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "of "
+  },
+  {
+   "page": 4,
+   "x": 471.586,
+   "y": 436.968,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "£40"
+  },
+  {
+   "page": 4,
+   "x": 486.202,
+   "y": 436.968,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " savings per"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 426.212,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "year"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 415.457,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "No"
+  },
+  {
+   "page": 4,
+   "x": 432.666,
+   "y": 415.457,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " fixed term contract"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 404.701,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "No"
+  },
+  {
+   "page": 4,
+   "x": 432.666,
+   "y": 404.701,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " exit fee"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 393.946,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Available to "
+  },
+  {
+   "page": 4,
+   "x": 465.58,
+   "y": 393.946,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "new"
+  },
+  {
+   "page": 4,
+   "x": 481.778,
+   "y": 393.946,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " and "
+  },
+  {
+   "page": 4,
+   "x": 499.404,
+   "y": 393.946,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "existing"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 383.191,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "customers"
+  },
+  {
+   "page": 4,
+   "x": 67.112,
+   "y": 363.685,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Power"
+  },
+  {
+   "page": 4,
+   "x": 67.112,
+   "y": 352.93,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "NI"
+  },
+  {
+   "page": 4,
+   "x": 103.693,
+   "y": 363.685,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Keypad"
+  },
+  {
+   "page": 4,
+   "x": 173.351,
+   "y": 363.685,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Prepayment"
+  },
+  {
+   "page": 4,
+   "x": 173.351,
+   "y": 352.93,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "meter"
+  },
+  {
+   "page": 4,
+   "x": 236.827,
+   "y": 363.685,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "33.290p"
+  },
+  {
+   "page": 4,
+   "x": 291.295,
+   "y": 363.685,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 4,
+   "x": 349.763,
+   "y": 363.685,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,065"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 363.685,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Equivalent to"
+  },
+  {
+   "page": 4,
+   "x": 468.373,
+   "y": 363.685,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": " 2.5%"
+  },
+  {
+   "page": 4,
+   "x": 490.227,
+   "y": 363.685,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " off Standard"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 352.93,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Rate."
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 342.175,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "Keypad reward"
+  },
+  {
+   "page": 4,
+   "x": 481.771,
+   "y": 342.175,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": ": "
+  },
+  {
+   "page": 4,
+   "x": 486.356,
+   "y": 342.175,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "free"
+  },
+  {
+   "page": 4,
+   "x": 502.344,
+   "y": 342.175,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " electricity"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 331.419,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "from £1 - £4 for top ups between"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 320.664,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£50 - £175 "
+  },
+  {
+   "page": 4,
+   "x": 462.367,
+   "y": 320.664,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "online or via app"
+  },
+  {
+   "page": 4,
+   "x": 528.699,
+   "y": 320.664,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "."
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 309.909,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "No"
+  },
+  {
+   "page": 4,
+   "x": 432.666,
+   "y": 309.909,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " fixed term contract"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 299.153,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "No"
+  },
+  {
+   "page": 4,
+   "x": 432.666,
+   "y": 299.153,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " exit fee"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 288.398,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Available to "
+  },
+  {
+   "page": 4,
+   "x": 465.58,
+   "y": 288.398,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "new"
+  },
+  {
+   "page": 4,
+   "x": 481.778,
+   "y": 288.398,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " and "
+  },
+  {
+   "page": 4,
+   "x": 499.404,
+   "y": 288.398,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "existing"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 277.643,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "customers"
+  },
+  {
+   "page": 4,
+   "x": 67.112,
+   "y": 258.137,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Power"
+  },
+  {
+   "page": 4,
+   "x": 67.112,
+   "y": 247.382,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "NI"
+  },
+  {
+   "page": 4,
+   "x": 103.693,
+   "y": 258.137,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Quarterly Direct"
+  },
+  {
+   "page": 4,
+   "x": 103.693,
+   "y": 247.382,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Debit"
+  },
+  {
+   "page": 4,
+   "x": 173.351,
+   "y": 258.137,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit"
+  },
+  {
+   "page": 4,
+   "x": 173.351,
+   "y": 247.382,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "postal bill"
+  },
+  {
+   "page": 4,
+   "x": 236.827,
+   "y": 258.137,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "33.290p"
+  },
+  {
+   "page": 4,
+   "x": 291.295,
+   "y": 258.137,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 4,
+   "x": 349.763,
+   "y": 258.137,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,065"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 258.137,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Equivalent to "
+  },
+  {
+   "page": 4,
+   "x": 470.599,
+   "y": 258.137,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "2.5%"
+  },
+  {
+   "page": 4,
+   "x": 490.017,
+   "y": 258.137,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " off Standard"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 247.382,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Rate."
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 236.626,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "Maximum "
+  },
+  {
+   "page": 4,
+   "x": 462.612,
+   "y": 236.626,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "of "
+  },
+  {
+   "page": 4,
+   "x": 471.586,
+   "y": 236.626,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "£26"
+  },
+  {
+   "page": 4,
+   "x": 486.202,
+   "y": 236.626,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " savings per"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 225.871,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "year."
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 215.116,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "No"
+  },
+  {
+   "page": 4,
+   "x": 432.666,
+   "y": 215.116,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " fixed term contract"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 204.36,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "No"
+  },
+  {
+   "page": 4,
+   "x": 432.666,
+   "y": 204.36,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " exit fee"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 193.605,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Available to "
+  },
+  {
+   "page": 4,
+   "x": 465.58,
+   "y": 193.605,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "new"
+  },
+  {
+   "page": 4,
+   "x": 481.778,
+   "y": 193.605,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " and "
+  },
+  {
+   "page": 4,
+   "x": 499.404,
+   "y": 193.605,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "existing"
+  },
+  {
+   "page": 4,
+   "x": 421.998,
+   "y": 182.85,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "customers"
+  },
+  {
+   "page": 5,
+   "x": 67.112,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "SUPPLIER"
+  },
+  {
+   "page": 5,
+   "x": 103.693,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "TARIFF NAME"
+  },
+  {
+   "page": 5,
+   "x": 173.351,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PAYMENT &"
+  },
+  {
+   "page": 5,
+   "x": 173.351,
+   "y": 736.64,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "BILLING METHOD"
+  },
+  {
+   "page": 5,
+   "x": 236.827,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PRICE IN PENCE"
+  },
+  {
+   "page": 5,
+   "x": 236.827,
+   "y": 736.64,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PER UNIT/KWH"
+  },
+  {
+   "page": 5,
+   "x": 291.295,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "STANDING"
+  },
+  {
+   "page": 5,
+   "x": 291.295,
+   "y": 736.64,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "CHARGE PENCE"
+  },
+  {
+   "page": 5,
+   "x": 291.295,
+   "y": 727.421,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PER DAY"
+  },
+  {
+   "page": 5,
+   "x": 349.763,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ANNUAL COST"
+  },
+  {
+   "page": 5,
+   "x": 349.763,
+   "y": 736.64,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "USING 3,200"
+  },
+  {
+   "page": 5,
+   "x": 349.763,
+   "y": 727.421,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "UNITS/KWH"
+  },
+  {
+   "page": 5,
+   "x": 413.998,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ADDITIONAL INFORMATION"
+  },
+  {
+   "page": 5,
+   "x": 67.112,
+   "y": 708.223,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Power"
+  },
+  {
+   "page": 5,
+   "x": 67.112,
+   "y": 697.468,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "NI"
+  },
+  {
+   "page": 5,
+   "x": 103.693,
+   "y": 708.223,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Standard with"
+  },
+  {
+   "page": 5,
+   "x": 103.693,
+   "y": 697.468,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "online billing"
+  },
+  {
+   "page": 5,
+   "x": 173.351,
+   "y": 708.223,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit e-"
+  },
+  {
+   "page": 5,
+   "x": 173.351,
+   "y": 697.468,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "bill"
+  },
+  {
+   "page": 5,
+   "x": 236.827,
+   "y": 708.223,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "33.460p"
+  },
+  {
+   "page": 5,
+   "x": 291.295,
+   "y": 708.223,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 5,
+   "x": 349.763,
+   "y": 708.223,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,071"
+  },
+  {
+   "page": 5,
+   "x": 421.998,
+   "y": 708.223,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Equivalent to "
+  },
+  {
+   "page": 5,
+   "x": 470.599,
+   "y": 708.223,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "2%"
+  },
+  {
+   "page": 5,
+   "x": 482.485,
+   "y": 708.223,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " off Standard"
+  },
+  {
+   "page": 5,
+   "x": 421.998,
+   "y": 697.468,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Rate is available for customers"
+  },
+  {
+   "page": 5,
+   "x": 421.998,
+   "y": 686.713,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "who activate an "
+  },
+  {
+   "page": 5,
+   "x": 480.168,
+   "y": 686.713,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "energy online"
+  },
+  {
+   "page": 5,
+   "x": 421.998,
+   "y": 675.957,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "account."
+  },
+  {
+   "page": 5,
+   "x": 421.998,
+   "y": 665.202,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Energy online account "
+  },
+  {
+   "page": 5,
+   "x": 502.561,
+   "y": 665.202,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "maximum"
+  },
+  {
+   "page": 5,
+   "x": 421.998,
+   "y": 654.447,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "savings of "
+  },
+  {
+   "page": 5,
+   "x": 459.756,
+   "y": 654.447,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "£20"
+  },
+  {
+   "page": 5,
+   "x": 474.372,
+   "y": 654.447,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " per year."
+  },
+  {
+   "page": 5,
+   "x": 421.998,
+   "y": 643.691,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "No"
+  },
+  {
+   "page": 5,
+   "x": 432.666,
+   "y": 643.691,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " fixed term contract"
+  },
+  {
+   "page": 5,
+   "x": 421.998,
+   "y": 632.936,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "No"
+  },
+  {
+   "page": 5,
+   "x": 432.666,
+   "y": 632.936,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " exit fee"
+  },
+  {
+   "page": 5,
+   "x": 421.998,
+   "y": 622.18,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Available to "
+  },
+  {
+   "page": 5,
+   "x": 465.58,
+   "y": 622.18,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "new"
+  },
+  {
+   "page": 5,
+   "x": 481.778,
+   "y": 622.18,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " and "
+  },
+  {
+   "page": 5,
+   "x": 499.404,
+   "y": 622.18,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "existing"
+  },
+  {
+   "page": 5,
+   "x": 421.998,
+   "y": 611.425,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "customers"
+  },
+  {
+   "page": 5,
+   "x": 67.112,
+   "y": 591.92,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Power"
+  },
+  {
+   "page": 5,
+   "x": 67.112,
+   "y": 581.164,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "NI"
+  },
+  {
+   "page": 5,
+   "x": 103.693,
+   "y": 591.92,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Standard"
+  },
+  {
+   "page": 5,
+   "x": 173.351,
+   "y": 591.92,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Pay on receipt"
+  },
+  {
+   "page": 5,
+   "x": 173.351,
+   "y": 581.164,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "of bill"
+  },
+  {
+   "page": 5,
+   "x": 236.827,
+   "y": 591.92,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "34.150p"
+  },
+  {
+   "page": 5,
+   "x": 291.295,
+   "y": 591.92,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 5,
+   "x": 349.763,
+   "y": 591.92,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,093"
+  },
+  {
+   "page": 5,
+   "x": 421.998,
+   "y": 591.92,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "Standard "
+  },
+  {
+   "page": 5,
+   "x": 460.729,
+   "y": 591.92,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "rate."
+  },
+  {
+   "page": 5,
+   "x": 421.998,
+   "y": 581.164,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "No"
+  },
+  {
+   "page": 5,
+   "x": 432.666,
+   "y": 581.164,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " fixed term contract"
+  },
+  {
+   "page": 5,
+   "x": 421.998,
+   "y": 570.409,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "No"
+  },
+  {
+   "page": 5,
+   "x": 432.666,
+   "y": 570.409,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " exit fee"
+  },
+  {
+   "page": 5,
+   "x": 421.998,
+   "y": 559.654,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Available to "
+  },
+  {
+   "page": 5,
+   "x": 465.58,
+   "y": 559.654,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "new"
+  },
+  {
+   "page": 5,
+   "x": 481.778,
+   "y": 559.654,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " and "
+  },
+  {
+   "page": 5,
+   "x": 499.404,
+   "y": 559.654,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "existing"
+  },
+  {
+   "page": 5,
+   "x": 421.998,
+   "y": 548.898,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "customers"
+  },
+  {
+   "page": 6,
+   "x": 62.362,
+   "y": 742.963,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "Important information about PowerNI tariffs"
+  },
+  {
+   "page": 6,
+   "x": 62.362,
+   "y": 715.062,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "The effective tariff reflects the actual price per unit of electricity after applying all"
+  },
+  {
+   "page": 6,
+   "x": 62.362,
+   "y": 698.161,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "eligible discounts, such as Direct Debit and Online Billing reductions. These discounts"
+  },
+  {
+   "page": 6,
+   "x": 62.362,
+   "y": 681.259,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "apply only up to £250 per quarter (£1,000 per year) - usage beyond this is charged at"
+  },
+  {
+   "page": 6,
+   "x": 62.362,
+   "y": 664.358,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "the standard rate."
+  },
+  {
+   "page": 6,
+   "x": 62.362,
+   "y": 636.457,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "This means the overall savings depend on both how much electricity you use and which"
+  },
+  {
+   "page": 6,
+   "x": 62.362,
+   "y": 619.556,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "payment method you choose."
+  },
+  {
+   "page": 6,
+   "x": 62.362,
+   "y": 591.654,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "For PAYG (Keypad) customers, a flat 2.5% discount applies to all top-ups, and they are"
+  },
+  {
+   "page": 6,
+   "x": 62.362,
+   "y": 574.753,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "not affected by the £250 per quarter threshold."
+  },
+  {
+   "page": 6,
+   "x": 62.362,
+   "y": 546.852,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "This information is based on current Power NI current unit pricing and is detailed in"
+  },
+  {
+   "page": 6,
+   "x": 62.362,
+   "y": 529.95,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "their terms and conditions."
+  },
+  {
+   "page": 6,
+   "x": 62.362,
+   "y": 502.049,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "If your usage exceeds the threshold, your final costs may be slightly different from"
+  },
+  {
+   "page": 6,
+   "x": 62.362,
+   "y": 485.148,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "initial estimates. Please bear this in mind with final calculations."
+  },
+  {
+   "page": 6,
+   "x": 62.362,
+   "y": 452.474,
+   "fontName": "F2",
+   "fontSize": 12,
+   "text": "SSE Airtricity"
+  },
+  {
+   "page": 6,
+   "x": 67.112,
+   "y": 409.969,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "SUPPLIER"
+  },
+  {
+   "page": 6,
+   "x": 108.493,
+   "y": 409.969,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "TARIFF NAME"
+  },
+  {
+   "page": 6,
+   "x": 200.871,
+   "y": 409.969,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PAYMENT &"
+  },
+  {
+   "page": 6,
+   "x": 200.871,
+   "y": 400.75,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "BILLING METHOD"
+  },
+  {
+   "page": 6,
+   "x": 267.222,
+   "y": 409.969,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PRICE IN"
+  },
+  {
+   "page": 6,
+   "x": 267.222,
+   "y": 400.75,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PENCE PER"
+  },
+  {
+   "page": 6,
+   "x": 267.222,
+   "y": 391.531,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "UNIT/KWH"
+  },
+  {
+   "page": 6,
+   "x": 316.574,
+   "y": 409.969,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "STANDING"
+  },
+  {
+   "page": 6,
+   "x": 316.574,
+   "y": 400.75,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "CHARGE"
+  },
+  {
+   "page": 6,
+   "x": 316.574,
+   "y": 391.531,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PENCE PER"
+  },
+  {
+   "page": 6,
+   "x": 316.574,
+   "y": 382.312,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "DAY"
+  },
+  {
+   "page": 6,
+   "x": 368.799,
+   "y": 409.969,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ANNUAL COST"
+  },
+  {
+   "page": 6,
+   "x": 368.799,
+   "y": 400.75,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "USING 3,200"
+  },
+  {
+   "page": 6,
+   "x": 368.799,
+   "y": 391.531,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "UNITS/KWH"
+  },
+  {
+   "page": 6,
+   "x": 426.11,
+   "y": 409.969,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ADDITIONAL INFORMATION"
+  },
+  {
+   "page": 6,
+   "x": 67.112,
+   "y": 363.114,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SSE"
+  },
+  {
+   "page": 6,
+   "x": 67.112,
+   "y": 352.359,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Airtricity"
+  },
+  {
+   "page": 6,
+   "x": 108.493,
+   "y": 363.114,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "1 Year Home Electricity"
+  },
+  {
+   "page": 6,
+   "x": 108.493,
+   "y": 352.359,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "15% discount"
+  },
+  {
+   "page": 6,
+   "x": 200.871,
+   "y": 363.114,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit e-"
+  },
+  {
+   "page": 6,
+   "x": 200.871,
+   "y": 352.359,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "bill"
+  },
+  {
+   "page": 6,
+   "x": 267.222,
+   "y": 363.114,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "34.670p"
+  },
+  {
+   "page": 6,
+   "x": 316.574,
+   "y": 363.114,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 6,
+   "x": 368.799,
+   "y": 363.114,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,109"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 363.114,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Get up to 15% off our standard"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 352.359,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "electricity unit rates"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 341.603,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Start Date: 01/08/2026"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 330.848,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Contract Type: Bill pay, Fixed"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 320.093,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "term"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 309.337,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£40 early exit fee"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 298.582,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Only available to new"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 287.827,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "customers "
+  },
+  {
+   "page": 6,
+   "x": 67.112,
+   "y": 268.321,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SSE"
+  },
+  {
+   "page": 6,
+   "x": 67.112,
+   "y": 257.566,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Airtricity"
+  },
+  {
+   "page": 6,
+   "x": 108.493,
+   "y": 268.321,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "1 Year Home Electricity"
+  },
+  {
+   "page": 6,
+   "x": 108.493,
+   "y": 257.566,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "13% discount"
+  },
+  {
+   "page": 6,
+   "x": 200.871,
+   "y": 268.321,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit"
+  },
+  {
+   "page": 6,
+   "x": 200.871,
+   "y": 257.566,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "postal bill"
+  },
+  {
+   "page": 6,
+   "x": 267.222,
+   "y": 268.321,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "35.490p"
+  },
+  {
+   "page": 6,
+   "x": 316.574,
+   "y": 268.321,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 6,
+   "x": 368.799,
+   "y": 268.321,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,136"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 268.321,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Get up to 13% off our standard"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 257.566,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "electricity unit rates"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 246.811,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Start Date: 01/08/2026"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 236.055,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Contract Type: Bill pay, Fixed"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 225.3,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "term"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 214.545,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£40 early exit fee"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 203.789,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Only available to new"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 193.034,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "customers "
+  },
+  {
+   "page": 6,
+   "x": 67.112,
+   "y": 173.528,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SSE"
+  },
+  {
+   "page": 6,
+   "x": 67.112,
+   "y": 162.773,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Airtricity"
+  },
+  {
+   "page": 6,
+   "x": 108.493,
+   "y": 173.528,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "1 Year Home Keypad"
+  },
+  {
+   "page": 6,
+   "x": 108.493,
+   "y": 162.773,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "10.5% discount plus"
+  },
+  {
+   "page": 6,
+   "x": 108.493,
+   "y": 152.018,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£30 welcome credit"
+  },
+  {
+   "page": 6,
+   "x": 108.493,
+   "y": 141.262,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "(24hr)"
+  },
+  {
+   "page": 6,
+   "x": 200.871,
+   "y": 173.528,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Prepayment"
+  },
+  {
+   "page": 6,
+   "x": 200.871,
+   "y": 162.773,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "meter"
+  },
+  {
+   "page": 6,
+   "x": 267.222,
+   "y": 173.528,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "36.510p"
+  },
+  {
+   "page": 6,
+   "x": 316.574,
+   "y": 173.528,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 6,
+   "x": 368.799,
+   "y": 173.528,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,168"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 173.528,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "1 Year"
+  },
+  {
+   "page": 6,
+   "x": 459.408,
+   "y": 173.528,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " fixed term discount of"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 162.773,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "up to 10.5"
+  },
+  {
+   "page": 6,
+   "x": 470.055,
+   "y": 162.773,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "%"
+  },
+  {
+   "page": 6,
+   "x": 477.069,
+   "y": 162.773,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " on SSE Airtricity"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 152.018,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "standard unit rate and £30"
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 141.262,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "welcome credit."
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 130.507,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Available to new customers "
+  },
+  {
+   "page": 6,
+   "x": 434.11,
+   "y": 119.752,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "only."
+  },
+  {
+   "page": 7,
+   "x": 67.112,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "SUPPLIER"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "TARIFF NAME"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PAYMENT &"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 736.64,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "BILLING METHOD"
+  },
+  {
+   "page": 7,
+   "x": 267.222,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PRICE IN"
+  },
+  {
+   "page": 7,
+   "x": 267.222,
+   "y": 736.64,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PENCE PER"
+  },
+  {
+   "page": 7,
+   "x": 267.222,
+   "y": 727.421,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "UNIT/KWH"
+  },
+  {
+   "page": 7,
+   "x": 316.574,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "STANDING"
+  },
+  {
+   "page": 7,
+   "x": 316.574,
+   "y": 736.64,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "CHARGE"
+  },
+  {
+   "page": 7,
+   "x": 316.574,
+   "y": 727.421,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PENCE PER"
+  },
+  {
+   "page": 7,
+   "x": 316.574,
+   "y": 718.203,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "DAY"
+  },
+  {
+   "page": 7,
+   "x": 368.799,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ANNUAL COST"
+  },
+  {
+   "page": 7,
+   "x": 368.799,
+   "y": 736.64,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "USING 3,200"
+  },
+  {
+   "page": 7,
+   "x": 368.799,
+   "y": 727.421,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "UNITS/KWH"
+  },
+  {
+   "page": 7,
+   "x": 426.11,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ADDITIONAL INFORMATION"
+  },
+  {
+   "page": 7,
+   "x": 67.112,
+   "y": 699.004,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SSE"
+  },
+  {
+   "page": 7,
+   "x": 67.112,
+   "y": 688.249,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Airtricity"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 699.004,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "1 Year Home Electricity"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 688.249,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "10% discount plus £60"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 677.494,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "welcome credit"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 699.004,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit e-"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 688.249,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "bill"
+  },
+  {
+   "page": 7,
+   "x": 267.222,
+   "y": 699.004,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "36.720p"
+  },
+  {
+   "page": 7,
+   "x": 316.574,
+   "y": 699.004,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 7,
+   "x": 368.799,
+   "y": 699.004,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,175"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 699.004,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Get up to 10% off our standard"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 688.249,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "electricity unit rates plus £60"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 677.494,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "welcome credit"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 666.738,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Start Date: 01/08/2026"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 655.983,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Contract Type: Bill pay, Fixed"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 645.228,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "term"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 634.472,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£40 early exit fee"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 623.717,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Only available to new"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 612.962,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "customers "
+  },
+  {
+   "page": 7,
+   "x": 67.112,
+   "y": 593.456,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SSE"
+  },
+  {
+   "page": 7,
+   "x": 67.112,
+   "y": 582.701,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Airtricity"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 593.456,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "1 Year Home Electricity"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 582.701,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "10% discount"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 593.456,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Pay on receipt"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 582.701,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "of e-bill"
+  },
+  {
+   "page": 7,
+   "x": 267.222,
+   "y": 593.456,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "36.720p"
+  },
+  {
+   "page": 7,
+   "x": 316.574,
+   "y": 593.456,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 7,
+   "x": 368.799,
+   "y": 593.456,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,175"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 593.456,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Get up to 10% off our standard"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 582.701,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "electricity unit rates"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 571.945,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Start Date: 01/08/2026"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 561.19,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Contract Type: Bill pay, Fixed"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 550.435,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "term"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 539.679,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£40 early exit fee"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 528.924,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Only available to new"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 518.169,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "customers "
+  },
+  {
+   "page": 7,
+   "x": 67.112,
+   "y": 498.663,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SSE"
+  },
+  {
+   "page": 7,
+   "x": 67.112,
+   "y": 487.908,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Airtricity"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 498.663,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "1 Year Home Electricity"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 487.908,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "9% discount"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 498.663,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Pay on receipt"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 487.908,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "of bill"
+  },
+  {
+   "page": 7,
+   "x": 267.222,
+   "y": 498.663,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "37.120p"
+  },
+  {
+   "page": 7,
+   "x": 316.574,
+   "y": 498.663,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 7,
+   "x": 368.799,
+   "y": 498.663,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,188"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 498.663,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Get up to 9% off our standard"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 487.908,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "electricity unit rates"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 477.153,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Start Date: 01/08/2026"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 466.397,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Contract Type: Bill pay, Fixed"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 455.642,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "term"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 444.887,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£40 early exit fee"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 434.131,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Only available to new"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 423.376,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "customers "
+  },
+  {
+   "page": 7,
+   "x": 67.112,
+   "y": 403.87,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SSE"
+  },
+  {
+   "page": 7,
+   "x": 67.112,
+   "y": 393.115,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Airtricity"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 403.87,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "1 Year Home Electricity"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 393.115,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "8% discount plus £60"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 382.36,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "welcome credit"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 403.87,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 393.115,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "postal bill"
+  },
+  {
+   "page": 7,
+   "x": 267.222,
+   "y": 403.87,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "37.530p"
+  },
+  {
+   "page": 7,
+   "x": 316.574,
+   "y": 403.87,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 7,
+   "x": 368.799,
+   "y": 403.87,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,201"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 403.87,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Get up to 8% off our standard"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 393.115,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "electricity unit rates plus £60"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 382.36,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "welcome credit (must be"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 371.604,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "redeemed within one year, see"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 360.849,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "T&C's)"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 350.094,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Fixed term"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 339.338,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£40 early exit fee"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 328.583,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Only available to new"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 317.828,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "customers"
+  },
+  {
+   "page": 7,
+   "x": 67.112,
+   "y": 298.322,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SSE"
+  },
+  {
+   "page": 7,
+   "x": 67.112,
+   "y": 287.567,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Airtricity"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 298.322,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SmartSaver Std 6%"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 287.567,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "24hr"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 298.322,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit e-"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 287.567,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "bill"
+  },
+  {
+   "page": 7,
+   "x": 267.222,
+   "y": 298.322,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "38.350p"
+  },
+  {
+   "page": 7,
+   "x": 316.574,
+   "y": 298.322,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 7,
+   "x": 368.799,
+   "y": 298.322,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,227"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 298.322,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "6%"
+  },
+  {
+   "page": 7,
+   "x": 445.996,
+   "y": 298.322,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " off SSE Airtricity standard"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 287.567,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "unit rate."
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 276.811,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No contract. "
+  },
+  {
+   "page": 7,
+   "x": 67.112,
+   "y": 257.306,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SSE"
+  },
+  {
+   "page": 7,
+   "x": 67.112,
+   "y": 246.551,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Airtricity"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 257.306,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SmartSaver Std 4%"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 246.551,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "24hr"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 257.306,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 246.551,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "postal bill"
+  },
+  {
+   "page": 7,
+   "x": 267.222,
+   "y": 257.306,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "39.170p"
+  },
+  {
+   "page": 7,
+   "x": 316.574,
+   "y": 257.306,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 7,
+   "x": 368.799,
+   "y": 257.306,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,253"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 257.306,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "4% "
+  },
+  {
+   "page": 7,
+   "x": 448.432,
+   "y": 257.306,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "off SSE Airtricity standard"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 246.551,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "unit rate."
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 235.795,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No contract. "
+  },
+  {
+   "page": 7,
+   "x": 67.112,
+   "y": 216.29,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SSE"
+  },
+  {
+   "page": 7,
+   "x": 67.112,
+   "y": 205.535,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Airtricity"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 216.29,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "1 Year Home Electricity"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 205.535,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "4% discount plus £60"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 194.779,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "welcome credit"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 216.29,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Pay on receipt"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 205.535,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "of e-bill"
+  },
+  {
+   "page": 7,
+   "x": 267.222,
+   "y": 216.29,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "39.170p"
+  },
+  {
+   "page": 7,
+   "x": 316.574,
+   "y": 216.29,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 7,
+   "x": 368.799,
+   "y": 216.29,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,253"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 216.29,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Get up to 4% off our standard"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 205.535,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "electricity unit rates plus £60"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 194.779,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "welcome credit (must be"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 184.024,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "redeemed within one year, see"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 173.269,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "T&C's)"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 162.513,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Fixed term"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 151.758,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£40 early exit fee"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 141.003,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Only available to new"
+  },
+  {
+   "page": 7,
+   "x": 434.11,
+   "y": 130.247,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "customers "
+  },
+  {
+   "page": 7,
+   "x": 67.112,
+   "y": 110.742,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SSE"
+  },
+  {
+   "page": 7,
+   "x": 67.112,
+   "y": 99.986,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Airtricity"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 110.742,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Keypad Standard 24hr"
+  },
+  {
+   "page": 7,
+   "x": 108.493,
+   "y": 99.986,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "2.5%"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 110.742,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Prepayment"
+  },
+  {
+   "page": 7,
+   "x": 200.871,
+   "y": 99.986,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "meter"
+  },
+  {
+   "page": 7,
+   "x": 267.222,
+   "y": 110.742,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "39.770p"
+  },
+  {
+   "page": 7,
+   "x": 316.574,
+   "y": 110.742,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 7,
+   "x": 368.799,
+   "y": 110.742,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,273"
+  },
+  {
+   "page": 7,
+   "x": 426.11,
+   "y": 103.742,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "2.5%"
+  },
+  {
+   "page": 7,
+   "x": 445.528,
+   "y": 103.742,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": " off SSE Airtricity standard"
+  },
+  {
+   "page": 7,
+   "x": 426.11,
+   "y": 92.986,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "unit rate. "
+  },
+  {
+   "page": 8,
+   "x": 67.112,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "SUPPLIER"
+  },
+  {
+   "page": 8,
+   "x": 108.493,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "TARIFF NAME"
+  },
+  {
+   "page": 8,
+   "x": 200.871,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PAYMENT &"
+  },
+  {
+   "page": 8,
+   "x": 200.871,
+   "y": 736.64,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "BILLING METHOD"
+  },
+  {
+   "page": 8,
+   "x": 267.222,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PRICE IN"
+  },
+  {
+   "page": 8,
+   "x": 267.222,
+   "y": 736.64,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PENCE PER"
+  },
+  {
+   "page": 8,
+   "x": 267.222,
+   "y": 727.421,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "UNIT/KWH"
+  },
+  {
+   "page": 8,
+   "x": 316.574,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "STANDING"
+  },
+  {
+   "page": 8,
+   "x": 316.574,
+   "y": 736.64,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "CHARGE"
+  },
+  {
+   "page": 8,
+   "x": 316.574,
+   "y": 727.421,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PENCE PER"
+  },
+  {
+   "page": 8,
+   "x": 316.574,
+   "y": 718.203,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "DAY"
+  },
+  {
+   "page": 8,
+   "x": 368.799,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ANNUAL COST"
+  },
+  {
+   "page": 8,
+   "x": 368.799,
+   "y": 736.64,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "USING 3,200"
+  },
+  {
+   "page": 8,
+   "x": 368.799,
+   "y": 727.421,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "UNITS/KWH"
+  },
+  {
+   "page": 8,
+   "x": 426.11,
+   "y": 745.859,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ADDITIONAL INFORMATION"
+  },
+  {
+   "page": 8,
+   "x": 67.112,
+   "y": 699.004,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SSE"
+  },
+  {
+   "page": 8,
+   "x": 67.112,
+   "y": 688.249,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Airtricity"
+  },
+  {
+   "page": 8,
+   "x": 108.493,
+   "y": 699.004,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "1 Year Home Electricity"
+  },
+  {
+   "page": 8,
+   "x": 108.493,
+   "y": 688.249,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "2% discount plus £60"
+  },
+  {
+   "page": 8,
+   "x": 108.493,
+   "y": 677.494,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "welcome credit"
+  },
+  {
+   "page": 8,
+   "x": 200.871,
+   "y": 699.004,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Pay on receipt"
+  },
+  {
+   "page": 8,
+   "x": 200.871,
+   "y": 688.249,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "of bill"
+  },
+  {
+   "page": 8,
+   "x": 267.222,
+   "y": 699.004,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "39.970p"
+  },
+  {
+   "page": 8,
+   "x": 316.574,
+   "y": 699.004,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 8,
+   "x": 368.799,
+   "y": 699.004,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,279"
+  },
+  {
+   "page": 8,
+   "x": 434.11,
+   "y": 699.004,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Get up to 2% off our standard"
+  },
+  {
+   "page": 8,
+   "x": 434.11,
+   "y": 688.249,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "electricity unit rates plus £60"
+  },
+  {
+   "page": 8,
+   "x": 434.11,
+   "y": 677.494,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "welcome credit (must be"
+  },
+  {
+   "page": 8,
+   "x": 434.11,
+   "y": 666.738,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "redeemed within one year, see"
+  },
+  {
+   "page": 8,
+   "x": 434.11,
+   "y": 655.983,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "T&C's)"
+  },
+  {
+   "page": 8,
+   "x": 434.11,
+   "y": 645.228,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Fixed term"
+  },
+  {
+   "page": 8,
+   "x": 434.11,
+   "y": 634.472,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£40 early exit fee"
+  },
+  {
+   "page": 8,
+   "x": 434.11,
+   "y": 623.717,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Only available to new"
+  },
+  {
+   "page": 8,
+   "x": 434.11,
+   "y": 612.962,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "customers "
+  },
+  {
+   "page": 8,
+   "x": 67.112,
+   "y": 593.456,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SSE"
+  },
+  {
+   "page": 8,
+   "x": 67.112,
+   "y": 582.701,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Airtricity"
+  },
+  {
+   "page": 8,
+   "x": 108.493,
+   "y": 593.456,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SmartSaver Std 1%"
+  },
+  {
+   "page": 8,
+   "x": 108.493,
+   "y": 582.701,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "24hr"
+  },
+  {
+   "page": 8,
+   "x": 200.871,
+   "y": 593.456,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Pay on receipt"
+  },
+  {
+   "page": 8,
+   "x": 200.871,
+   "y": 582.701,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "of e-bill"
+  },
+  {
+   "page": 8,
+   "x": 267.222,
+   "y": 593.456,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "40.380p"
+  },
+  {
+   "page": 8,
+   "x": 316.574,
+   "y": 593.456,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 8,
+   "x": 368.799,
+   "y": 593.456,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,292"
+  },
+  {
+   "page": 8,
+   "x": 434.11,
+   "y": 593.456,
+   "fontName": "F2",
+   "fontSize": 7,
+   "text": "1% "
+  },
+  {
+   "page": 8,
+   "x": 448.432,
+   "y": 593.456,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "off SSE Airtricity standard"
+  },
+  {
+   "page": 8,
+   "x": 434.11,
+   "y": 582.701,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "unit rate."
+  },
+  {
+   "page": 8,
+   "x": 434.11,
+   "y": 571.945,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No contract. "
+  },
+  {
+   "page": 8,
+   "x": 67.112,
+   "y": 552.44,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SSE"
+  },
+  {
+   "page": 8,
+   "x": 67.112,
+   "y": 541.685,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Airtricity"
+  },
+  {
+   "page": 8,
+   "x": 116.493,
+   "y": 552.44,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SmartSaver Std 24hr"
+  },
+  {
+   "page": 8,
+   "x": 116.493,
+   "y": 541.685,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Keypad Standard"
+  },
+  {
+   "page": 8,
+   "x": 116.493,
+   "y": 530.929,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Rate 24hr"
+  },
+  {
+   "page": 8,
+   "x": 116.493,
+   "y": 520.174,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Standard Rate 24hr"
+  },
+  {
+   "page": 8,
+   "x": 208.871,
+   "y": 552.44,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Pay on"
+  },
+  {
+   "page": 8,
+   "x": 208.871,
+   "y": 541.685,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "receipt of bill"
+  },
+  {
+   "page": 8,
+   "x": 208.871,
+   "y": 530.929,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Prepayment"
+  },
+  {
+   "page": 8,
+   "x": 208.871,
+   "y": 520.174,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "meter"
+  },
+  {
+   "page": 8,
+   "x": 267.222,
+   "y": 552.44,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "40.790p"
+  },
+  {
+   "page": 8,
+   "x": 316.574,
+   "y": 552.44,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 8,
+   "x": 368.799,
+   "y": 552.44,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,305"
+  },
+  {
+   "page": 8,
+   "x": 434.11,
+   "y": 552.44,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Standard rate."
+  },
+  {
+   "page": 8,
+   "x": 434.11,
+   "y": 541.685,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No contract."
+  },
+  {
+   "page": 9,
+   "x": 79.034,
+   "y": 732.422,
+   "fontName": "F2",
+   "fontSize": 9,
+   "text": "Tariff changes scheduled for "
+  },
+  {
+   "page": 9,
+   "x": 227.48,
+   "y": 732.422,
+   "fontName": "F2",
+   "fontSize": 9,
+   "text": "01 August 2026"
+  },
+  {
+   "page": 9,
+   "x": 307.211,
+   "y": 732.422,
+   "fontName": "F2",
+   "fontSize": 9,
+   "text": " . "
+  },
+  {
+   "page": 9,
+   "x": 316.894,
+   "y": 732.422,
+   "fontName": "F2",
+   "fontSize": 9,
+   "text": "Use our comparison tool to check how this"
+  },
+  {
+   "page": 9,
+   "x": 260.887,
+   "y": 718.593,
+   "fontName": "F2",
+   "fontSize": 9,
+   "text": "could impact you"
+  },
+  {
+   "page": 9,
+   "x": 347.692,
+   "y": 718.593,
+   "fontName": "F2",
+   "fontSize": 9,
+   "text": "."
+  },
+  {
+   "page": 9,
+   "x": 67.112,
+   "y": 684.779,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "SUPPLIER"
+  },
+  {
+   "page": 9,
+   "x": 112.984,
+   "y": 684.779,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "TARIFF NAME"
+  },
+  {
+   "page": 9,
+   "x": 184.227,
+   "y": 684.779,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PAYMENT & BILLING"
+  },
+  {
+   "page": 9,
+   "x": 184.227,
+   "y": 675.56,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "METHOD"
+  },
+  {
+   "page": 9,
+   "x": 257.692,
+   "y": 684.779,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PRICE IN PENCE"
+  },
+  {
+   "page": 9,
+   "x": 257.692,
+   "y": 675.56,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PER UNIT/KWH"
+  },
+  {
+   "page": 9,
+   "x": 325.978,
+   "y": 684.779,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "STANDING CHARGE"
+  },
+  {
+   "page": 9,
+   "x": 325.978,
+   "y": 675.56,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PENCE PER DAY"
+  },
+  {
+   "page": 9,
+   "x": 401.301,
+   "y": 684.779,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ANNUAL COST USING"
+  },
+  {
+   "page": 9,
+   "x": 401.301,
+   "y": 675.56,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "3,200 UNITS/KWH"
+  },
+  {
+   "page": 9,
+   "x": 484.233,
+   "y": 684.779,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ADDITIONAL"
+  },
+  {
+   "page": 9,
+   "x": 484.233,
+   "y": 675.56,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "INFORMATION"
+  },
+  {
+   "page": 9,
+   "x": 67.112,
+   "y": 656.362,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "SSE"
+  },
+  {
+   "page": 9,
+   "x": 67.112,
+   "y": 645.607,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Airtricity"
+  },
+  {
+   "page": 9,
+   "x": 112.984,
+   "y": 656.362,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Keypad Standard"
+  },
+  {
+   "page": 9,
+   "x": 112.984,
+   "y": 645.607,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Rate 24hr"
+  },
+  {
+   "page": 9,
+   "x": 184.227,
+   "y": 656.362,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Prepayment"
+  },
+  {
+   "page": 9,
+   "x": 184.227,
+   "y": 645.607,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "meter"
+  },
+  {
+   "page": 9,
+   "x": 257.692,
+   "y": 656.362,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "40.790p"
+  },
+  {
+   "page": 9,
+   "x": 325.978,
+   "y": 656.362,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "0.000p"
+  },
+  {
+   "page": 9,
+   "x": 401.301,
+   "y": 656.362,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,305"
+  },
+  {
+   "page": 9,
+   "x": 492.233,
+   "y": 656.362,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Standard rate."
+  },
+  {
+   "page": 9,
+   "x": 492.233,
+   "y": 645.607,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No contract. "
+  },
+  {
+   "page": 10,
+   "x": 62.362,
+   "y": 738.191,
+   "fontName": "F2",
+   "fontSize": 12,
+   "text": "Share Energy"
+  },
+  {
+   "page": 10,
+   "x": 76.748,
+   "y": 697.171,
+   "fontName": "F2",
+   "fontSize": 9,
+   "text": "Tariff changes scheduled for "
+  },
+  {
+   "page": 10,
+   "x": 225.194,
+   "y": 697.171,
+   "fontName": "F2",
+   "fontSize": 9,
+   "text": "01 October 2026"
+  },
+  {
+   "page": 10,
+   "x": 309.496,
+   "y": 697.171,
+   "fontName": "F2",
+   "fontSize": 9,
+   "text": " . "
+  },
+  {
+   "page": 10,
+   "x": 319.181,
+   "y": 697.171,
+   "fontName": "F2",
+   "fontSize": 9,
+   "text": "Use our comparison tool to check how this"
+  },
+  {
+   "page": 10,
+   "x": 260.887,
+   "y": 683.343,
+   "fontName": "F2",
+   "fontSize": 9,
+   "text": "could impact you"
+  },
+  {
+   "page": 10,
+   "x": 347.692,
+   "y": 683.343,
+   "fontName": "F2",
+   "fontSize": 9,
+   "text": "."
+  },
+  {
+   "page": 10,
+   "x": 67.112,
+   "y": 649.529,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "SUPPLIER"
+  },
+  {
+   "page": 10,
+   "x": 111.206,
+   "y": 649.529,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "TARIFF NAME"
+  },
+  {
+   "page": 10,
+   "x": 199.639,
+   "y": 649.529,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PAYMENT & BILLING"
+  },
+  {
+   "page": 10,
+   "x": 199.639,
+   "y": 640.31,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "METHOD"
+  },
+  {
+   "page": 10,
+   "x": 270.853,
+   "y": 649.529,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PRICE IN PENCE"
+  },
+  {
+   "page": 10,
+   "x": 270.853,
+   "y": 640.31,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PER UNIT/KWH"
+  },
+  {
+   "page": 10,
+   "x": 336.024,
+   "y": 649.529,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "STANDING CHARGE"
+  },
+  {
+   "page": 10,
+   "x": 336.024,
+   "y": 640.31,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "PENCE PER DAY"
+  },
+  {
+   "page": 10,
+   "x": 407.548,
+   "y": 649.529,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ANNUAL COST USING"
+  },
+  {
+   "page": 10,
+   "x": 407.548,
+   "y": 640.31,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "3,200 UNITS/KWH"
+  },
+  {
+   "page": 10,
+   "x": 486.265,
+   "y": 649.529,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "ADDITIONAL"
+  },
+  {
+   "page": 10,
+   "x": 486.265,
+   "y": 640.31,
+   "fontName": "F2",
+   "fontSize": 6,
+   "text": "INFORMATION"
+  },
+  {
+   "page": 10,
+   "x": 67.112,
+   "y": 621.112,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Share"
+  },
+  {
+   "page": 10,
+   "x": 67.112,
+   "y": 610.357,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Energy"
+  },
+  {
+   "page": 10,
+   "x": 119.206,
+   "y": 621.112,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Share 24 Credit-"
+  },
+  {
+   "page": 10,
+   "x": 119.206,
+   "y": 610.357,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit e-bill"
+  },
+  {
+   "page": 10,
+   "x": 119.206,
+   "y": 599.601,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Share 24 Credit-"
+  },
+  {
+   "page": 10,
+   "x": 119.206,
+   "y": 588.846,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct debit postal"
+  },
+  {
+   "page": 10,
+   "x": 119.206,
+   "y": 578.091,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "bill"
+  },
+  {
+   "page": 10,
+   "x": 207.639,
+   "y": 621.112,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit e-"
+  },
+  {
+   "page": 10,
+   "x": 207.639,
+   "y": 610.357,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "bill"
+  },
+  {
+   "page": 10,
+   "x": 207.639,
+   "y": 599.601,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Direct Debit"
+  },
+  {
+   "page": 10,
+   "x": 207.639,
+   "y": 588.846,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "postal bill"
+  },
+  {
+   "page": 10,
+   "x": 270.853,
+   "y": 621.112,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "31.960p"
+  },
+  {
+   "page": 10,
+   "x": 336.024,
+   "y": 621.112,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "13.330p"
+  },
+  {
+   "page": 10,
+   "x": 407.548,
+   "y": 621.112,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,071"
+  },
+  {
+   "page": 10,
+   "x": 494.265,
+   "y": 621.112,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No fixed term"
+  },
+  {
+   "page": 10,
+   "x": 494.265,
+   "y": 610.357,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No exit fee"
+  },
+  {
+   "page": 10,
+   "x": 67.112,
+   "y": 558.585,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Share"
+  },
+  {
+   "page": 10,
+   "x": 67.112,
+   "y": 547.83,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Energy"
+  },
+  {
+   "page": 10,
+   "x": 119.206,
+   "y": 558.585,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Share 24 Credit-Pay"
+  },
+  {
+   "page": 10,
+   "x": 119.206,
+   "y": 547.83,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "on receipt of e-bill"
+  },
+  {
+   "page": 10,
+   "x": 119.206,
+   "y": 537.074,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Share 24 Credit-Pay"
+  },
+  {
+   "page": 10,
+   "x": 119.206,
+   "y": 526.319,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "on receipt of bill"
+  },
+  {
+   "page": 10,
+   "x": 207.639,
+   "y": 558.585,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Pay on receipt"
+  },
+  {
+   "page": 10,
+   "x": 207.639,
+   "y": 547.83,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "of e-bill"
+  },
+  {
+   "page": 10,
+   "x": 207.639,
+   "y": 537.074,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Pay on receipt"
+  },
+  {
+   "page": 10,
+   "x": 207.639,
+   "y": 526.319,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "of bill"
+  },
+  {
+   "page": 10,
+   "x": 270.853,
+   "y": 558.585,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "31.960p"
+  },
+  {
+   "page": 10,
+   "x": 336.024,
+   "y": 558.585,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "13.330p"
+  },
+  {
+   "page": 10,
+   "x": 407.548,
+   "y": 558.585,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,071"
+  },
+  {
+   "page": 10,
+   "x": 494.265,
+   "y": 558.585,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No fixed term"
+  },
+  {
+   "page": 10,
+   "x": 494.265,
+   "y": 547.83,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No early exit"
+  },
+  {
+   "page": 10,
+   "x": 494.265,
+   "y": 537.074,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "fee "
+  },
+  {
+   "page": 10,
+   "x": 67.112,
+   "y": 506.814,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Share"
+  },
+  {
+   "page": 10,
+   "x": 67.112,
+   "y": 496.058,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Energy"
+  },
+  {
+   "page": 10,
+   "x": 111.206,
+   "y": 506.814,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Share 24 Keypad"
+  },
+  {
+   "page": 10,
+   "x": 199.639,
+   "y": 506.814,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "Prepayment"
+  },
+  {
+   "page": 10,
+   "x": 199.639,
+   "y": 496.058,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "meter"
+  },
+  {
+   "page": 10,
+   "x": 270.853,
+   "y": 506.814,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "31.960p"
+  },
+  {
+   "page": 10,
+   "x": 336.024,
+   "y": 506.814,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "16.670p"
+  },
+  {
+   "page": 10,
+   "x": 407.548,
+   "y": 506.814,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "£1,084"
+  },
+  {
+   "page": 10,
+   "x": 494.265,
+   "y": 506.814,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No fixed term"
+  },
+  {
+   "page": 10,
+   "x": 494.265,
+   "y": 496.058,
+   "fontName": "F1",
+   "fontSize": 7,
+   "text": "No exit fee "
+  },
+  {
+   "page": 11,
+   "x": 69.862,
+   "y": 731.151,
+   "fontName": "F1",
+   "fontSize": 8,
+   "text": "This table is a guide using the latest tariffs provided by electricity suppliers. The amount you pay per unit should be"
+  },
+  {
+   "page": 11,
+   "x": 69.862,
+   "y": 718.859,
+   "fontName": "F1",
+   "fontSize": 8,
+   "text": "on your most recent bill or you can get this information from your current supplier. You should contact your"
+  },
+  {
+   "page": 11,
+   "x": 69.862,
+   "y": 706.567,
+   "fontName": "F1",
+   "fontSize": 8,
+   "text": "preferred supplier to obtain more information about their tariffs, discounts and terms and conditions"
+  },
+  {
+   "page": 11,
+   "x": 69.862,
+   "y": 686.275,
+   "fontName": "F1",
+   "fontSize": 8,
+   "text": "Prices for 12/09/2026 including VAT of 5%. Some tariffs may be available to new customers only. (Annual cost is"
+  },
+  {
+   "page": 11,
+   "x": 69.862,
+   "y": 673.983,
+   "fontName": "F1",
+   "fontSize": 8,
+   "text": "calculated using a typical annual consumption of 3,200kWh and is based on unit rate and standing charge where"
+  },
+  {
+   "page": 11,
+   "x": 69.862,
+   "y": 661.692,
+   "fontName": "F1",
+   "fontSize": 8,
+   "text": "applicable including VAT at 5%)"
+  },
+  {
+   "page": 11,
+   "x": 62.362,
+   "y": 619.212,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": " "
+  },
+  {
+   "page": 11,
+   "x": 62.362,
+   "y": 591.311,
+   "fontName": "F1",
+   "fontSize": 11,
+   "text": "View the electricity price comparison table archive"
+  }
+ ]
+}
