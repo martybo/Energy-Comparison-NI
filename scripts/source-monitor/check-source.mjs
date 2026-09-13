@@ -50,9 +50,19 @@ async function checkFamily(family) {
       mkdirSync(DOWNLOADS_DIR, { recursive: true });
       writeFileSync(join(DOWNLOADS_DIR, `${family.id}-landing-page.html`), html, 'utf8');
 
-      const allPdfLinks = extractLinks(html, family.landingPageUrl).filter((l) => /\.pdf(\?|$)/i.test(l.url));
-      console.error(`[${family.id}] DEBUG: ${allPdfLinks.length} .pdf link(s) found anywhere on the page:`);
-      for (const link of allPdfLinks) {
+      const allLinks = extractLinks(html, family.landingPageUrl);
+      // Broad match: anything with "pdf" in the URL or link text anywhere,
+      // not just a literal .pdf file extension — the previous version of
+      // this diagnostic only checked the extension, which is why it missed
+      // a Drupal print/pdf endpoint (e.g. /print/pdf/node/13468) reported
+      // from manual inspection of the live site.
+      const pdfLike = allLinks.filter((l) => /pdf/i.test(l.url) || /pdf/i.test(l.text));
+      console.error(`[${family.id}] DEBUG: ${allLinks.length} total link(s), ${pdfLike.length} pdf-like link(s) on the page:`);
+      for (const link of pdfLike) {
+        console.error(`[${family.id}] DEBUG:   pdf-like: "${link.text}" -> ${link.url}`);
+      }
+      console.error(`[${family.id}] DEBUG: first 40 links on the page (for context):`);
+      for (const link of allLinks.slice(0, 40)) {
         console.error(`[${family.id}] DEBUG:   "${link.text}" -> ${link.url}`);
       }
       const headings = [...html.matchAll(/<h[1-4][^>]*>([\s\S]*?)<\/h[1-4]>/gi)].map((m) =>
