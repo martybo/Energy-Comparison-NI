@@ -91,6 +91,13 @@ add a new dated `data/tariffs-YYYY-MM-DD.json`, point `data/latest.json` at it,
 and generate a matching source reconciliation and row trace alongside it so
 the new dataset's provenance is auditable the same way the current one is.
 
+A scheduled workflow (`.github/workflows/source-monitor.yml`) watches the
+Consumer Council's own landing pages and flags when a new or changed tariff
+PDF appears, so a maintainer knows when a refresh is due instead of having to
+check by hand. It only detects and surfaces a change — publishing the data
+above is still a deliberate, reviewed step. See
+[`docs/SOURCE-MONITORING.md`](docs/SOURCE-MONITORING.md).
+
 ## Layout
 
 | Path | Purpose |
@@ -101,8 +108,10 @@ the new dataset's provenance is auditable the same way the current one is.
 | `src/format.js` | Display formatting. The only place rounding happens. |
 | `data/` | Tariff snapshots and the `latest.json` pointer. |
 | `docs/DATA.md` | Schema reference and the monthly update runbook. |
+| `scripts/source-monitor/` | Consumer Council source discovery and change detection. See `docs/SOURCE-MONITORING.md`. |
+| `monitoring/source-state/` | Committed provenance of the last-known Consumer Council source per tariff family. |
 | `test/` | `node --test` suite, including deployment safety checks. |
-| `.github/workflows/` | CI and GitHub Pages deployment. |
+| `.github/workflows/` | CI, GitHub Pages deployment, and Consumer Council source monitoring. |
 
 The engine contains no supplier-specific or tariff-specific logic, so adding a
 supplier or tariff is a data change only. See
