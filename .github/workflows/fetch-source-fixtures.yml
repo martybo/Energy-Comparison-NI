@@ -1,0 +1,65 @@
+name: TEMP fetch source PDFs for issue 17
+
+# TEMPORARY (issue #17 development only): downloads the two current Consumer
+# Council PDFs using the established source-monitor fetch path and pushes them
+# to a scratch branch, so extraction can be developed against the real bytes
+# from an environment that cannot reach consumercouncil.org.uk directly.
+#
+# Pushes to a throwaway branch, never to main and never to the feature branch,
+# so whether these PDFs belong in the repository as committed fixtures stays an
+# open, deliberate decision. Delete this workflow before opening the PR.
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Reuses the monitor's own fetch/discovery modules rather than running
+      # check-source.mjs, which only saves a PDF when the source has changed
+      # (it is currently unchanged) and would touch source state.
+      - name: Download both current PDFs
+        run: |
+          mkdir -p monitoring/downloads
+          node --input-type=module -e "
+          import { writeFileSync } from 'node:fs';
+          import { TARIFF_FAMILIES } from './scripts/source-monitor/sources.mjs';
+          import { fetchText, fetchBinary } from './scripts/source-monitor/fetch-utils.mjs';
+          import { selectCurrentPdf, assertIsPdf } from './scripts/source-monitor/discover.mjs';
+          for (const family of TARIFF_FAMILIES) {
+            const html = await fetchText(family.landingPageUrl, 20000);
+            const candidate = selectCurrentPdf(html, family.landingPageUrl, family);
+            const { buffer } = await fetchBinary(candidate.url, 30000);
+            assertIsPdf(buffer, candidate.url);
+            writeFileSync('monitoring/downloads/' + family.id + '.pdf', buffer);
+            console.log(family.id, candidate.url, buffer.length, 'bytes');
+          }
+          "
+          ls -la monitoring/downloads/
+
+      - name: Push the PDFs to a scratch branch
+        run: |
+          set -euo pipefail
+          test -f monitoring/downloads/economy7.pdf
+          test -f monitoring/downloads/standard.pdf
+          mkdir -p .source-pdfs
+          cp monitoring/downloads/economy7.pdf .source-pdfs/economy7.pdf
+          cp monitoring/downloads/standard.pdf .source-pdfs/standard.pdf
+          sha256sum .source-pdfs/*.pdf | tee .source-pdfs/SHA256SUMS
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan tmp/issue-17-source-pdfs
+          git rm -rq --cached . || true
+          git add -f .source-pdfs
+          git commit -m "temp(#17): current Consumer Council PDFs for offline extraction development"
+          git push -f origin tmp/issue-17-source-pdfs
