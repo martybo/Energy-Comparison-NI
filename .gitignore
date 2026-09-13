@@ -29,3 +29,8 @@ playwright-report/
 # Local staging output from the Pages deploy workflow's copy step, if run
 # outside CI.
 _site/
+
+# Downloaded PDFs and per-run summaries from the source-monitor workflow.
+# Uploaded as a workflow artefact, never committed — see
+# docs/SOURCE-MONITORING.md.
+monitoring/downloads/

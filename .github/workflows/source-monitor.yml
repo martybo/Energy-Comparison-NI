@@ -1,0 +1,81 @@
+name: Consumer Council source monitor
+
+# Phase 1 of tariff-update automation (issue #14): watches the two Consumer
+# Council landing pages for a new/changed current PDF and surfaces it for
+# human review. It never touches data/ (the published tariff dataset) and
+# never opens a tariff-data PR — see docs/SOURCE-MONITORING.md.
+
+on:
+  schedule:
+    # Twice a month (1st and 15th), off the top of the hour so this doesn't
+    # queue behind every other repo's midnight/hourly jobs. The Consumer
+    # Council publishes roughly monthly, so this is frequent enough to catch
+    # a change promptly without hammering their site.
+    - cron: '23 6 1,15 * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: source-monitor
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Check Consumer Council sources
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check sources
+        id: check
+        continue-on-error: true
+        run: node scripts/source-monitor/check-source.mjs
+
+      - name: Commit updated source state
+        if: always()
+        run: |
+          if git status --porcelain monitoring/source-state | grep -q .; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add monitoring/source-state
+            git commit -m "chore(source-monitor): record changed Consumer Council source"
+            git push
+          else
+            echo "No source-state changes to commit."
+          fi
+
+      - name: Open an issue for the detected source change
+        if: always() && steps.check.outputs.any_changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BODY_FILE=monitoring/downloads/summary.md
+          TITLE="Consumer Council source change detected - $(date -u +%Y-%m-%d)"
+          BODY=$(cat "$BODY_FILE"; printf '\n\n---\nThis issue was opened automatically by the [source monitor workflow](%s/actions/runs/%s). Review the linked PDF(s) — see docs/SOURCE-MONITORING.md for what happens next.\n' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" "$GITHUB_RUN_ID")
+          curl -sS -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/issues" \
+            -d "$(jq -n --arg title "$TITLE" --arg body "$BODY" '{title: $title, body: $body}')"
+
+      - name: Upload run artefacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-monitor-run-${{ github.run_id }}
+          path: monitoring/downloads
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Fail the workflow if any source check failed
+        if: always() && steps.check.outcome != 'success'
+        run: |
+          echo "One or more tariff-family source checks failed — see the 'Check sources' step log above."
+          exit 1
