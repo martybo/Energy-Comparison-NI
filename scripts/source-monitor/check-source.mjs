@@ -35,7 +35,19 @@ async function checkFamily(family) {
   const checkedAt = new Date().toISOString();
 
   const html = await fetchText(family.landingPageUrl, LANDING_PAGE_TIMEOUT_MS);
-  const candidate = selectCurrentPdf(html, family.landingPageUrl, family);
+
+  let candidate;
+  try {
+    candidate = selectCurrentPdf(html, family.landingPageUrl, family);
+  } catch (err) {
+    if (err instanceof SourceDiscoveryError) {
+      // Discovery failures are exactly the case a human needs to see the real
+      // page for, to correct sources.mjs's patterns rather than guess blindly.
+      mkdirSync(DOWNLOADS_DIR, { recursive: true });
+      writeFileSync(join(DOWNLOADS_DIR, `${family.id}-landing-page.html`), html, 'utf8');
+    }
+    throw err;
+  }
 
   const { buffer, headers } = await fetchBinary(candidate.url, PDF_TIMEOUT_MS);
   assertIsPdf(buffer, candidate.url);
