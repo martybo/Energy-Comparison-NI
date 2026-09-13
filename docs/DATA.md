@@ -11,7 +11,7 @@ tariff name appears in `src/calc.js`.
 | File | Purpose |
 |---|---|
 | `data/latest.json` | Pointer naming the dataset currently served. |
-| `data/tariffs-YYYY-MM.json` | A dated snapshot. Snapshots are kept, never overwritten. |
+| `data/tariffs-YYYY-MM-DD.json` | A dated snapshot, named for the source table's own effective date. Snapshots are kept, never overwritten. |
 
 Publishing a new month means adding a dated file and changing one filename in
 `data/latest.json`. No HTML or JavaScript changes.
@@ -188,7 +188,8 @@ either figure.
 
 ## Monthly update runbook
 
-1. Copy the newest `data/tariffs-YYYY-MM.json` to the new month's filename.
+1. Copy the newest `data/tariffs-YYYY-MM-DD.json` to the new snapshot's filename,
+   dated to match the source table's own effective date.
 2. Update the `dataset` header: `effective_from`, `published`, `source_url`, and
    `vat_treatment` once confirmed against the source.
 3. Update rates. Keep each tariff's `id` stable so months can be compared; only
