@@ -71,7 +71,7 @@ export function extractLinks(html, baseUrl) {
   return links;
 }
 
-function isPdfUrl(url) {
+function hasPdfExtension(url) {
   const pathname = new URL(url).pathname.toLowerCase();
   return pathname.endsWith('.pdf');
 }
@@ -81,10 +81,36 @@ function matchesAny(patterns, ...haystacks) {
 }
 
 /**
+ * Whether `link` looks like the site's PDF/printable representation of the
+ * current table. Verified live against the real Consumer Council site
+ * (2026-09-13): the actual link is a "View PDF" anchor pointing at
+ * /print/pdf/node/<id> — a Drupal print endpoint, not a literal .pdf file —
+ * so a literal .pdf extension can never be the only signal. Matching a
+ * link's own text/URL against `pdfLinkPatterns` (e.g. "View PDF") is a
+ * second, independent signal accepted alongside a literal .pdf extension.
+ * `assertIsPdf` still verifies the downloaded bytes afterwards regardless of
+ * which signal matched, so a wrong match here is caught before it can ever
+ * become a "current source".
+ */
+function looksLikePdfLink(link, family) {
+  if (hasPdfExtension(link.url)) return true;
+  if (family.pdfLinkPatterns && matchesAny(family.pdfLinkPatterns, link.text, link.url)) return true;
+  return false;
+}
+
+/**
  * Finds PDF link candidates for `family` within `html`, restricted to the
  * part of the page before any detected archive/historical section, and
- * filtered by the family's include/exclude patterns. Returns a deduplicated
- * array of {url, text}.
+ * filtered by the family's exclude patterns. Returns a deduplicated array of
+ * {url, text}.
+ *
+ * Family disambiguation (picking the right family out of several PDFs on one
+ * page) is intentionally not attempted by matching the candidate link's own
+ * text against the family name: the real "View PDF" link never mentions
+ * "Economy 7" or similar. Each family is instead scoped by fetching its own
+ * dedicated landing page (`family.landingPageUrl`) — a page a family
+ * publishes its own comparison table on is assumed to link its own current
+ * PDF, not another family's.
  */
 export function findCandidatePdfLinks(html, baseUrl, family) {
   if (typeof html !== 'string' || html.trim().length === 0) {
@@ -95,17 +121,8 @@ export function findCandidatePdfLinks(html, baseUrl, family) {
   const currentZoneHtml = archiveStart === -1 ? html : html.slice(0, archiveStart);
 
   const links = extractLinks(currentZoneHtml, baseUrl).filter((link) => {
-    let pdf;
-    try {
-      pdf = isPdfUrl(link.url);
-    } catch {
-      return false;
-    }
-    if (!pdf) return false;
+    if (!looksLikePdfLink(link, family)) return false;
     if (family.excludePatterns && matchesAny(family.excludePatterns, link.text, link.url)) return false;
-    if (family.includePatterns && family.includePatterns.length > 0) {
-      return matchesAny(family.includePatterns, link.text, link.url);
-    }
     return true;
   });
 

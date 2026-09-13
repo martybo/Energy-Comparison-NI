@@ -37,11 +37,20 @@ that names them.
    section (`Archive`, `Historical`, `Previous`, …) and discards everything
    from that point on, so an old dated PDF further down the page is never a
    candidate.
-2. Extracts every remaining `<a href="...">.pdf` link.
-3. Keeps only links whose text or URL matches the tariff family's expected
-   wording (e.g. "Economy 7") and does not match an exclusion pattern (e.g.
-   the standard-tariff page explicitly excludes anything mentioning
-   "Economy 7", since both pages cross-link to each other).
+2. Extracts every remaining `<a href="...">` link and keeps the ones that
+   look like a PDF: either a literal `.pdf` file extension, **or** the link's
+   text/URL matches the family's `pdfLinkPatterns`. Verified live against
+   the real site (2026-09-13, issue #16): the actual current-table link on
+   both pages is a **`"View PDF"` anchor to a Drupal print endpoint**
+   (`https://www.consumercouncil.org.uk/print/pdf/node/<id>`) — not a URL
+   ending in `.pdf` at all — present in the server-rendered HTML (not
+   injected by client-side JS). `pdfLinkPatterns` defaults to `/view\s*pdf/i`
+   for exactly this reason.
+3. Drops any candidate matching an exclusion pattern (`archive`,
+   `historical`, `previous`, …). Family disambiguation does **not** rely on
+   the candidate's own text mentioning the family name — the real `"View
+   PDF"` link never does — because each family is already scoped by
+   fetching its own dedicated landing page.
 4. Requires exactly one surviving candidate. Zero candidates, more than one
    equally plausible candidate, or a link that turns out not to actually be a
    PDF (checked by its `%PDF-` file signature, not just its URL or a
@@ -69,6 +78,27 @@ last recorded one, or the content hash differs (same URL, different bytes).
 Both can happen independently: the Council may publish a new dated file at a
 new URL, or update the same URL in place — neither is treated as an error,
 both are treated as "a human should look at this."
+
+### Hashing a stabilised copy, not the raw downloaded bytes
+
+Live commissioning (issue #16) found that the Consumer Council's print/pdf
+endpoint **regenerates the PDF fresh on every request**: fetching the
+identical, unchanged document twice a few seconds apart produced different
+raw bytes in exactly three places — `/CreationDate`, `/ModDate` (both
+restamped to the current time) and the trailer's `/ID` hex pair — with
+every other byte, including the entire rendered tariff table, identical.
+The server sends no `Last-Modified` or `ETag` either, so there was no HTTP
+caching signal to fall back on.
+
+Hashing the raw bytes directly would therefore report "changed" on **every
+single run**, regardless of whether the tariff data itself changed —
+exactly the meaningless-churn failure mode this tool exists to avoid.
+`scripts/source-monitor/hash.mjs`'s `stableContentBytes()` masks just these
+three well-known, purely administrative PDF fields before hashing. The real
+downloaded bytes are untouched for storage, the run artefact, and the
+`%PDF-` signature check — only the value fed into the hash changes. A
+genuine edit to the visible table still changes the hash, since real
+content changes necessarily touch other bytes too.
 
 ## Where source state lives, and why
 
@@ -146,11 +176,14 @@ over a current one; malformed HTML fails safely) and change detection
 are tracked independently), all against local fixtures — never the live
 Consumer Council site.
 
-The fixtures in `test/fixtures/source-monitor/` are a best-effort
-approximation of the real page structure, not a captured copy: this
-environment's network policy did not allow fetching the live pages during
-development (see the PR description for details). Re-running
-`node scripts/source-monitor/check-source.mjs` from an environment with
-access to consumercouncil.org.uk is the way to confirm the real pages fit
-the assumptions here, and to correct `scripts/source-monitor/sources.mjs`'s
-patterns if they don't.
+The tool has been **commissioned against the live site** (issue #16): both
+families discover, download, verify and hash correctly, and a second run
+with nothing changed correctly produces no commit and no issue. Most
+fixtures in `test/fixtures/source-monitor/` predate that commissioning and
+are a best-effort approximation rather than a captured copy;
+`economy7-landing-real-shape.html` and the `stableContentBytes` fixtures in
+`test/source-monitor.test.js` are modelled directly on the real, verified
+page/PDF structure. If the Consumer Council changes its site structure
+again, re-running `node scripts/source-monitor/check-source.mjs` (or
+`workflow_dispatch`) is the way to find out — the tool will fail loudly
+rather than silently misinterpret the new shape, exactly as designed.
