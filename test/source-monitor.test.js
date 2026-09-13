@@ -41,6 +41,27 @@ test('archived/historical PDFs are not selected when a current PDF is identifiab
   assert.doesNotMatch(candidates[0].url, /August|July/);
 });
 
+// --- the real live page shape (issue #16 commissioning finding) --------------
+//
+// The actual Consumer Council site does not link a literal .pdf URL at all:
+// it renders a "View PDF" link to a Drupal print endpoint
+// (/print/pdf/node/<id>), verified live 2026-09-13. This must be discovered
+// without assuming a .pdf file extension and without the link text
+// mentioning the family name.
+
+test('discovers a "View PDF" link to a non-.pdf print endpoint, matching the real live page', () => {
+  const html = fixture('economy7-landing-real-shape.html');
+  const candidate = selectCurrentPdf(html, BASE_URL, economy7Family);
+  assert.equal(candidate.url, 'https://www.consumercouncil.org.uk/print/pdf/node/13469');
+  assert.equal(candidate.text, 'View PDF');
+});
+
+test('a "View PDF" link is found among many unrelated navigation/footer links, not just in isolation', () => {
+  const html = fixture('economy7-landing-real-shape.html');
+  const candidates = findCandidatePdfLinks(html, BASE_URL, economy7Family);
+  assert.equal(candidates.length, 1);
+});
+
 // --- failure modes -----------------------------------------------------------
 
 test('no PDF link on the page fails clearly rather than guessing', () => {
@@ -57,6 +78,19 @@ test('two equally plausible current PDF candidates fail as ambiguous', () => {
       <h1>Economy 7</h1>
       <a href="/files/economy-7-table-a.pdf">Economy 7 Price Comparison Table (version A)</a>
       <a href="/files/economy-7-table-b.pdf">Economy 7 Price Comparison Table (version B)</a>
+    </body></html>`;
+  assert.throws(
+    () => selectCurrentPdf(html, BASE_URL, economy7Family),
+    (err) => err instanceof SourceDiscoveryError && err.code === 'AMBIGUOUS_CANDIDATES'
+  );
+});
+
+test('two "View PDF"-style links on one page fail as ambiguous, not as pick-the-first', () => {
+  const html = `
+    <html><body>
+      <h1>Economy 7</h1>
+      <a href="/print/pdf/node/13469">View PDF</a>
+      <a href="/print/pdf/node/99999">View PDF</a>
     </body></html>`;
   assert.throws(
     () => selectCurrentPdf(html, BASE_URL, economy7Family),
