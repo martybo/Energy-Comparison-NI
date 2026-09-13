@@ -1,0 +1,4 @@
+{
+  "comment": "Pointer to the current standard (24-hour) tariff dataset. Publishing a new month means adding a dated file alongside and changing the filename here. No application code changes. Absent entirely means no standard-tariff comparison is offered yet; the application handles that gracefully.",
+  "dataset": "tariffs-standard-2026-09-12.json"
+}

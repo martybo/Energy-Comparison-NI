@@ -58,11 +58,11 @@
     <fieldset>
       <legend>Your electricity use</legend>
       <div class="mode">
-        <label><input type="radio" name="mode" value="annual" checked> Annual total</label>
-        <label><input type="radio" name="mode" value="daily"> Average per day</label>
+        <label><input type="radio" name="mode" value="estimate" checked> Estimate</label>
+        <label><input type="radio" name="mode" value="actual"> My actual usage</label>
       </div>
 
-      <div class="row" id="annualInputs">
+      <div class="row" id="estimateInputs">
         <div class="field">
           <label for="annualKwh">Total electricity used per year (kWh)</label>
           <input type="number" id="annualKwh" value="3200" min="0" step="1" inputmode="decimal">
@@ -72,17 +72,19 @@
           <input type="number" id="nightShare" value="60" min="0" max="100" step="1" inputmode="decimal">
         </div>
       </div>
+      <p class="hint" id="estimateHint">Use this if you don't have separate day/night figures — for example, if you're considering moving to Economy 7 and only know your total usage.</p>
 
-      <div class="row" id="dailyInputs" hidden>
+      <div class="row" id="actualInputs" hidden>
         <div class="field">
-          <label for="dayUsage">Day usage (kWh per day)</label>
-          <input type="number" id="dayUsage" value="3.56" min="0" step="0.01">
+          <label for="actualDayKwh">Day-rate usage (kWh per year)</label>
+          <input type="number" id="actualDayKwh" value="1280" min="0" step="1" inputmode="decimal">
         </div>
         <div class="field">
-          <label for="nightUsage">Night usage (kWh per day)</label>
-          <input type="number" id="nightUsage" value="5.33" min="0" step="0.01">
+          <label for="actualNightKwh">Night-rate usage (kWh per year)</label>
+          <input type="number" id="actualNightKwh" value="1920" min="0" step="1" inputmode="decimal">
         </div>
       </div>
+      <p class="hint" id="actualHint" hidden>Use this if you already have separate day-rate and night-rate readings — for example from an Economy 7 bill or meter. Enter them exactly as shown; no need to work out a percentage yourself.</p>
 
       <p class="hint" id="usageHint"></p>
       <p class="hint">The default is a 3,200 kWh year split 60% to the night rate. It is a starting point only — your own figures, from a recent bill, will give a far better estimate.</p>
@@ -106,6 +108,14 @@
   <h2 id="resultsHeading" style="font-size:1.1rem;margin:22px 0 10px;"></h2>
   <div id="results"></div>
 
+  <div id="meterTypeSection" hidden>
+    <div class="result" id="verdictCard" style="border-left:4px solid var(--accent);"></div>
+
+    <h2 id="standardResultsHeading" style="font-size:1.1rem;margin:22px 0 10px;"></h2>
+    <p class="hint">Ranked the same way as above: estimated Year 1 cost for the usage entered, on a single 24-hour rate rather than day/night rates.</p>
+    <div id="standardResults"></div>
+  </div>
+
   <footer>
     <p><strong>All figures are estimates.</strong> They are calculated from the unit rates and standing charge in the dataset above and the usage you entered. They are not quotes, and they do not account for anything the dataset does not record.</p>
     <p id="vatNote"></p>
@@ -114,12 +124,20 @@
 </main>
 
 <script type="module">
-import { compare, usageFromDaily, usageFromAnnualSplit } from './src/calc.js';
+import { compare, usageFromAnnualSplit, usageFromAnnualDayNight, compareMeterTypes } from './src/calc.js';
 import { loadValidated } from './src/validate.js';
-import { gbp, pence, year1Monthly, ongoingHeadline, ongoingMonthly, creditSummary, conditionSummary, datasetStatus, paymentMethodSummary, capSummary, capLimitation } from './src/format.js';
+import {
+  gbp, year1Monthly, ongoingHeadline, ongoingMonthly, creditSummary, conditionSummary,
+  datasetStatus, paymentMethodSummary, capSummary, capLimitation, rateLine,
+  meterTypeSwitchCaveat, meterTypeVerdictHeadline, meterTypeVerdictDetail
+} from './src/format.js';
 
 const $ = (id) => document.getElementById(id);
 let active = null;
+/** Standard (24-hour) tariff dataset. Optional: stays null when no such
+ *  dataset has been published yet, and the whole comparison section simply
+ *  does not appear — never a fabricated or empty-looking result. */
+let activeStandard = null;
 
 /** Build DOM nodes rather than HTML strings: tariff data is never parsed as markup. */
 function el(tag, className, text) {
@@ -144,18 +162,21 @@ function numberFrom(id) {
 
 function readUsage() {
   const mode = document.querySelector('input[name=mode]:checked').value;
-  if (mode === 'annual') {
+  if (mode === 'estimate') {
     const annual = numberFrom('annualKwh');
     const share = numberFrom('nightShare');
     if (annual === null || annual < 0) return { error: 'Enter the total electricity you use in a year, as a number of kWh (0 or more).' };
     if (share === null || share < 0 || share > 100) return { error: 'Enter the share used at the night rate, as a percentage between 0 and 100.' };
     return { usage: usageFromAnnualSplit(annual, share) };
   }
-  const day = numberFrom('dayUsage');
-  const night = numberFrom('nightUsage');
-  if (day === null || day < 0) return { error: 'Enter your average daily day usage as a number of kWh (0 or more).' };
-  if (night === null || night < 0) return { error: 'Enter your average daily night usage as a number of kWh (0 or more).' };
-  return { usage: usageFromDaily(day, night) };
+  const day = numberFrom('actualDayKwh');
+  const night = numberFrom('actualNightKwh');
+  if (day === null || day < 0) return { error: 'Enter your day-rate usage as a number of kWh (0 or more).' };
+  if (night === null || night < 0) return { error: 'Enter your night-rate usage as a number of kWh (0 or more).' };
+  if (day === 0 && night === 0) {
+    return { error: 'Enter your day and night usage from a recent bill or meter reading — at least one must be more than zero.' };
+  }
+  return { usage: usageFromAnnualDayNight(day, night) };
 }
 
 function updateUsageHint() {
@@ -211,8 +232,7 @@ function renderResult(result, rank, labels) {
   const conditions = conditionSummary(result);
   if (conditions.length) card.appendChild(el('div', 'cond', conditions.join(' · ')));
 
-  const rates = el('div', 'rates',
-    `Day ${pence(result.rates.dayPPerKwh)}/kWh · Night ${pence(result.rates.nightPPerKwh)}/kWh · Standing charge ${pence(result.rates.standingPPerDay)}/day`);
+  const rates = el('div', 'rates', rateLine(result));
   const dearer = (result.alternativePaymentMethods || []).filter((a) => !a.sameCost);
   if (dearer.length) {
     const alts = dearer.map((a) => `${labels[a.paymentMethod] || a.paymentMethod} ${gbp(a.year1Total)}`).join(' · ');
@@ -220,6 +240,39 @@ function renderResult(result, rank, labels) {
   }
   card.appendChild(rates);
   return card;
+}
+
+function renderMeterTypeSection(usage, paymentMethod, e7Res) {
+  const section = $('meterTypeSection');
+  if (!activeStandard) { section.hidden = true; return; }
+  section.hidden = false;
+
+  const standardRes = compare(activeStandard.dataset, { usage, paymentMethod, limit: 10 });
+  const standardResults = $('standardResults');
+  standardResults.replaceChildren();
+  if (standardRes.results.length === 0) {
+    $('standardResultsHeading').textContent = 'No 24-hour tariffs match';
+    standardResults.appendChild(el('p', 'sub', 'No 24-hour tariff in this dataset is sold on the payment method you selected. Try "all payment methods".'));
+  } else {
+    $('standardResultsHeading').textContent = standardRes.results.length < standardRes.totalConsidered
+      ? `Cheapest ${standardRes.results.length} of ${standardRes.totalConsidered} 24-hour tariffs, by estimated Year 1 cost`
+      : `All ${standardRes.totalConsidered} matching 24-hour tariffs, by estimated Year 1 cost`;
+    standardRes.results.forEach((r, i) => standardResults.appendChild(renderResult(r, i + 1, standardRes.paymentMethodLabels)));
+  }
+
+  const verdict = compareMeterTypes({ economy7: e7Res, standard: standardRes });
+  const card = $('verdictCard');
+  card.replaceChildren();
+  card.appendChild(el('div', 'name', meterTypeVerdictHeadline(verdict)));
+  for (const line of meterTypeVerdictDetail(verdict)) card.appendChild(el('div', null, line));
+  card.appendChild(el('div', 'cond', meterTypeSwitchCaveat()));
+
+  const ageNote = el('div', 'cond');
+  const e7Date = active.report.dataset.effective_from, stdDate = activeStandard.report.dataset.effective_from;
+  ageNote.textContent = e7Date === stdDate
+    ? `Both tariff families use rates effective from ${e7Date}.`
+    : `Economy 7 rates effective from ${e7Date || 'an unknown date'}. 24-hour rates effective from ${stdDate || 'an unknown date'}.`;
+  card.appendChild(ageNote);
 }
 
 function run(event) {
@@ -234,21 +287,30 @@ function run(event) {
     errNode.textContent = error;
     errNode.hidden = false;
     $('resultsHeading').textContent = '';
+    $('meterTypeSection').hidden = true;
     return;
   }
   errNode.hidden = true;
   updateUsageHint();
 
-  const res = compare(active.dataset, { usage, paymentMethod: $('paymentMethod').value || null, limit: 10 });
+  const paymentMethod = $('paymentMethod').value || null;
+  const res = compare(active.dataset, { usage, paymentMethod, limit: 10 });
   if (res.results.length === 0) {
     $('resultsHeading').textContent = 'No tariffs match';
     results.appendChild(el('p', 'sub', 'No tariff in this dataset is sold on the payment method you selected. Try “all payment methods”.'));
-    return;
+  } else {
+    $('resultsHeading').textContent = res.results.length < res.totalConsidered
+      ? `Cheapest ${res.results.length} of ${res.totalConsidered} tariffs, by estimated Year 1 cost`
+      : `All ${res.totalConsidered} matching tariffs, by estimated Year 1 cost`;
+    res.results.forEach((r, i) => results.appendChild(renderResult(r, i + 1, res.paymentMethodLabels)));
   }
-  $('resultsHeading').textContent = res.results.length < res.totalConsidered
-    ? `Cheapest ${res.results.length} of ${res.totalConsidered} tariffs, by estimated Year 1 cost`
-    : `All ${res.totalConsidered} matching tariffs, by estimated Year 1 cost`;
-  res.results.forEach((r, i) => results.appendChild(renderResult(r, i + 1, res.paymentMethodLabels)));
+
+  // compareMeterTypes only reads the cheapest result (index 0), and compare()
+  // always sorts before applying its display limit, so the ten-result cutoff
+  // above never affects which tariff the verdict is drawn from. Called even
+  // when res.results is empty (e.g. a payment method the economy7 dataset
+  // doesn't sell) so a standard_only verdict can still surface.
+  renderMeterTypeSection(usage, paymentMethod, res);
 }
 
 async function init() {
@@ -292,9 +354,24 @@ async function init() {
     ? 'Contract lengths, exit fees and eligibility rules are not verified in this dataset. A tariff shown here may not be available to you, and any discount may last only for an introductory period.'
     : '';
 
+  // A standard (24-hour) tariff dataset is optional. Absent — the common case
+  // until one is published — the comparison section simply never appears;
+  // this is expected, not an error, so no banner and no console warning.
+  try {
+    const stdPointer = await fetch('data/latest-standard.json').then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); });
+    const stdRaw = await fetch(`data/${stdPointer.dataset}`).then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); });
+    activeStandard = loadValidated(stdRaw);
+  } catch {
+    activeStandard = null;
+  }
+
   const select = $('paymentMethod');
   const offered = new Set(active.dataset.tariffs.flatMap((t) => t.rates.map((r) => r.payment_method)));
-  for (const [value, label] of Object.entries(active.dataset.payment_methods || {})) {
+  if (activeStandard) {
+    for (const m of activeStandard.dataset.tariffs.flatMap((t) => t.rates.map((r) => r.payment_method))) offered.add(m);
+  }
+  const labels = { ...(active.dataset.payment_methods || {}), ...(activeStandard?.dataset.payment_methods || {}) };
+  for (const [value, label] of Object.entries(labels)) {
     if (!offered.has(value)) continue;
     const option = el('option', null, label);
     option.value = value;
@@ -303,14 +380,16 @@ async function init() {
 
   $('form').addEventListener('submit', run);
   $('paymentMethod').addEventListener('change', run);
-  for (const input of document.querySelectorAll('#annualInputs input, #dailyInputs input')) {
+  for (const input of document.querySelectorAll('#estimateInputs input, #actualInputs input')) {
     input.addEventListener('input', updateUsageHint);
   }
   for (const radio of document.querySelectorAll('input[name=mode]')) {
     radio.addEventListener('change', () => {
-      const annual = document.querySelector('input[name=mode]:checked').value === 'annual';
-      $('annualInputs').hidden = !annual;
-      $('dailyInputs').hidden = annual;
+      const estimate = document.querySelector('input[name=mode]:checked').value === 'estimate';
+      $('estimateInputs').hidden = !estimate;
+      $('estimateHint').hidden = !estimate;
+      $('actualInputs').hidden = estimate;
+      $('actualHint').hidden = estimate;
       updateUsageHint();
       run();
     });

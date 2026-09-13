@@ -12,6 +12,7 @@ export const plain = {
   supplier: 'Acme Power',
   name: 'Basic',
   status: 'active',
+  meter_type: 'economy7',
   rate_basis: 'standard',
   headline_discount_pct: null,
   intro_period_months: 0,
@@ -173,4 +174,112 @@ export const withdrawnTariff = {
   intro_period_months: null,
   rates: [],
   notes: 'Withdrawn by the supplier; no rates published.'
+};
+
+// --- standard (24-hour, single-rate) tariff fixtures ------------------------
+
+/** A standard tariff: one rate applied to total consumption, no day/night
+ *  split. At USAGE (3,000 kWh total): 3000*25/100 + 10*365/100 = 786.50 */
+export const standardPlain = {
+  id: 'acme-standard-basic',
+  supplier: 'Acme Power',
+  name: 'Standard Basic',
+  status: 'active',
+  meter_type: 'standard',
+  rate_basis: 'standard',
+  headline_discount_pct: null,
+  intro_period_months: 0,
+  reverts_to: null,
+  contract: { type: 'variable', term_months: null, exit_fee_gbp: 0 },
+  eligibility: { new_customers_only: false, notes: [] },
+  rates: [
+    { payment_method: 'direct_debit_ebill', unit_p_per_kwh: 25, standing_p_per_day: 10 },
+    { payment_method: 'prepayment', unit_p_per_kwh: 25, standing_p_per_day: 20 }
+  ],
+  adjustments: [],
+  notes: null
+};
+
+/** Standard tariff whose published rate already includes its discount. */
+export const standardBakedInDiscount = {
+  ...standardPlain,
+  id: 'acme-standard-baked',
+  name: 'Standard Baked-in Discount',
+  rate_basis: 'discounted',
+  headline_discount_pct: 10,
+  rates: [{ payment_method: 'direct_debit_ebill', unit_p_per_kwh: 22.5, standing_p_per_day: 10 }]
+};
+
+/** Standard tariff where a 10% discount must be calculated against the
+ *  published (undiscounted) rate: 25p x 0.9 = 22.5p, matching the baked-in
+ *  fixture above exactly — the two encodings must cost identically. */
+export const standardCalculatedDiscount = {
+  ...standardPlain,
+  id: 'acme-standard-calc-discount',
+  name: 'Standard Calculated Discount',
+  headline_discount_pct: 10,
+  adjustments: [{ type: 'percentage_discount', pct: 10, applies: 'first_year', applies_to: 'all' }]
+};
+
+/** Standard tariff with a £60 welcome credit, no stated timing. */
+export const standardWithCredit = {
+  ...standardPlain,
+  id: 'acme-standard-welcome',
+  name: 'Standard Welcome',
+  adjustments: [{ type: 'welcome_credit', amount_gbp: 60, applies: 'first_year', timing: 'unspecified' }]
+};
+
+/** Reference (undiscounted) tariff a discount_cap can point at. */
+export const standardCapReference = {
+  ...standardPlain,
+  id: 'acme-standard-cap-reference',
+  name: 'Standard Cap Reference',
+  rates: [{ payment_method: 'direct_debit_ebill', unit_p_per_kwh: 20, standing_p_per_day: 10 }]
+};
+
+/** Standard tariff with a usage-threshold discount cap, proving the cap
+ *  mechanism (built for Power NI's E7 tariffs) is genuinely meter-type
+ *  agnostic. Uncapped: 3000*18/100 + 9*365/100 = 572.85. Reference cost at
+ *  the same usage: 636.50. Capped at a £200 threshold: £616.50. */
+export const standardWithDiscountCap = {
+  ...standardPlain,
+  id: 'acme-standard-capped',
+  name: 'Standard Capped Discount',
+  rate_basis: 'discounted',
+  headline_discount_pct: 10,
+  rates: [{ payment_method: 'direct_debit_ebill', unit_p_per_kwh: 18, standing_p_per_day: 9 }],
+  adjustments: [{
+    type: 'discount_cap', applies: 'ongoing', basis: 'annual_spend_at_standard_rate',
+    threshold_gbp: 200, standard_rate_ref: 'acme-standard-cap-reference', max_saving_gbp: 20
+  }]
+};
+
+// --- meter-type cross-comparison fixtures -----------------------------------
+// Each is paired against the E7 `plain` fixture (£436.50 at USAGE on Direct
+// Debit e-bill), landing deliberately above, below or inside the default
+// £5 close-call tolerance so every verdict branch is exercised.
+
+/** £378.25 at USAGE — clearly cheaper than `plain`'s £436.50. */
+export const standardCheaperThanE7 = {
+  ...standardPlain,
+  id: 'acme-standard-cheaper',
+  name: 'Standard Cheaper',
+  rates: [{ payment_method: 'direct_debit_ebill', unit_p_per_kwh: 12, standing_p_per_day: 5 }]
+};
+
+/** £440.00 at USAGE — £3.50 more than `plain`'s £436.50, inside the default
+ *  £5 tolerance: neither tariff family should be declared the winner. */
+export const standardCloseToE7 = {
+  ...standardPlain,
+  id: 'acme-standard-close',
+  name: 'Standard Close',
+  rates: [{ payment_method: 'direct_debit_ebill', unit_p_per_kwh: 13.45, standing_p_per_day: 10 }]
+};
+
+/** £954.75 at USAGE — clearly dearer than `plain`'s £436.50. */
+export const standardDearerThanE7 = {
+  ...standardPlain,
+  id: 'acme-standard-dearer',
+  name: 'Standard Dearer',
+  rates: [{ payment_method: 'direct_debit_ebill', unit_p_per_kwh: 30, standing_p_per_day: 15 }]
 };

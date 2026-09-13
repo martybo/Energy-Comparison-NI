@@ -17,8 +17,11 @@ current, and this README does not claim otherwise.
 
 ## What it does
 
-- Takes your usage as either an annual total with a day/night split, or an
-  average per day.
+- Takes your usage either as an **estimate** (an annual total plus the share
+  used at night) or as **your actual usage** (day-rate and night-rate kWh
+  entered directly, exactly as they appear on an Economy 7 bill or meter —
+  no percentage to work out yourself). Both feed the same calculation; there
+  is no separate "actual usage" code path.
 - Estimates the **Year 1** cost of every tariff: energy, standing charge,
   applicable charges, less any welcome credit.
 - Shows the **ongoing** cost once an introductory deal ends — or says plainly
@@ -27,6 +30,16 @@ current, and this README does not claim otherwise.
   tariffs from one supplier may appear; no supplier diversity quota is applied.
 - Filters by payment method, optionally. Leaving it off is deliberate: switching
   how you pay can itself be the saving.
+- When a standard (24-hour, single-rate) tariff dataset is also published, the
+  page adds a second comparison and a plain verdict — **"Economy 7 looks
+  cheaper for you"**, **"A 24-hour tariff looks cheaper for your usage"**, or
+  **"The two options are very close"** within a small tolerance — so the
+  question answered is not just "which Economy 7 tariff is cheapest" but "is
+  Economy 7 still the right meter type for me at all". This is cost only: the
+  page always says to check with the supplier that a meter/tariff switch is
+  actually available before acting on it. Publishing the standard dataset is
+  a data change; the comparison itself needs no code change to appear once
+  `data/latest-standard.json` exists (see [`docs/DATA.md`](docs/DATA.md)).
 
 ## Live site
 

@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateDataset, loadValidated } from '../src/validate.js';
-import { datasetStatus, gbp, year1Monthly } from '../src/format.js';
+import { datasetStatus, gbp, year1Monthly, rateLine, meterTypeVerdictHeadline, meterTypeVerdictDetail, meterTypeSwitchCaveat } from '../src/format.js';
+import { compare } from '../src/calc.js';
 import * as fx from './fixtures.js';
 
 const { datasetOf } = fx;
@@ -299,4 +300,88 @@ test('a tariff advertising an incentive cannot claim none was advertised', () =>
 
   const plainTariff = { ...fx.plain, intro_period_basis: 'no_incentive_advertised' };
   assert.equal(validateDataset(datasetOf(plainTariff)).errors.length, 0, 'a genuinely plain tariff is fine');
+});
+
+// --- meter_type: economy7 vs standard (24-hour) tariffs ---------------------
+
+test('meter_type must be economy7 or standard', () => {
+  assert.ok(codes(check({ meter_type: 'gas' })).includes('meter_type_invalid'));
+  assert.ok(codes(check({ meter_type: undefined })).includes('meter_type_invalid'));
+  assert.equal(validateDataset(datasetOf(fx.standardPlain)).errors.length, 0);
+});
+
+test('a standard tariff requires unit_p_per_kwh, not day/night rates', () => {
+  const missing = validateDataset(datasetOf({ ...fx.standardPlain,
+    rates: [{ payment_method: 'direct_debit_ebill', standing_p_per_day: 10 }] }));
+  assert.ok(codes(missing).includes('rate_field_missing'));
+  const withDayNight = validateDataset(datasetOf({ ...fx.standardPlain,
+    rates: [{ payment_method: 'direct_debit_ebill', day_p_per_kwh: 20, night_p_per_kwh: 10, standing_p_per_day: 10 }] }));
+  // day/night fields present but unit_p_per_kwh absent: still rejected, since
+  // a standard tariff is priced from unit_p_per_kwh alone.
+  assert.ok(codes(withDayNight).includes('rate_field_missing'));
+});
+
+test('an economy7 tariff requires day/night rates, not unit_p_per_kwh', () => {
+  const withUnitOnly = validateDataset(datasetOf({ ...fx.plain,
+    rates: [{ payment_method: 'direct_debit_ebill', unit_p_per_kwh: 25, standing_p_per_day: 10 }] }));
+  assert.ok(codes(withUnitOnly).includes('rate_field_missing'));
+});
+
+test('a negative unit rate is rejected; a zero unit rate is valid data', () => {
+  const negative = validateDataset(datasetOf({ ...fx.standardPlain,
+    rates: [{ payment_method: 'direct_debit_ebill', unit_p_per_kwh: -1, standing_p_per_day: 10 }] }));
+  assert.ok(codes(negative).includes('rate_field_negative'));
+  const zero = validateDataset(datasetOf({ ...fx.standardPlain,
+    rates: [{ payment_method: 'direct_debit_ebill', unit_p_per_kwh: 0, standing_p_per_day: 10 }] }));
+  assert.equal(zero.errors.length, 0);
+});
+
+test('a standard tariff percentage_discount may only target "all"', () => {
+  const dayScoped = validateDataset(datasetOf({ ...fx.standardCalculatedDiscount,
+    adjustments: [{ type: 'percentage_discount', pct: 10, applies: 'first_year', applies_to: 'day' }] }));
+  assert.ok(codes(dayScoped).includes('discount_scope_invalid'));
+  const allScoped = validateDataset(datasetOf(fx.standardCalculatedDiscount));
+  assert.equal(allScoped.errors.length, 0);
+});
+
+test('the usage-threshold discount cap validates identically for a standard tariff', () => {
+  const r = validateDataset(datasetOf(fx.standardCapReference, fx.standardWithDiscountCap));
+  assert.equal(r.errors.length, 0, JSON.stringify(r.errors));
+  const dangling = validateDataset(datasetOf({ ...fx.standardWithDiscountCap,
+    adjustments: [{ ...fx.standardWithDiscountCap.adjustments[0], standard_rate_ref: 'not-here' }] }));
+  assert.ok(codes(dangling).includes('cap_reference_unresolved'));
+});
+
+// --- meter-type-aware display helpers ---------------------------------------
+
+test('rateLine shows day/night for economy7 and one rate for standard', () => {
+  const e7 = compare(datasetOf(fx.plain), { usage: fx.USAGE }).results[0];
+  assert.match(rateLine(e7), /^Day 20\.000p\/kWh · Night 10\.000p\/kWh · Standing charge 10\.000p\/day$/);
+  const std = compare(datasetOf(fx.standardPlain), { usage: fx.USAGE }).results[0];
+  assert.match(rateLine(std), /^25\.000p\/kWh · Standing charge 10\.000p\/day$/);
+});
+
+test('meterTypeVerdictHeadline covers every verdict without forcing a winner inside tolerance', () => {
+  assert.match(meterTypeVerdictHeadline({ verdict: 'economy7' }), /Economy 7/);
+  assert.match(meterTypeVerdictHeadline({ verdict: 'standard' }), /24-hour/);
+  assert.match(meterTypeVerdictHeadline({ verdict: 'close' }), /close/i);
+  assert.match(meterTypeVerdictHeadline({ verdict: 'no_data' }), /Not enough data/);
+});
+
+test('meterTypeVerdictDetail states both totals and the saving in the direction that actually won', () => {
+  const v = { verdict: 'economy7', economy7: { year1: { total: 757.52 } }, standard: { year1: { total: 1013 } }, differenceGbp: 255.48 };
+  const detail = meterTypeVerdictDetail(v).join(' · ');
+  assert.match(detail, /Cheapest Economy 7: £757\.52\/year/);
+  assert.match(detail, /Cheapest 24-hour: £1,013\.00\/year/);
+  assert.match(detail, /Estimated Economy 7 saving: £255\.48\/year/);
+});
+
+test('meterTypeVerdictDetail does not claim a saving when the verdict is close', () => {
+  const v = { verdict: 'close', economy7: { year1: { total: 440 } }, standard: { year1: { total: 436.5 } }, differenceGbp: -3.5 };
+  const detail = meterTypeVerdictDetail(v).join(' · ');
+  assert.doesNotMatch(detail, /saving/i);
+});
+
+test('meterTypeSwitchCaveat never implies a switch is automatically available', () => {
+  assert.match(meterTypeSwitchCaveat(), /check with the supplier/i);
 });
