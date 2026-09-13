@@ -1,3 +1,31 @@
+# Node / npm
 node_modules/
+package-lock.json
+npm-debug.log*
+
+# OS metadata
 .DS_Store
+Thumbs.db
+
+# Editor / IDE metadata
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local environment
+.env
+.env.*
+
+# Logs and local test/tool output
 *.log
+coverage/
+
+# Browser automation artefacts from manual local verification (screenshots,
+# traces, reports) — the test suite itself never produces these.
+test-results/
+playwright-report/
+
+# Local staging output from the Pages deploy workflow's copy step, if run
+# outside CI.
+_site/

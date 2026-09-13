@@ -1,0 +1,50 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Only one deployment at a time; skip queued runs, let the latest finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # Reuses the CI job's own test run as the gate for deployment, rather than
+  # duplicating it, so a broken test suite can never reach Pages.
+  test:
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # No build step: this only copies the files the application actually
+      # needs to run (index.html, src/, data/) into a staging directory, so
+      # repository-management files (test/, docs/, .github/, README, LICENSE)
+      # are never served as if they were part of the app. Nothing here
+      # transforms the files themselves.
+      - name: Stage runtime files
+        run: |
+          mkdir _site
+          cp index.html _site/
+          cp -r src _site/src
+          cp -r data _site/data
+
+      - name: Upload static site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

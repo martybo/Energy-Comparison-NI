@@ -9,9 +9,11 @@ what each tariff would actually cost for a given day/night usage pattern and
 ranks on that, because **a lower unit rate is not the same as a cheaper bill**
 once the standing charge and the usage split are taken into account.
 
-> ⚠️ The tariff data in this repository is a **August 2025 prototype snapshot and
-> is out of date**. The tool displays a prominent warning to that effect. It is
-> not yet suitable for choosing a tariff.
+The current dataset is a **dated snapshot** of the Consumer Council NI table
+(see [Source](#source) below), not a live feed — tariffs are refreshed
+periodically, not continuously. Once a snapshot ages past a few weeks the tool
+displays a prominent on-page warning rather than presenting stale rates as
+current, and this README does not claim otherwise.
 
 ## What it does
 
@@ -25,6 +27,15 @@ once the standing charge and the usage split are taken into account.
   tariffs from one supplier may appear; no supplier diversity quota is applied.
 - Filters by payment method, optionally. Leaving it off is deliberate: switching
   how you pay can itself be the saving.
+
+## Live site
+
+<https://martybo.github.io/Energy-Comparison-NI/>
+
+Deployed automatically from `main` by GitHub Actions once its CI checks pass
+— see [Continuous integration](#continuous-integration) below. (GitHub Pages
+must be switched on once, under repository Settings → Pages → Source: GitHub
+Actions, before this URL serves anything.)
 
 ## Running it
 
@@ -45,7 +56,27 @@ npm test          # node --test, no install required
 
 The suite covers the cost model, the Year 1 incentive rules, ranking, filtering,
 input handling and dataset validation, against deterministic fixtures that can
-be checked by hand.
+be checked by hand. It also asserts that the files `index.html` fetches and
+imports actually exist and that the dataset `data/latest.json` points at
+validates — the specific way a static, no-build deployment can break silently.
+
+## Continuous integration
+
+A GitHub Actions workflow (`.github/workflows/ci.yml`) runs the full test
+suite above on every pull request and every push to `main`. There is nothing
+else for it to run: no separate lint step, no build, no reimplementation of
+the checks in YAML — it calls `npm test`, the same command you run locally.
+
+Deployment (`.github/workflows/pages.yml`) reuses that same workflow as a gate,
+so a red test suite can never reach the live site.
+
+## Data refresh
+
+Publishing a new month's tariffs is a data change, not a code change — see
+[`docs/DATA.md`](docs/DATA.md) for the schema and the full runbook. In brief:
+add a new dated `data/tariffs-YYYY-MM-DD.json`, point `data/latest.json` at it,
+and generate a matching source reconciliation and row trace alongside it so
+the new dataset's provenance is auditable the same way the current one is.
 
 ## Layout
 
@@ -57,6 +88,8 @@ be checked by hand.
 | `src/format.js` | Display formatting. The only place rounding happens. |
 | `data/` | Tariff snapshots and the `latest.json` pointer. |
 | `docs/DATA.md` | Schema reference and the monthly update runbook. |
+| `test/` | `node --test` suite, including deployment safety checks. |
+| `.github/workflows/` | CI and GitHub Pages deployment. |
 
 The engine contains no supplier-specific or tariff-specific logic, so adding a
 supplier or tariff is a data change only. See
@@ -67,3 +100,7 @@ supplier or tariff is a data change only. See
 Tariff figures derive from Consumer Council for Northern Ireland price
 comparison material. All figures produced by this tool are estimates, not
 quotes.
+
+## Licence
+
+[MIT](LICENSE).
