@@ -137,3 +137,64 @@ export function capLimitation(result) {
     ? 'This supplier also applies the cap per quarter. The estimate uses the annual figure, so a bill that is much higher in winter could cost more than shown.'
     : null;
 }
+
+/**
+ * "Day 30.179p/kWh · Night 13.997p/kWh · Standing charge 9.873p/day" for a
+ * day/night tariff, or "30.179p/kWh · Standing charge 9.873p/day" for a
+ * single-rate (standard) tariff. One function so a result card never has to
+ * know which shape it is rendering.
+ */
+export function rateLine(result) {
+  const standing = `Standing charge ${pence(result.rates.standingPPerDay)}/day`;
+  if (result.meterType === 'standard') {
+    return `${pence(result.rates.unitPPerKwh)}/kWh · ${standing}`;
+  }
+  return `Day ${pence(result.rates.dayPPerKwh)}/kWh · Night ${pence(result.rates.nightPPerKwh)}/kWh · ${standing}`;
+}
+
+/**
+ * Cost, not availability. Every rendering of a compareMeterTypes() result
+ * must show this alongside it: a cheaper tariff family here is not a claim
+ * that a meter or tariff switch is actually available to this customer.
+ */
+export function meterTypeSwitchCaveat() {
+  return 'This compares the cost of your total electricity consumption against available day/night and 24-hour tariffs. Check with the supplier that the tariff and meter arrangement are available to you before switching.';
+}
+
+/**
+ * "Economy 7 looks cheaper for you" / "A 24-hour tariff looks cheaper for
+ * your usage" / "The two options are very close for your estimated usage."
+ * Never forces a winner inside compareMeterTypes()'s own tolerance.
+ */
+export function meterTypeVerdictHeadline(v) {
+  switch (v.verdict) {
+    case 'economy7':
+      return 'Economy 7 looks cheaper for you';
+    case 'standard':
+      return 'A 24-hour tariff looks cheaper for your usage';
+    case 'close':
+      return 'The two options are very close for your estimated usage';
+    case 'economy7_only':
+    case 'standard_only':
+      return 'Only one tariff family could be compared';
+    default:
+      return 'Not enough data to compare';
+  }
+}
+
+/**
+ * "Cheapest Economy 7 £757.52/year · Cheapest 24-hour £1,013.00/year ·
+ * Estimated Economy 7 saving £255.48/year" — always states both totals when
+ * both are known, so the reader can see the numbers a verdict was drawn from
+ * rather than trusting a label alone.
+ */
+export function meterTypeVerdictDetail(v) {
+  const parts = [];
+  if (v.economy7) parts.push(`Cheapest Economy 7: ${gbp(v.economy7.year1.total)}/year`);
+  if (v.standard) parts.push(`Cheapest 24-hour: ${gbp(v.standard.year1.total)}/year`);
+  if (v.differenceGbp != null && v.verdict !== 'close') {
+    const saver = v.verdict === 'economy7' ? 'Economy 7' : '24-hour';
+    parts.push(`Estimated ${saver} saving: ${gbp(Math.abs(v.differenceGbp))}/year`);
+  }
+  return parts;
+}

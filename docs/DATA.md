@@ -162,6 +162,53 @@ nothing implies a supplier deducts one twelfth of it from each monthly bill.
 **Exit fees are never added to cost.** They are only payable on early exit, so
 they are disclosed as a condition.
 
+## `meter_type`: economy7 vs standard (24-hour) tariffs
+
+Every tariff record declares `meter_type`, either `"economy7"` or `"standard"`.
+This is what a day/night meter and a single-rate meter fundamentally are —
+different products, priced differently — so the two never share a rate shape:
+
+| | `meter_type: "economy7"` | `meter_type: "standard"` |
+|---|---|---|
+| Rate row | `day_p_per_kwh`, `night_p_per_kwh` | `unit_p_per_kwh` |
+| Cost formula | `day_rate x day_kwh + night_rate x night_kwh` | `unit_rate x (day_kwh + night_kwh)` |
+| `percentage_discount.applies_to` | `all`, `day` or `night` | `all` only — there is no split to target |
+
+A standard tariff's cost depends only on **total** consumption, never on how
+that total splits between day and night — the engine enforces this
+structurally (a standard tariff's cost formula never reads the split at all),
+not just by convention, and it is asserted by test.
+
+Everything else — `adjustments`, `reverts_to`, `discount_cap`,
+`intro_period_basis`, contract and eligibility fields — works identically for
+both meter types. The usage-threshold cap built for Power NI's Economy 7
+tariffs, for instance, is reused unchanged for Power NI's standard tariffs.
+
+### Comparing the two meter types
+
+`compareMeterTypes()` in `src/calc.js` takes the *results* of two separate
+`compare()` calls — one against an economy7 dataset, one against a standard
+dataset, both run with the same usage and payment-method filter — and returns
+a verdict (`economy7`, `standard`, or `close` within a small tolerance,
+`DEFAULT_METER_TYPE_TOLERANCE_GBP`). It does not load or merge data files
+itself: the two tariff families are expected to come from separate dated
+sources, each with its own effective date, and the page shows both dates
+rather than implying one simultaneous snapshot.
+
+**This is a cost comparison only.** A cheaper meter type here is not a claim
+that switching is actually available to a given customer — `src/format.js`'s
+`meterTypeSwitchCaveat()` says so, and every rendering of a verdict must
+include it.
+
+### The standard-tariff dataset is optional
+
+`data/latest-standard.json` follows the same pointer pattern as
+`data/latest.json`. If it does not exist, `index.html` fetches it, the fetch
+fails, and the whole comparison section simply does not render — no error
+banner, since an absent second dataset is an expected, ordinary state, not a
+fault. Publishing one is a data change only; no application code needs to
+change for the comparison to appear.
+
 ## Year 1 and ongoing cost
 
 ```
@@ -253,11 +300,22 @@ The stated maximum saving (`max_saving_gbp`) is recorded for reference and is
 two forms of the source's rule are not exactly equivalent — they differ by £1 on
 two of the five capped tariffs — so neither is derived from the other.
 
-## The current dataset
+## The current datasets
 
-`data/tariffs-2026-09-12.json` is transcribed from the Consumer Council table
-dated 12/09/2026, including its ADDITIONAL INFORMATION column. See
+`data/tariffs-2026-09-12.json` (economy7) is transcribed from the Consumer
+Council *Economy 7 Price Comparison Table* dated 12/09/2026, including its
+ADDITIONAL INFORMATION column. See
 [`RECONCILIATION-2026-09-12.md`](RECONCILIATION-2026-09-12.md) for a row-by-row
 trace from the PDF to the dataset, every merge, every field left null, and every
 source ambiguity. `source-rows-2026-09-12.json` is the machine-readable row
 trace the reconciliation is generated from.
+
+`data/tariffs-standard-2026-09-12.json` (standard, 24-hour) is transcribed the
+same way from the Consumer Council *Electricity Price Comparison Table*, also
+dated 12/09/2026. That source states its own published annual-cost figure does
+not factor in supplier incentives such as welcome credits, so it is used only
+as an arithmetic cross-check, never as the dataset's own numbers; credits and
+discounts are carried as structured `adjustments` instead, exactly as for
+economy7. See
+[`RECONCILIATION-standard-2026-09-12.md`](RECONCILIATION-standard-2026-09-12.md)
+and `source-rows-standard-2026-09-12.json` for the same row-by-row trace.

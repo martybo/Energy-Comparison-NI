@@ -58,6 +58,30 @@ test('the reconciliation and source-row trace named in DATA.md exist for the liv
   assert.ok(existsSync(root + rowTrace), `expected ${rowTrace} alongside the live dataset`);
 });
 
+test('the optional standard-tariff dataset, if present, is internally consistent', () => {
+  // data/latest-standard.json is optional: the application works with only
+  // the economy7 dataset present, and must go on doing so once a real
+  // standard-tariff dataset eventually retires. But whenever the pointer
+  // exists, everything it names must actually be there and valid — the same
+  // guarantee the primary dataset gets.
+  const pointerPath = root + 'data/latest-standard.json';
+  if (!existsSync(pointerPath)) return;
+  const pointer = JSON.parse(readFileSync(pointerPath, 'utf8'));
+  assert.equal(typeof pointer.dataset, 'string');
+  assert.ok(existsSync(root + 'data/' + pointer.dataset), `data/latest-standard.json names "${pointer.dataset}", which is not in data/`);
+
+  const raw = JSON.parse(read('data/' + pointer.dataset));
+  const report = validateDataset(raw);
+  assert.equal(report.errors.length, 0, JSON.stringify(report.errors, null, 2));
+  assert.equal(report.rejected.length, 0);
+  assert.ok(report.valid.length > 0, 'the standard dataset must contain at least one valid tariff');
+  assert.ok(report.valid.every((t) => t.meter_type === 'standard'), 'every tariff in this dataset must be meter_type "standard"');
+
+  const datedSuffix = pointer.dataset.replace(/^tariffs-standard-/, '').replace(/\.json$/, '');
+  assert.ok(existsSync(root + `docs/RECONCILIATION-standard-${datedSuffix}.md`), 'expected a matching reconciliation document');
+  assert.ok(existsSync(root + `docs/source-rows-standard-${datedSuffix}.json`), 'expected a matching source-row trace');
+});
+
 test('no development or tooling files are required at runtime', () => {
   const html = read('index.html');
   assert.doesNotMatch(html, /node_modules/, 'index.html must not reference node_modules');

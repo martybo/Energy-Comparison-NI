@@ -14,6 +14,10 @@ export const DAYS_PER_YEAR = 365;
 /** Costs within a hundredth of a penny are the same price, not a ranking. */
 export const TIE_EPSILON = 1e-4;
 export const MONTHS_PER_YEAR = 12;
+/** The two tariff families this engine prices. A tariff's meter_type selects
+ *  which rate shape and cost formula applies to it — see effectiveRates and
+ *  annualBase. */
+export const METER_TYPES = ['economy7', 'standard'];
 
 /** Build a usage object from average daily kWh. */
 export function usageFromDaily(dayKwh, nightKwh) {
@@ -24,6 +28,19 @@ export function usageFromDaily(dayKwh, nightKwh) {
 export function usageFromAnnualSplit(annualKwh, nightSharePct) {
   const night = annualKwh * (nightSharePct / 100);
   return { annualDayKwh: annualKwh - night, annualNightKwh: night };
+}
+
+/**
+ * Build a usage object directly from a customer's own annual day/night
+ * readings — a bill or meter, not a percentage estimate. This is the
+ * canonical usage shape every tariff calculation ultimately runs on:
+ * usageFromAnnualSplit is a convenience that resolves to the same
+ * {annualDayKwh, annualNightKwh} pair, so a user who enters actual readings
+ * gets exactly the answer an equivalent total-plus-split estimate would have
+ * given, with no additional conversion step or rounding in between.
+ */
+export function usageFromAnnualDayNight(dayKwh, nightKwh) {
+  return { annualDayKwh: dayKwh, annualNightKwh: nightKwh };
 }
 
 function isFiniteNumber(v) {
@@ -37,8 +54,25 @@ function isFiniteNumber(v) {
  * R6: a percentage_discount on a record whose rate_basis is "discounted" is a
  * validation error (see validate.js) and is refused here as well, so a rate can
  * never be discounted twice even if an unvalidated dataset is passed in.
+ *
+ * A standard (24-hour) tariff has one rate rather than a day/night pair, so
+ * it takes its own short branch here rather than being folded into the E7
+ * logic below — the two formulas are simple enough that keeping them
+ * textually separate is clearer than a shared abstraction over both shapes.
  */
 function effectiveRates(tariff, rateRow, scope) {
+  if (tariff.meter_type === 'standard') {
+    let unit = rateRow.unit_p_per_kwh;
+    if (tariff.rate_basis !== 'discounted') {
+      for (const adj of tariff.adjustments || []) {
+        if (adj.type !== 'percentage_discount') continue;
+        if (!appliesInScope(adj, scope)) continue;
+        unit *= 1 - adj.pct / 100;
+      }
+    }
+    return { unit };
+  }
+
   let day = rateRow.day_p_per_kwh;
   let night = rateRow.night_p_per_kwh;
   if (tariff.rate_basis === 'discounted') return { day, night };
@@ -59,11 +93,25 @@ function appliesInScope(adj, scope) {
   return applies === 'ongoing';
 }
 
-/** Annual energy + standing cost in pounds at a given rate row. */
+/**
+ * Annual energy + standing cost in pounds at a given rate row.
+ *
+ * A standard tariff prices the customer's total consumption at one rate —
+ * (day_kwh + night_kwh) x unit_rate — so it makes no difference how that
+ * total splits between day and night. An economy7 tariff prices each part
+ * of the split separately. Both read the same {annualDayKwh, annualNightKwh}
+ * usage shape; only the formula applied to it differs.
+ */
 function annualBase(tariff, rateRow, usage, scope) {
+  const standing = (rateRow.standing_p_per_day * DAYS_PER_YEAR) / 100;
+  if (tariff.meter_type === 'standard') {
+    const { unit } = effectiveRates(tariff, rateRow, scope);
+    const totalKwh = usage.annualDayKwh + usage.annualNightKwh;
+    const energy = (unit * totalKwh) / 100;
+    return { energy, standing, unitRate: unit };
+  }
   const { day, night } = effectiveRates(tariff, rateRow, scope);
   const energy = (day * usage.annualDayKwh + night * usage.annualNightKwh) / 100;
-  const standing = (rateRow.standing_p_per_day * DAYS_PER_YEAR) / 100;
   return { energy, standing, dayRate: day, nightRate: night };
 }
 
@@ -271,10 +319,12 @@ export function costFor(tariff, rateRow, usage, context = {}) {
     id: tariff.id,
     supplier: tariff.supplier,
     name: tariff.name,
+    meterType: tariff.meter_type,
     paymentMethod: rateRow.payment_method,
     rates: {
-      dayPPerKwh: base.dayRate,
-      nightPPerKwh: base.nightRate,
+      dayPPerKwh: base.dayRate ?? null,
+      nightPPerKwh: base.nightRate ?? null,
+      unitPPerKwh: base.unitRate ?? null,
       standingPPerDay: rateRow.standing_p_per_day,
       basis: tariff.rate_basis
     },
@@ -362,7 +412,8 @@ export function compare(dataset, options = {}) {
     paymentMethod = null,
     limit = 10,
     includeWelcomeCredits = true,
-    includeWithdrawn = false
+    includeWithdrawn = false,
+    meterType = null
   } = options;
 
   if (!usage || !isFiniteNumber(usage.annualDayKwh) || !isFiniteNumber(usage.annualNightKwh)) {
@@ -379,6 +430,7 @@ export function compare(dataset, options = {}) {
 
   for (const tariff of tariffs) {
     if (!includeWithdrawn && tariff.status === 'withdrawn') continue;
+    if (meterType && tariff.meter_type !== meterType) continue;
     const candidateRates = paymentMethod
       ? (tariff.rates || []).filter((r) => r.payment_method === paymentMethod)
       : tariff.rates || [];
@@ -446,4 +498,41 @@ export function compare(dataset, options = {}) {
     paymentMethodLabels: dataset.payment_methods || {},
     warnings
   };
+}
+
+/** Below this gap, treat an economy7 tariff and a standard tariff as a toss-up rather
+ *  than forcing a winner on a difference too small to act on. */
+export const DEFAULT_METER_TYPE_TOLERANCE_GBP = 5;
+
+/**
+ * Is a day/night (economy7) tariff still the cheapest option for this usage,
+ * or would a standard (24-hour, one rate) tariff cost less?
+ *
+ * Takes the *results* of two separate compare() calls — one run against an
+ * economy7 dataset, one against a standard-tariff dataset, both with the
+ * same usage and payment-method filter — rather than a dataset itself. The
+ * two tariff families are expected to come from separate dated sources (see
+ * docs/DATA.md), so nothing here loads or merges data files; it only compares
+ * the cheapest result each side already produced.
+ *
+ * Cost, not availability: a cheaper family here is not a claim that a meter
+ * or tariff switch is available to this customer — see format.js's
+ * meterTypeSwitchCaveat, which every rendering of this result must show
+ * alongside it.
+ */
+export function compareMeterTypes({ economy7, standard } = {}, options = {}) {
+  const { toleranceGbp = DEFAULT_METER_TYPE_TOLERANCE_GBP } = options;
+  const e7 = economy7?.results?.[0] ?? null;
+  const std = standard?.results?.[0] ?? null;
+
+  if (!e7 && !std) return { verdict: 'no_data', economy7: null, standard: null, differenceGbp: null, toleranceGbp };
+  if (!e7) return { verdict: 'standard_only', economy7: null, standard: std, differenceGbp: null, toleranceGbp };
+  if (!std) return { verdict: 'economy7_only', economy7: e7, standard: null, differenceGbp: null, toleranceGbp };
+
+  // Positive: the economy7 tariff costs less. Negative: the standard tariff costs less.
+  const differenceGbp = std.year1.total - e7.year1.total;
+  const verdict =
+    Math.abs(differenceGbp) <= toleranceGbp ? 'close' : differenceGbp > 0 ? 'economy7' : 'standard';
+
+  return { verdict, economy7: e7, standard: std, differenceGbp, toleranceGbp };
 }

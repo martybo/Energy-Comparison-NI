@@ -1,7 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { compare, costFor, usageFromDaily, usageFromAnnualSplit, MONTHS_PER_YEAR } from '../src/calc.js';
+import {
+  compare,
+  costFor,
+  usageFromDaily,
+  usageFromAnnualSplit,
+  usageFromAnnualDayNight,
+  compareMeterTypes,
+  DEFAULT_METER_TYPE_TOLERANCE_GBP,
+  MONTHS_PER_YEAR
+} from '../src/calc.js';
 import { loadValidated } from '../src/validate.js';
 import * as fx from './fixtures.js';
 
@@ -632,4 +641,264 @@ test('the row trace accounts for every payment-method slot in the source', () =>
     if (t.status === 'active') assert.ok(reached.has(t.id), `${t.id} is not reached by any source row`);
     else assert.ok(!reached.has(t.id), `withdrawn ${t.id} must not come from a priced row`);
   }
+});
+
+// --- standard (24-hour, single-rate) tariffs --------------------------------
+
+test('a standard tariff prices total consumption at one rate, independent of split', () => {
+  const r = only(fx.standardPlain);
+  near(r.year1.energyCost, 750, '3000 kWh x 25p');
+  near(r.year1.standingCost, 36.5, '10p x 365 days');
+  near(r.year1.total, 786.5, 'standard tariff year 1');
+  assert.equal(r.meterType, 'standard');
+  assert.equal(r.rates.unitPPerKwh, 25);
+  assert.equal(r.rates.dayPPerKwh, null, 'a standard tariff has no day rate');
+  assert.equal(r.rates.nightPPerKwh, null, 'a standard tariff has no night rate');
+});
+
+test('an economy7 result carries no unit rate', () => {
+  const r = only(fx.plain);
+  assert.equal(r.meterType, 'economy7');
+  assert.equal(r.rates.unitPPerKwh, null);
+  assert.ok(r.rates.dayPPerKwh != null && r.rates.nightPPerKwh != null);
+});
+
+test('R2 (standard): changing the day/night split does not change the cost when the total is unchanged', () => {
+  const splits = [
+    { annualDayKwh: 3000, annualNightKwh: 0 },
+    { annualDayKwh: 1500, annualNightKwh: 1500 },
+    { annualDayKwh: 0, annualNightKwh: 3000 },
+    { annualDayKwh: 2999, annualNightKwh: 1 }
+  ];
+  const totals = splits.map((usage) => compare(datasetOf(fx.standardPlain), { usage }).results[0].year1.total);
+  for (const t of totals) near(t, totals[0], 'a standard tariff must not care how the same total splits between day and night');
+});
+
+test('a calculated percentage discount and a baked-in equivalent cost identically on a standard tariff', () => {
+  const calculated = compare(datasetOf(fx.standardPlain, fx.standardCalculatedDiscount), { usage: USAGE })
+    .results.find((x) => x.id === fx.standardCalculatedDiscount.id);
+  const baked = only(fx.standardBakedInDiscount);
+  near(calculated.rates.unitPPerKwh, 22.5, '25p x 0.9');
+  near(calculated.year1.total, baked.year1.total, 'two encodings, one answer');
+});
+
+test('a welcome credit reduces a standard tariff Year 1 total the same way it does for economy7', () => {
+  const r = only(fx.standardWithCredit);
+  near(r.year1.grossTotal, 786.5, 'gross before credit');
+  near(r.year1.total, 726.5, '£60 credit applied');
+});
+
+test('the usage-threshold discount cap is meter-type agnostic', () => {
+  const r = compare(datasetOf(fx.standardCapReference, fx.standardWithDiscountCap), { usage: USAGE })
+    .results.find((x) => x.id === fx.standardWithDiscountCap.id);
+  near(r.year1.total, 616.5, 'capped standard-tariff year 1');
+  assert.equal(r.discountCap.applied, true);
+});
+
+test('compare() can be filtered to one meter type', () => {
+  const mixed = datasetOf(fx.plain, fx.standardPlain);
+  const e7Only = compare(mixed, { usage: USAGE, meterType: 'economy7' }).results;
+  const standardOnly = compare(mixed, { usage: USAGE, meterType: 'standard' }).results;
+  assert.ok(e7Only.every((r) => r.meterType === 'economy7'));
+  assert.ok(standardOnly.every((r) => r.meterType === 'standard'));
+  assert.equal(e7Only.length, 1);
+  assert.equal(standardOnly.length, 1);
+  const all = compare(mixed, { usage: USAGE }).results;
+  assert.equal(all.length, 2, 'no filter mixes both families');
+});
+
+// --- usage-mode equivalence --------------------------------------------------
+// The product requirement this protects: a customer who enters actual bill
+// readings must get exactly the answer an equivalent total-plus-split
+// estimate would have given. 3,200 kWh at 60% night must equal 1,280 day +
+// 1,920 night for every tariff, with no rounding step in between.
+
+test('usageFromAnnualDayNight and usageFromAnnualSplit resolve to the same usage', () => {
+  const fromSplit = usageFromAnnualSplit(3200, 60);
+  const fromActual = usageFromAnnualDayNight(1280, 1920);
+  assert.deepEqual(fromActual, fromSplit);
+});
+
+test('equivalence holds across representative tariffs: plain, discounted, credited, capped', () => {
+  const estimate = usageFromAnnualSplit(3200, 60);
+  const actual = usageFromAnnualDayNight(1280, 1920);
+  const tariffs = [fx.plain, fx.withCalculatedDiscount, fx.withCredit, fx.withDiscountCap, fx.standardPlain, fx.standardWithCredit];
+  const dataset = datasetOf(fx.capStandard, ...tariffs);
+  for (const t of tariffs) {
+    const byEstimate = compare(dataset, { usage: estimate }).results.find((r) => r.id === t.id)
+      ?? compare(dataset, { usage: estimate, limit: 0 }).results.find((r) => r.id === t.id);
+    const byActual = compare(dataset, { usage: actual, limit: 0 }).results.find((r) => r.id === t.id);
+    near(byEstimate.year1.total, byActual.year1.total, `${t.id}: estimate and actual-usage entry must cost identically`);
+  }
+});
+
+test('a prepayment tariff is equally consistent between usage modes', () => {
+  const estimate = usageFromAnnualSplit(3200, 60);
+  const actual = usageFromAnnualDayNight(1280, 1920);
+  const byEstimate = compare(datasetOf(fx.plain), { usage: estimate, paymentMethod: 'prepayment' }).results[0];
+  const byActual = compare(datasetOf(fx.plain), { usage: actual, paymentMethod: 'prepayment' }).results[0];
+  near(byEstimate.year1.total, byActual.year1.total, 'prepayment rate priced identically either way');
+});
+
+// --- cross-meter-type comparison ---------------------------------------------
+
+test('compareMeterTypes: economy7 wins when clearly cheaper', () => {
+  const e7 = compare(datasetOf(fx.plain), { usage: USAGE });
+  const standard = compare(datasetOf(fx.standardDearerThanE7), { usage: USAGE });
+  const v = compareMeterTypes({ economy7: e7, standard });
+  assert.equal(v.verdict, 'economy7');
+  near(v.differenceGbp, 954.75 - 436.5);
+});
+
+test('compareMeterTypes: standard wins when clearly cheaper', () => {
+  const e7 = compare(datasetOf(fx.plain), { usage: USAGE });
+  const standard = compare(datasetOf(fx.standardCheaperThanE7), { usage: USAGE });
+  const v = compareMeterTypes({ economy7: e7, standard });
+  assert.equal(v.verdict, 'standard');
+  near(v.differenceGbp, 378.25 - 436.5);
+});
+
+test('compareMeterTypes: a difference within tolerance is a close call, not a forced winner', () => {
+  const e7 = compare(datasetOf(fx.plain), { usage: USAGE });
+  const standard = compare(datasetOf(fx.standardCloseToE7), { usage: USAGE });
+  const v = compareMeterTypes({ economy7: e7, standard });
+  assert.equal(v.verdict, 'close');
+  near(v.differenceGbp, 3.5);
+  assert.equal(v.toleranceGbp, DEFAULT_METER_TYPE_TOLERANCE_GBP);
+});
+
+test('compareMeterTypes: the tolerance boundary is inclusive and configurable', () => {
+  const e7 = compare(datasetOf(fx.plain), { usage: USAGE });
+  const standard = compare(datasetOf(fx.standardCloseToE7), { usage: USAGE }); // diff = 3.50
+  assert.equal(compareMeterTypes({ economy7: e7, standard }, { toleranceGbp: 3.5 }).verdict, 'close');
+  assert.equal(compareMeterTypes({ economy7: e7, standard }, { toleranceGbp: 3.49 }).verdict, 'economy7');
+});
+
+test('compareMeterTypes: missing one side is reported, not silently defaulted', () => {
+  const e7 = compare(datasetOf(fx.plain), { usage: USAGE });
+  const empty = compare(datasetOf(), { usage: USAGE });
+  assert.equal(compareMeterTypes({ economy7: e7, standard: empty }).verdict, 'economy7_only');
+  assert.equal(compareMeterTypes({ economy7: empty, standard: e7 }).verdict, 'standard_only');
+  assert.equal(compareMeterTypes({ economy7: empty, standard: empty }).verdict, 'no_data');
+  assert.equal(compareMeterTypes({}).verdict, 'no_data');
+});
+
+test('compareMeterTypes only ever compares the cheapest result already produced by compare()', () => {
+  // Passing several results per side must not change which two are compared:
+  // it is always index [0], i.e. whatever compare() already ranked first.
+  const e7 = compare(datasetOf(fx.plain, fx.withCredit), { usage: USAGE, limit: 0 });
+  const standard = compare(datasetOf(fx.standardPlain, fx.standardCheaperThanE7), { usage: USAGE, limit: 0 });
+  const v = compareMeterTypes({ economy7: e7, standard });
+  assert.equal(v.economy7.id, e7.results[0].id);
+  assert.equal(v.standard.id, standard.results[0].id);
+});
+
+test('changing the day/night split changes the economy7 ranking but not the standard-tariff side of a comparison', () => {
+  const standard = compare(datasetOf(fx.standardCloseToE7), { usage: usageFromAnnualDayNight(1500, 1500) });
+  const dayHeavy = compare(datasetOf(fx.standardCloseToE7), { usage: usageFromAnnualDayNight(2900, 100) });
+  assert.equal(standard.results[0].year1.total, dayHeavy.results[0].year1.total,
+    'total consumption unchanged, so the standard side of the comparison must not move');
+});
+
+// --- the shipped standard-tariff (24-hour) dataset --------------------------
+
+const liveStandardRaw = JSON.parse(readFileSync(new URL('../data/tariffs-standard-2026-09-12.json', import.meta.url), 'utf8'));
+const liveStandard = loadValidated(liveStandardRaw);
+const STANDARD_USAGE = usageFromAnnualDayNight(0, 3200); // the source's own comparison basis: 3,200 kWh, no day/night split
+
+test('the shipped standard dataset validates with no rejected records', () => {
+  assert.equal(liveStandard.report.errors.length, 0, JSON.stringify(liveStandard.report.errors, null, 2));
+  assert.equal(liveStandard.report.rejected.length, 0);
+});
+
+test('the shipped standard dataset matches the source date, VAT treatment and typical usage', () => {
+  assert.equal(liveStandard.report.dataset.effective_from, '2026-09-12');
+  assert.equal(liveStandard.report.dataset.vat_treatment, 'inclusive');
+  assert.equal(liveStandard.report.dataset.typical_annual_kwh, 3200);
+  assert.ok(liveStandard.report.dataset.source_url.includes('consumercouncil.org.uk'));
+});
+
+test('every rate row in the shipped standard dataset reproduces the source annual-cost column before credits', () => {
+  // The PDF's own column excludes credits (it says so on page 1), so this checks
+  // the base rate + standing charge only, independent of any adjustment.
+  for (const t of liveStandardRaw.tariffs) {
+    for (const r of t.rates) {
+      const base = (r.unit_p_per_kwh * 3200) / 100 + (r.standing_p_per_day * 365) / 100;
+      assert.ok(Number.isFinite(base) && base > 0, `${t.id}: base cost must be a sane positive number`);
+    }
+  }
+});
+
+test('the shipped standard dataset ranks correctly and contains no duplicate products', () => {
+  const res = compare(liveStandard.dataset, { usage: STANDARD_USAGE, limit: 0 });
+  assert.ok(res.results.length >= 30);
+  assert.equal(new Set(res.results.map((r) => r.id)).size, res.results.length);
+  for (let i = 1; i < res.results.length; i++) {
+    assert.ok(res.results[i].year1.total >= res.results[i - 1].year1.total - 1e-9, 'must be ranked cheapest first');
+  }
+});
+
+test('the row trace for the standard dataset accounts for every payment-method slot', () => {
+  const rows = JSON.parse(readFileSync(new URL('../docs/source-rows-standard-2026-09-12.json', import.meta.url), 'utf8'));
+  const slots = rows.reduce((s, [, m]) => s + m, 0);
+  const rateRows = liveStandardRaw.tariffs.reduce((s, t) => s + t.rates.length, 0);
+  assert.equal(slots, rateRows, 'printed payment-method slots must equal dataset rate rows');
+  const ids = new Set(liveStandardRaw.tariffs.map((t) => t.id));
+  const reached = new Set(rows.flatMap(([, , r]) => r));
+  for (const id of reached) assert.ok(ids.has(id), `row trace names unknown product ${id}`);
+  for (const t of liveStandardRaw.tariffs) {
+    if (t.status === 'active') assert.ok(reached.has(t.id), `${t.id} is not reached by any source row`);
+    else assert.ok(!reached.has(t.id), `withdrawn ${t.id} must not come from a priced row`);
+  }
+});
+
+test('Power NI caps use the same generic mechanism on the standard dataset', () => {
+  const id = 'power-ni-monthly-direct-debit-with-online-billing-standard';
+  // Unlike the economy7 dataset, Power NI's standard-tariff standing charge is
+  // 0.000p per day (the whole cost is in the unit rate), so the £1,000
+  // reference cost is reached at a lower kWh figure: 3,200 kWh alone already
+  // costs £1,092.80 on the standard rate, above the threshold.
+  const typical = compare(liveStandard.dataset, { usage: STANDARD_USAGE, limit: 0 }).results.find((r) => r.id === id);
+  assert.equal(typical.discountCap.applied, true, 'the £1,000 threshold is already exceeded at 3,200 kWh on this tariff family');
+  const light = compare(liveStandard.dataset, { usage: usageFromAnnualDayNight(0, 2000), limit: 0 }).results.find((r) => r.id === id);
+  assert.equal(light.discountCap.applied, false, 'a lighter year stays under the threshold');
+  const keypad = compare(liveStandard.dataset, { usage: usageFromAnnualDayNight(0, 6000), limit: 0 }).results.find((r) => r.id === 'power-ni-keypad-standard');
+  assert.equal(keypad.discountCap, null, 'the source exempts keypad customers from the threshold');
+});
+
+test('SSE fixed-term standard tariffs report a real ongoing cost and a step up', () => {
+  const res = compare(liveStandard.dataset, { usage: STANDARD_USAGE, limit: 0 }).results;
+  const oneYear = res.filter((r) => r.introPeriodMonths === 12 && r.supplier === 'SSE Airtricity');
+  assert.ok(oneYear.length >= 8, `expected several 1-year SSE tariffs, got ${oneYear.length}`);
+  for (const r of oneYear) {
+    assert.equal(r.ongoingKnown, true, `${r.id} should have a known ongoing cost`);
+    assert.ok(r.ongoing.total > r.year1.total, `${r.id} should step up after the introductory year`);
+  }
+});
+
+test('a split welcome credit is modelled as two adjustments, one with a stated month', () => {
+  const t = liveStandardRaw.tariffs.find((x) => x.id === 'budget-energy-80-discount-keypad-20-discount');
+  const credits = t.adjustments.filter((a) => a.type === 'welcome_credit');
+  assert.equal(credits.length, 2);
+  assert.equal(credits.reduce((s, c) => s + c.amount_gbp, 0), 80);
+  assert.ok(credits.some((c) => c.timing === 'unspecified'));
+  assert.ok(credits.some((c) => typeof c.timing === 'object' && c.timing.month === 9));
+});
+
+test('withdrawn Click standard tariffs are recorded but excluded from the comparison', () => {
+  const withdrawn = liveStandardRaw.tariffs.filter((t) => t.status === 'withdrawn');
+  assert.equal(withdrawn.length, 4);
+  const res = compare(liveStandard.dataset, { usage: STANDARD_USAGE, limit: 0 }).results;
+  assert.ok(!res.some((r) => withdrawn.map((w) => w.id).includes(r.id)));
+});
+
+// --- the two live datasets compared -----------------------------------------
+
+test('comparing the two live datasets produces a real, structured verdict', () => {
+  const e7 = compare(live.dataset, { usage: LIVE_USAGE, limit: 10 });
+  const standard = compare(liveStandard.dataset, { usage: usageFromAnnualDayNight(1280, 1920), limit: 10 });
+  const v = compareMeterTypes({ economy7: e7, standard });
+  assert.ok(['economy7', 'standard', 'close'].includes(v.verdict));
+  assert.ok(v.economy7 && v.standard);
+  assert.equal(typeof v.differenceGbp, 'number');
 });

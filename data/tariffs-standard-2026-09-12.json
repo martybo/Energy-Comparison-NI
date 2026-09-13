@@ -1,0 +1,1405 @@
+{
+  "schema_version": 2,
+  "dataset": {
+    "effective_from": "2026-09-12",
+    "published": "2026-09-12",
+    "source": "Consumer Council for Northern Ireland - Electricity Price Comparison Table",
+    "source_url": "https://www.consumercouncil.org.uk/consumers/help-consumers/electricity-oil-and-gas/switching-electricity-or-gas-supplier/electricity-price-comparison-table",
+    "source_pdf_url": "https://www.consumercouncil.org.uk/print/pdf/node/13468",
+    "vat_treatment": "inclusive",
+    "rate_unit": "pence_per_kwh",
+    "standing_unit": "pence_per_day",
+    "currency": "GBP",
+    "typical_annual_kwh": 3200,
+    "conditions_verified": true,
+    "notes": "Transcribed from the Consumer Council Electricity Price Comparison Table dated 12/09/2026, including its ADDITIONAL INFORMATION column. The source states its own annual-cost column does not factor in supplier incentives such as welcome credits; this dataset instead carries credits as structured adjustments so the calculation engine can apply them. Prices include VAT at 5% as stated by the source. The source states a typical annual consumption of 3,200 kWh but does not state a day/night split, which is not applicable to a single-rate tariff in any case. Fields the source does not state are null (unknown), never inferred."
+  },
+  "payment_methods": {
+    "prepayment": "Prepayment",
+    "direct_debit_ebill": "Direct Debit (e-bill)",
+    "direct_debit_postal": "Direct Debit (postal bill)",
+    "on_receipt_ebill": "Pay on receipt of e-bill",
+    "on_receipt_postal": "Pay on receipt of bill"
+  },
+  "supplier_notes": {
+    "Click Energy": "The source states Click Energy has removed all of its discounted tariffs (Bill Pay Round the Clock, Keypad Round the Clock, Bill Pay Twilight, Keypad Twilight), citing increased wholesale gas prices.",
+    "SSE Airtricity": "The source states tariff changes are scheduled for 01 August 2026.",
+    "Share Energy": "The source states a tariff change is scheduled for 01 October 2026."
+  },
+  "tariffs": [
+    {
+      "id": "budget-energy-bill-pay-standard-24hr",
+      "supplier": "Budget Energy",
+      "name": "Budget Bill Pay - Standard 24hr",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "headline_discount_wording": null,
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "unit_p_per_kwh": 42.01,
+          "standing_p_per_day": 15.94
+        },
+        {
+          "payment_method": "direct_debit_postal",
+          "unit_p_per_kwh": 42.01,
+          "standing_p_per_day": 15.94
+        },
+        {
+          "payment_method": "on_receipt_ebill",
+          "unit_p_per_kwh": 42.01,
+          "standing_p_per_day": 15.94
+        },
+        {
+          "payment_method": "on_receipt_postal",
+          "unit_p_per_kwh": 42.01,
+          "standing_p_per_day": 15.94
+        }
+      ],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "No contract. No exit fee."
+    },
+    {
+      "id": "budget-energy-billpay-25-discount",
+      "supplier": "Budget Energy",
+      "name": "Budget Billpay 25% Discount",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 25,
+      "headline_discount_wording": "exact",
+      "intro_period_months": null,
+      "intro_period_basis": "unstated",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": null,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": true,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "unit_p_per_kwh": 31.51,
+          "standing_p_per_day": 13.22
+        }
+      ],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "Variable contract discount of 25% on Budget standard unit rate. Includes Standing Charge. No Exit Fee. You must be a new customer moving to Budget Energy."
+    },
+    {
+      "id": "budget-energy-bill-pay-29-discount",
+      "supplier": "Budget Energy",
+      "name": "Budget Energy Bill Pay 29% Discount",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 29,
+      "headline_discount_wording": "exact",
+      "intro_period_months": 12,
+      "intro_period_basis": "stated_fixed_term",
+      "reverts_to": "budget-energy-bill-pay-standard-24hr",
+      "contract": {
+        "type": "fixed",
+        "term_months": 12,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": true,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_postal",
+          "unit_p_per_kwh": 29.83,
+          "standing_p_per_day": 15.94
+        }
+      ],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "1 Year fixed term discount of 29% on Budget Energy's Standard Tariff. No Exit Fees. Available to new customers only."
+    },
+    {
+      "id": "budget-energy-keypad-60-loyalty-16-discount",
+      "supplier": "Budget Energy",
+      "name": "Budget Energy Keypad £60 Loyalty & 16% Discount",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 16,
+      "headline_discount_wording": "exact",
+      "intro_period_months": null,
+      "intro_period_basis": "unstated",
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "prepayment",
+          "unit_p_per_kwh": 34.58,
+          "standing_p_per_day": 19.97
+        }
+      ],
+      "adjustments": [
+        {
+          "type": "welcome_credit",
+          "amount_gbp": 30.0,
+          "applies": "first_year",
+          "timing": "unspecified"
+        },
+        {
+          "type": "welcome_credit",
+          "amount_gbp": 30.0,
+          "applies": "first_year",
+          "timing": {
+            "month": 9
+          }
+        }
+      ],
+      "start_date": null,
+      "notes": "Discount 16% & £60 Energy Credit. £30 after completion of switchover/renewal and £30 after 9 Months. No exit fee."
+    },
+    {
+      "id": "budget-energy-100-loyalty-18-discount",
+      "supplier": "Budget Energy",
+      "name": "Budget Energy £100 Loyalty and 18% Discount",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 18,
+      "headline_discount_wording": "exact",
+      "intro_period_months": null,
+      "intro_period_basis": "unstated",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": null,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "unit_p_per_kwh": 34.45,
+          "standing_p_per_day": 15.94
+        },
+        {
+          "payment_method": "direct_debit_postal",
+          "unit_p_per_kwh": 34.45,
+          "standing_p_per_day": 15.94
+        }
+      ],
+      "adjustments": [
+        {
+          "type": "welcome_credit",
+          "amount_gbp": 100.0,
+          "applies": "first_year",
+          "timing": "unspecified"
+        }
+      ],
+      "start_date": null,
+      "notes": "Variable contract discount of 18% on Budget standard unit rate. £100 free credit (applied after your first quarterly bill has issued). No exit fee."
+    },
+    {
+      "id": "budget-energy-80-discount-keypad-20-discount",
+      "supplier": "Budget Energy",
+      "name": "Budget Energy £80 Discount and Keypad 20% Discount",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 20,
+      "headline_discount_wording": "exact",
+      "intro_period_months": 12,
+      "intro_period_basis": "stated_fixed_term",
+      "reverts_to": "budget-energy-keypad-standard-24hr",
+      "contract": {
+        "type": "fixed",
+        "term_months": 12,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": true,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "prepayment",
+          "unit_p_per_kwh": 32.94,
+          "standing_p_per_day": 10.92
+        }
+      ],
+      "adjustments": [
+        {
+          "type": "welcome_credit",
+          "amount_gbp": 40.0,
+          "applies": "first_year",
+          "timing": "unspecified"
+        },
+        {
+          "type": "welcome_credit",
+          "amount_gbp": 40.0,
+          "applies": "first_year",
+          "timing": {
+            "month": 9
+          }
+        }
+      ],
+      "start_date": null,
+      "notes": "1 Year fixed term discount of 20% on Budget standard unit rate. £80 free credit (£40 after switchover and £40 after month 9). 12 month contract with no exit fee. New customers only."
+    },
+    {
+      "id": "budget-energy-keypad-loyalty-20-discount",
+      "supplier": "Budget Energy",
+      "name": "Budget Keypad Loyalty 20% Discount",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 20,
+      "headline_discount_wording": "exact",
+      "intro_period_months": null,
+      "intro_period_basis": "unstated",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": null,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "prepayment",
+          "unit_p_per_kwh": 32.94,
+          "standing_p_per_day": 10.92
+        }
+      ],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "Variable contract discount of 20% on Budget standard prepayment unit rate. No exit fee."
+    },
+    {
+      "id": "budget-energy-keypad-standard-24hr",
+      "supplier": "Budget Energy",
+      "name": "Budget Keypad Standard 24hr",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "headline_discount_wording": null,
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "prepayment",
+          "unit_p_per_kwh": 41.175,
+          "standing_p_per_day": 19.97
+        }
+      ],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "No contract. No exit fee."
+    },
+    {
+      "id": "click-energy-bill-pay-round-the-clock",
+      "supplier": "Click Energy",
+      "name": "Bill Pay Round the Clock",
+      "meter_type": "standard",
+      "status": "withdrawn",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "headline_discount_wording": null,
+      "intro_period_months": null,
+      "intro_period_basis": "unstated",
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "Withdrawn. The source states Click Energy removed all of its discounted tariffs, citing increased wholesale gas prices."
+    },
+    {
+      "id": "click-energy-bill-pay-twilight-std",
+      "supplier": "Click Energy",
+      "name": "Bill Pay Twilight",
+      "meter_type": "standard",
+      "status": "withdrawn",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "headline_discount_wording": null,
+      "intro_period_months": null,
+      "intro_period_basis": "unstated",
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "Withdrawn. The source states Click Energy removed all of its discounted tariffs, citing increased wholesale gas prices."
+    },
+    {
+      "id": "click-energy-bill-pay-24h",
+      "supplier": "Click Energy",
+      "name": "Click Bill Pay 24h",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "headline_discount_wording": null,
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "unit_p_per_kwh": 38.808,
+          "standing_p_per_day": 10.219
+        },
+        {
+          "payment_method": "direct_debit_postal",
+          "unit_p_per_kwh": 38.808,
+          "standing_p_per_day": 10.219
+        },
+        {
+          "payment_method": "on_receipt_ebill",
+          "unit_p_per_kwh": 38.808,
+          "standing_p_per_day": 10.219
+        },
+        {
+          "payment_method": "on_receipt_postal",
+          "unit_p_per_kwh": 38.808,
+          "standing_p_per_day": 10.219
+        }
+      ],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "No contract. No exit fee."
+    },
+    {
+      "id": "click-energy-keypad-24h",
+      "supplier": "Click Energy",
+      "name": "Click Keypad 24h",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "headline_discount_wording": null,
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "prepayment",
+          "unit_p_per_kwh": 38.808,
+          "standing_p_per_day": 12.795
+        }
+      ],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "No contract. No exit fee."
+    },
+    {
+      "id": "click-energy-keypad-round-the-clock",
+      "supplier": "Click Energy",
+      "name": "Keypad Round the Clock",
+      "meter_type": "standard",
+      "status": "withdrawn",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "headline_discount_wording": null,
+      "intro_period_months": null,
+      "intro_period_basis": "unstated",
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "Withdrawn. The source states Click Energy removed all of its discounted tariffs, citing increased wholesale gas prices."
+    },
+    {
+      "id": "click-energy-keypad-twilight-std",
+      "supplier": "Click Energy",
+      "name": "Keypad Twilight",
+      "meter_type": "standard",
+      "status": "withdrawn",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "headline_discount_wording": null,
+      "intro_period_months": null,
+      "intro_period_basis": "unstated",
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "Withdrawn. The source states Click Energy removed all of its discounted tariffs, citing increased wholesale gas prices."
+    },
+    {
+      "id": "power-ni-keypad-standard",
+      "supplier": "Power NI",
+      "name": "Keypad",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 2.5,
+      "headline_discount_wording": "exact",
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": false,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "prepayment",
+          "unit_p_per_kwh": 33.29,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "Equivalent to 2.5% off Standard Rate. Keypad reward: free electricity from £1-£4 for top ups between £50-£175 online or via app. No fixed term contract. No exit fee. Available to new and existing customers. The source states keypad customers are not affected by the quarterly discount threshold."
+    },
+    {
+      "id": "power-ni-monthly-direct-debit-standard",
+      "supplier": "Power NI",
+      "name": "Monthly Direct Debit",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 4,
+      "headline_discount_wording": "exact",
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": false,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_postal",
+          "unit_p_per_kwh": 32.78,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [
+        {
+          "type": "discount_cap",
+          "applies": "ongoing",
+          "basis": "annual_spend_at_standard_rate",
+          "threshold_gbp": 1000.0,
+          "standard_rate_ref": "power-ni-standard-standard",
+          "max_saving_gbp": 40.0,
+          "source_wording": "Discounts apply only up to £250 per quarter (£1,000 per year); usage beyond this is charged at the standard rate.",
+          "modelling_note": "Modelled as the annual £1,000 threshold. The calculator does not collect quarterly consumption, so results for strongly seasonal usage may differ from the supplier's actual annual bill."
+        }
+      ],
+      "start_date": null,
+      "notes": "Equivalent to 4% off Standard Rate. Maximum of £40 savings per year. No fixed term contract. No exit fee. Available to new and existing customers."
+    },
+    {
+      "id": "power-ni-monthly-direct-debit-with-online-billing-standard",
+      "supplier": "Power NI",
+      "name": "Monthly Direct Debit with online billing",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 6,
+      "headline_discount_wording": "exact",
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": false,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "unit_p_per_kwh": 32.1,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [
+        {
+          "type": "discount_cap",
+          "applies": "ongoing",
+          "basis": "annual_spend_at_standard_rate",
+          "threshold_gbp": 1000.0,
+          "standard_rate_ref": "power-ni-standard-standard",
+          "max_saving_gbp": 60.0,
+          "source_wording": "Discounts apply only up to £250 per quarter (£1,000 per year); usage beyond this is charged at the standard rate.",
+          "modelling_note": "Modelled as the annual £1,000 threshold. The calculator does not collect quarterly consumption, so results for strongly seasonal usage may differ from the supplier's actual annual bill."
+        }
+      ],
+      "start_date": null,
+      "notes": "Equivalent to 6% off Standard Rate. Maximum of £60 savings per year. No fixed term contract. No exit fee. Available to new and existing customers."
+    },
+    {
+      "id": "power-ni-quarterly-direct-debit-standard",
+      "supplier": "Power NI",
+      "name": "Quarterly Direct Debit",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 2.5,
+      "headline_discount_wording": "exact",
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": false,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_postal",
+          "unit_p_per_kwh": 33.29,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [
+        {
+          "type": "discount_cap",
+          "applies": "ongoing",
+          "basis": "annual_spend_at_standard_rate",
+          "threshold_gbp": 1000.0,
+          "standard_rate_ref": "power-ni-standard-standard",
+          "max_saving_gbp": 26.0,
+          "source_wording": "Discounts apply only up to £250 per quarter (£1,000 per year); usage beyond this is charged at the standard rate.",
+          "modelling_note": "Modelled as the annual £1,000 threshold. The calculator does not collect quarterly consumption, so results for strongly seasonal usage may differ from the supplier's actual annual bill."
+        }
+      ],
+      "start_date": null,
+      "notes": "Equivalent to 2.5% off Standard Rate. Maximum of £26 savings per year. No fixed term contract. No exit fee. Available to new and existing customers."
+    },
+    {
+      "id": "power-ni-quarterly-direct-debit-with-online-billing-standard",
+      "supplier": "Power NI",
+      "name": "Quarterly Direct Debit with online billing",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 4.5,
+      "headline_discount_wording": "exact",
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": false,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "unit_p_per_kwh": 32.61,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [
+        {
+          "type": "discount_cap",
+          "applies": "ongoing",
+          "basis": "annual_spend_at_standard_rate",
+          "threshold_gbp": 1000.0,
+          "standard_rate_ref": "power-ni-standard-standard",
+          "max_saving_gbp": 46.0,
+          "source_wording": "Discounts apply only up to £250 per quarter (£1,000 per year); usage beyond this is charged at the standard rate.",
+          "modelling_note": "Modelled as the annual £1,000 threshold. The calculator does not collect quarterly consumption, so results for strongly seasonal usage may differ from the supplier's actual annual bill."
+        }
+      ],
+      "start_date": null,
+      "notes": "Equivalent to 4.5% off Standard Rate. Maximum of £46 savings per year. No fixed term contract. No exit fee. Available to new and existing customers."
+    },
+    {
+      "id": "power-ni-standard-standard",
+      "supplier": "Power NI",
+      "name": "Standard",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "headline_discount_wording": null,
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": false,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "on_receipt_postal",
+          "unit_p_per_kwh": 34.15,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "Standard rate. No fixed term contract. No exit fee. Available to new and existing customers."
+    },
+    {
+      "id": "power-ni-standard-with-online-billing-standard",
+      "supplier": "Power NI",
+      "name": "Standard with online billing",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 2,
+      "headline_discount_wording": "exact",
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": false,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "unit_p_per_kwh": 33.46,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [
+        {
+          "type": "discount_cap",
+          "applies": "ongoing",
+          "basis": "annual_spend_at_standard_rate",
+          "threshold_gbp": 1000.0,
+          "standard_rate_ref": "power-ni-standard-standard",
+          "max_saving_gbp": 20.0,
+          "source_wording": "Discounts apply only up to £250 per quarter (£1,000 per year); usage beyond this is charged at the standard rate.",
+          "modelling_note": "Modelled as the annual £1,000 threshold. The calculator does not collect quarterly consumption, so results for strongly seasonal usage may differ from the supplier's actual annual bill."
+        }
+      ],
+      "start_date": null,
+      "notes": "Equivalent to 2% off Standard Rate for customers who activate an energy online account. Energy online account maximum savings of £20 per year. No fixed term contract. No exit fee. Available to new and existing customers."
+    },
+    {
+      "id": "sse-airtricity-1-year-home-electricity-10-discount-standard",
+      "supplier": "SSE Airtricity",
+      "name": "1 Year Home Electricity 10% discount",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 10,
+      "headline_discount_wording": "up_to",
+      "intro_period_months": 12,
+      "intro_period_basis": "stated_fixed_term",
+      "reverts_to": "sse-airtricity-standard-rate-24hr",
+      "contract": {
+        "type": "fixed",
+        "term_months": 12,
+        "exit_fee_gbp": 40.0
+      },
+      "eligibility": {
+        "new_customers_only": true,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "on_receipt_ebill",
+          "unit_p_per_kwh": 36.72,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [],
+      "start_date": "2026-08-01",
+      "notes": "Get up to 10% off our standard electricity unit rates. Start Date: 01/08/2026. Contract Type: Bill pay, Fixed term. £40 early exit fee. Only available to new customers."
+    },
+    {
+      "id": "sse-airtricity-1-year-home-electricity-10-discount-plus-60-welcome-credit-standard",
+      "supplier": "SSE Airtricity",
+      "name": "1 Year Home Electricity 10% discount plus £60 welcome credit",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 10,
+      "headline_discount_wording": "up_to",
+      "intro_period_months": 12,
+      "intro_period_basis": "stated_fixed_term",
+      "reverts_to": "sse-airtricity-standard-rate-24hr",
+      "contract": {
+        "type": "fixed",
+        "term_months": 12,
+        "exit_fee_gbp": 40.0
+      },
+      "eligibility": {
+        "new_customers_only": true,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "unit_p_per_kwh": 36.72,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [
+        {
+          "type": "welcome_credit",
+          "amount_gbp": 60.0,
+          "applies": "first_year",
+          "timing": "unspecified"
+        }
+      ],
+      "start_date": "2026-08-01",
+      "notes": "Get up to 10% off our standard electricity unit rates plus £60 welcome credit. Start Date: 01/08/2026. Contract Type: Bill pay, Fixed term. £40 early exit fee. Only available to new customers."
+    },
+    {
+      "id": "sse-airtricity-1-year-home-electricity-13-discount-standard",
+      "supplier": "SSE Airtricity",
+      "name": "1 Year Home Electricity 13% discount",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 13,
+      "headline_discount_wording": "up_to",
+      "intro_period_months": 12,
+      "intro_period_basis": "stated_fixed_term",
+      "reverts_to": "sse-airtricity-standard-rate-24hr",
+      "contract": {
+        "type": "fixed",
+        "term_months": 12,
+        "exit_fee_gbp": 40.0
+      },
+      "eligibility": {
+        "new_customers_only": true,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_postal",
+          "unit_p_per_kwh": 35.49,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [],
+      "start_date": "2026-08-01",
+      "notes": "Get up to 13% off our standard electricity unit rates. Start Date: 01/08/2026. Contract Type: Bill pay, Fixed term. £40 early exit fee. Only available to new customers."
+    },
+    {
+      "id": "sse-airtricity-1-year-home-electricity-15-discount-standard",
+      "supplier": "SSE Airtricity",
+      "name": "1 Year Home Electricity 15% discount",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 15,
+      "headline_discount_wording": "up_to",
+      "intro_period_months": 12,
+      "intro_period_basis": "stated_fixed_term",
+      "reverts_to": "sse-airtricity-standard-rate-24hr",
+      "contract": {
+        "type": "fixed",
+        "term_months": 12,
+        "exit_fee_gbp": 40.0
+      },
+      "eligibility": {
+        "new_customers_only": true,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "unit_p_per_kwh": 34.67,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [],
+      "start_date": "2026-08-01",
+      "notes": "Get up to 15% off our standard electricity unit rates. Start Date: 01/08/2026. Contract Type: Bill pay, Fixed term. £40 early exit fee. Only available to new customers."
+    },
+    {
+      "id": "sse-airtricity-1-year-home-electricity-2-discount-plus-60-welcome-credit-standard",
+      "supplier": "SSE Airtricity",
+      "name": "1 Year Home Electricity 2% discount plus £60 welcome credit",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 2,
+      "headline_discount_wording": "up_to",
+      "intro_period_months": 12,
+      "intro_period_basis": "stated_fixed_term",
+      "reverts_to": "sse-airtricity-standard-rate-24hr",
+      "contract": {
+        "type": "fixed",
+        "term_months": 12,
+        "exit_fee_gbp": 40.0
+      },
+      "eligibility": {
+        "new_customers_only": true,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "on_receipt_postal",
+          "unit_p_per_kwh": 39.97,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [
+        {
+          "type": "welcome_credit",
+          "amount_gbp": 60.0,
+          "applies": "first_year",
+          "timing": "unspecified"
+        }
+      ],
+      "start_date": "2026-08-01",
+      "notes": "Get up to 2% off our standard electricity unit rates plus £60 welcome credit (must be redeemed within one year, see T&C's). Fixed term. £40 early exit fee. Only available to new customers."
+    },
+    {
+      "id": "sse-airtricity-1-year-home-electricity-4-discount-plus-60-welcome-credit-standard",
+      "supplier": "SSE Airtricity",
+      "name": "1 Year Home Electricity 4% discount plus £60 welcome credit",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 4,
+      "headline_discount_wording": "up_to",
+      "intro_period_months": 12,
+      "intro_period_basis": "stated_fixed_term",
+      "reverts_to": "sse-airtricity-standard-rate-24hr",
+      "contract": {
+        "type": "fixed",
+        "term_months": 12,
+        "exit_fee_gbp": 40.0
+      },
+      "eligibility": {
+        "new_customers_only": true,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "on_receipt_ebill",
+          "unit_p_per_kwh": 39.17,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [
+        {
+          "type": "welcome_credit",
+          "amount_gbp": 60.0,
+          "applies": "first_year",
+          "timing": "unspecified"
+        }
+      ],
+      "start_date": "2026-08-01",
+      "notes": "Get up to 4% off our standard electricity unit rates plus £60 welcome credit (must be redeemed within one year, see T&C's). Fixed term. £40 early exit fee. Only available to new customers."
+    },
+    {
+      "id": "sse-airtricity-1-year-home-electricity-8-discount-plus-60-welcome-credit-standard",
+      "supplier": "SSE Airtricity",
+      "name": "1 Year Home Electricity 8% discount plus £60 welcome credit",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 8,
+      "headline_discount_wording": "up_to",
+      "intro_period_months": 12,
+      "intro_period_basis": "stated_fixed_term",
+      "reverts_to": "sse-airtricity-standard-rate-24hr",
+      "contract": {
+        "type": "fixed",
+        "term_months": 12,
+        "exit_fee_gbp": 40.0
+      },
+      "eligibility": {
+        "new_customers_only": true,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_postal",
+          "unit_p_per_kwh": 37.53,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [
+        {
+          "type": "welcome_credit",
+          "amount_gbp": 60.0,
+          "applies": "first_year",
+          "timing": "unspecified"
+        }
+      ],
+      "start_date": "2026-08-01",
+      "notes": "Get up to 8% off our standard electricity unit rates plus £60 welcome credit (must be redeemed within one year, see T&C's). Fixed term. £40 early exit fee. Only available to new customers."
+    },
+    {
+      "id": "sse-airtricity-1-year-home-electricity-9-discount-standard",
+      "supplier": "SSE Airtricity",
+      "name": "1 Year Home Electricity 9% discount",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 9,
+      "headline_discount_wording": "up_to",
+      "intro_period_months": 12,
+      "intro_period_basis": "stated_fixed_term",
+      "reverts_to": "sse-airtricity-standard-rate-24hr",
+      "contract": {
+        "type": "fixed",
+        "term_months": 12,
+        "exit_fee_gbp": 40.0
+      },
+      "eligibility": {
+        "new_customers_only": true,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "on_receipt_postal",
+          "unit_p_per_kwh": 37.12,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [],
+      "start_date": "2026-08-01",
+      "notes": "Get up to 9% off our standard electricity unit rates. Start Date: 01/08/2026. Contract Type: Bill pay, Fixed term. £40 early exit fee. Only available to new customers."
+    },
+    {
+      "id": "sse-airtricity-1-year-keypad-10-5-discount-plus-30-welcome-credit-24hr",
+      "supplier": "SSE Airtricity",
+      "name": "1 Year Keypad 10.5% discount plus £30 welcome credit (24hr)",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 10.5,
+      "headline_discount_wording": "up_to",
+      "intro_period_months": 12,
+      "intro_period_basis": "stated_fixed_term",
+      "reverts_to": "sse-airtricity-keypad-standard-rate-24hr",
+      "contract": {
+        "type": "fixed",
+        "term_months": 12,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": true,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "prepayment",
+          "unit_p_per_kwh": 36.51,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [
+        {
+          "type": "welcome_credit",
+          "amount_gbp": 30.0,
+          "applies": "first_year",
+          "timing": "unspecified"
+        }
+      ],
+      "start_date": "2026-08-01",
+      "notes": "1 Year fixed term discount of up to 10.5% on SSE Airtricity standard unit rate and £30 welcome credit. Available to new customers only."
+    },
+    {
+      "id": "sse-airtricity-keypad-standard-24hr-2-5",
+      "supplier": "SSE Airtricity",
+      "name": "Keypad Standard 24hr 2.5%",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 2.5,
+      "headline_discount_wording": "exact",
+      "intro_period_months": null,
+      "intro_period_basis": "unstated",
+      "reverts_to": null,
+      "contract": {
+        "type": "unknown",
+        "term_months": null,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "prepayment",
+          "unit_p_per_kwh": 39.77,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "2.5% off SSE Airtricity standard unit rate."
+    },
+    {
+      "id": "sse-airtricity-keypad-standard-rate-24hr",
+      "supplier": "SSE Airtricity",
+      "name": "Keypad Standard Rate 24hr",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "headline_discount_wording": null,
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "prepayment",
+          "unit_p_per_kwh": 40.79,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "Standard rate. No contract."
+    },
+    {
+      "id": "sse-airtricity-smartsaver-std-1-24hr",
+      "supplier": "SSE Airtricity",
+      "name": "SmartSaver Std 1% 24hr",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 1,
+      "headline_discount_wording": "exact",
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "on_receipt_ebill",
+          "unit_p_per_kwh": 40.38,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "1% off SSE Airtricity standard unit rate. No contract."
+    },
+    {
+      "id": "sse-airtricity-smartsaver-std-4-24hr",
+      "supplier": "SSE Airtricity",
+      "name": "SmartSaver Std 4% 24hr",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 4,
+      "headline_discount_wording": "exact",
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_postal",
+          "unit_p_per_kwh": 39.17,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "4% off SSE Airtricity standard unit rate. No contract."
+    },
+    {
+      "id": "sse-airtricity-smartsaver-std-6-24hr",
+      "supplier": "SSE Airtricity",
+      "name": "SmartSaver Std 6% 24hr",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "discounted",
+      "headline_discount_pct": 6,
+      "headline_discount_wording": "exact",
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "unit_p_per_kwh": 38.35,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "6% off SSE Airtricity standard unit rate. No contract."
+    },
+    {
+      "id": "sse-airtricity-standard-rate-24hr",
+      "supplier": "SSE Airtricity",
+      "name": "Standard Rate 24hr",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "headline_discount_wording": null,
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": null
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "on_receipt_ebill",
+          "unit_p_per_kwh": 40.79,
+          "standing_p_per_day": 0.0
+        },
+        {
+          "payment_method": "on_receipt_postal",
+          "unit_p_per_kwh": 40.79,
+          "standing_p_per_day": 0.0
+        }
+      ],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "Standard rate. No contract."
+    },
+    {
+      "id": "share-energy-share-24-credit",
+      "supplier": "Share Energy",
+      "name": "Share 24 Credit",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "headline_discount_wording": null,
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "direct_debit_ebill",
+          "unit_p_per_kwh": 31.96,
+          "standing_p_per_day": 13.33
+        },
+        {
+          "payment_method": "direct_debit_postal",
+          "unit_p_per_kwh": 31.96,
+          "standing_p_per_day": 13.33
+        },
+        {
+          "payment_method": "on_receipt_ebill",
+          "unit_p_per_kwh": 31.96,
+          "standing_p_per_day": 13.33
+        },
+        {
+          "payment_method": "on_receipt_postal",
+          "unit_p_per_kwh": 31.96,
+          "standing_p_per_day": 13.33
+        }
+      ],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "No fixed term. No exit fee."
+    },
+    {
+      "id": "share-energy-share-24-keypad",
+      "supplier": "Share Energy",
+      "name": "Share 24 Keypad",
+      "meter_type": "standard",
+      "status": "active",
+      "rate_basis": "standard",
+      "headline_discount_pct": null,
+      "headline_discount_wording": null,
+      "intro_period_months": 0,
+      "intro_period_basis": "stated_no_fixed_term",
+      "reverts_to": null,
+      "contract": {
+        "type": "variable",
+        "term_months": 0,
+        "exit_fee_gbp": 0.0
+      },
+      "eligibility": {
+        "new_customers_only": null,
+        "notes": []
+      },
+      "rates": [
+        {
+          "payment_method": "prepayment",
+          "unit_p_per_kwh": 31.96,
+          "standing_p_per_day": 16.67
+        }
+      ],
+      "adjustments": [],
+      "start_date": null,
+      "notes": "No fixed term. No exit fee."
+    }
+  ]
+}

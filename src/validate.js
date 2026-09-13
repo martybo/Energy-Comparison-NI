@@ -31,6 +31,10 @@ export const ADJUSTMENT_TYPES = [
 ];
 
 const RATE_BASES = ['standard', 'discounted'];
+/** The two tariff families the engine prices. See calc.js's METER_TYPES.
+ *  Unrelated to RATE_BASES above, which happens to share the word
+ *  "standard" for a different concept (undiscounted rates). */
+const METER_TYPES = ['economy7', 'standard'];
 /** Scope an adjustment applies in. An unrecognised value would silently drop
  *  the adjustment from every calculation, so it is an error, not a default. */
 export const APPLIES_SCOPES = ['first_year', 'ongoing', 'intro_period'];
@@ -121,6 +125,10 @@ export function validateDataset(dataset) {
     if (!RATE_BASES.includes(tariff.rate_basis)) {
       problems.push({ code: 'rate_basis_invalid', message: `rate_basis must be one of ${RATE_BASES.join(', ')}.` });
     }
+    if (!METER_TYPES.includes(tariff.meter_type)) {
+      problems.push({ code: 'meter_type_invalid', message: `meter_type must be one of ${METER_TYPES.join(', ')}.` });
+    }
+    const isStandardMeter = tariff.meter_type === 'standard';
 
     // intro_period_months: null means unknown, 0 means no introductory period.
     const intro = tariff.intro_period_months;
@@ -171,7 +179,14 @@ export function validateDataset(dataset) {
         } else {
           seenMethods.add(rate.payment_method);
         }
-        for (const field of ['day_p_per_kwh', 'night_p_per_kwh', 'standing_p_per_day']) {
+        // A standard tariff has one rate; an economy7 tariff has day and
+        // night rates. Neither shape is optional or interchangeable: a
+        // standard tariff must not carry a fabricated night rate, and an
+        // economy7 tariff must not be priced off a single blended rate.
+        const rateFields = isStandardMeter
+          ? ['unit_p_per_kwh', 'standing_p_per_day']
+          : ['day_p_per_kwh', 'night_p_per_kwh', 'standing_p_per_day'];
+        for (const field of rateFields) {
           const v = rate[field];
           if (v === undefined || v === null) {
             problems.push({ code: 'rate_field_missing', message: `${at}.${field} is missing.` });
@@ -227,8 +242,10 @@ export function validateDataset(dataset) {
         if (!isNumber(adj.pct) || adj.pct < 0 || adj.pct > 100) {
           problems.push({ code: 'discount_pct_invalid', message: `${at}.pct must be a number between 0 and 100.` });
         }
-        if (adj.applies_to !== undefined && !['all', 'day', 'night'].includes(adj.applies_to)) {
-          problems.push({ code: 'discount_scope_invalid', message: `${at}.applies_to must be all, day or night.` });
+        // A standard tariff has no day/night split to target separately.
+        const allowedScopes = isStandardMeter ? ['all'] : ['all', 'day', 'night'];
+        if (adj.applies_to !== undefined && !allowedScopes.includes(adj.applies_to)) {
+          problems.push({ code: 'discount_scope_invalid', message: `${at}.applies_to must be ${allowedScopes.join(' or ')}${isStandardMeter ? ' for a standard tariff' : ''}.` });
         }
       } else {
         if (!isNumber(adj.amount_gbp) || adj.amount_gbp < 0) {
