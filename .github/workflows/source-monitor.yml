@@ -79,3 +79,38 @@ jobs:
         run: |
           echo "One or more tariff-family source checks failed — see the 'Check sources' step log above."
           exit 1
+
+      # TEMPORARY (issue #17 development only — delete before opening the PR).
+      # Fetches both current PDFs and pushes them to a throwaway branch, so
+      # extraction can be built against the real bytes from a development
+      # environment that cannot reach consumercouncil.org.uk. Works in an
+      # isolated directory and pushes only to tmp/issue-17-source-pdfs, so
+      # neither this checkout, the feature branch, nor main is touched.
+      - name: TEMP publish source PDFs to a scratch branch for issue 17
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/pdfs/.source-pdfs
+          node --input-type=module -e "
+          import { writeFileSync } from 'node:fs';
+          import { TARIFF_FAMILIES } from './scripts/source-monitor/sources.mjs';
+          import { fetchText, fetchBinary } from './scripts/source-monitor/fetch-utils.mjs';
+          import { selectCurrentPdf, assertIsPdf } from './scripts/source-monitor/discover.mjs';
+          for (const family of TARIFF_FAMILIES) {
+            const html = await fetchText(family.landingPageUrl, 20000);
+            const candidate = selectCurrentPdf(html, family.landingPageUrl, family);
+            const { buffer } = await fetchBinary(candidate.url, 30000);
+            assertIsPdf(buffer, candidate.url);
+            writeFileSync('/tmp/pdfs/.source-pdfs/' + family.id + '.pdf', buffer);
+            console.log(family.id, candidate.url, buffer.length, 'bytes');
+          }
+          "
+          cd /tmp/pdfs
+          sha256sum .source-pdfs/*.pdf | tee .source-pdfs/SHA256SUMS
+          git init -q -b tmp/issue-17-source-pdfs
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f .source-pdfs
+          git commit -q -m "temp(#17): current Consumer Council PDFs for offline extraction development"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" tmp/issue-17-source-pdfs
+          echo "pushed to tmp/issue-17-source-pdfs"
