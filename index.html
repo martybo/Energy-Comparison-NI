@@ -95,6 +95,18 @@
     .cond { color:var(--muted); font-size:0.86rem; margin-top:8px; }
     .rates { color:var(--muted); font-size:0.84rem; margin-top:8px; border-top:1px solid var(--line); padding-top:8px; }
 
+    /* Progressive disclosure for the rest of the Top 10: a native <details>
+       element, so keyboard/focus/toggle behaviour needs no JS reimplementation. */
+    .tariff-disclosure summary {
+      list-style:none; cursor:pointer; user-select:none;
+      display:flex; align-items:center; min-height:44px; padding:10px 12px;
+      margin-bottom:10px; border:1px solid var(--line); border-radius:8px;
+      background:var(--card); color:var(--brand-dark); font-weight:600; font-size:0.92rem;
+    }
+    .tariff-disclosure summary::-webkit-details-marker { display:none; }
+    .tariff-disclosure[open] summary { margin-bottom:10px; }
+    .tariff-disclosure summary:hover { background:var(--brand-light); }
+
     /* Economy 7 vs 24-hour comparison strip: a "this vs that" layout rather
        than a second results table, so it reads as answering one question. */
     .compare-strip { display:flex; align-items:stretch; gap:10px; margin:4px 0 14px; }
@@ -217,7 +229,7 @@
 </main>
 
 <script type="module">
-import { compare, usageFromAnnualSplit, usageFromAnnualDayNight, compareMeterTypes } from './src/calc.js';
+import { compare, usageFromAnnualSplit, usageFromAnnualDayNight, compareMeterTypes, TIE_EPSILON } from './src/calc.js';
 import { loadValidated } from './src/validate.js';
 import {
   gbp, year1Monthly, ongoingHeadline, ongoingMonthly, creditSummary, conditionSummary,
@@ -287,14 +299,14 @@ function updateUsageHint() {
     `(${Math.round(total).toLocaleString('en-GB')} kWh total, ${share.toFixed(0)}% at night).`;
 }
 
-function renderResult(result, rank, labels) {
-  const card = el('div', rank === 1 ? 'result cheapest' : 'result');
+function renderResult(result, rank, labels, isCheapest) {
+  const card = el('div', isCheapest ? 'result cheapest' : 'result');
 
   const header = el('header');
   const left = el('div');
   left.appendChild(el('span', 'rank', `${rank}. `));
   left.appendChild(el('span', 'name', result.name));
-  if (rank === 1) left.appendChild(el('span', 'cheapest-tag', 'Cheapest'));
+  if (isCheapest) left.appendChild(el('span', 'cheapest-tag', 'Cheapest'));
   left.appendChild(el('div', 'supplier', `${result.supplier} · ${paymentMethodSummary(result, labels)}`));
   const right = el('div', 'headline', gbp(result.year1.total));
   right.appendChild(el('small', null, 'estimated Year 1'));
@@ -338,6 +350,42 @@ function renderResult(result, rank, labels) {
   return card;
 }
 
+/**
+ * Renders a ranked result list collapsed to just the cheapest tariff(s):
+ * every tariff within TIE_EPSILON of the lowest cost is shown initially (a
+ * genuine joint-cheapest tie is never hidden by this), with the remaining
+ * ranked results — the same Top 10, same order — revealed by a native
+ * <details> disclosure. Nothing here re-ranks or re-filters; it only
+ * changes how many of an already-computed `results` array are visible.
+ */
+function renderResultList(container, results, labels, familyLabel) {
+  if (results.length === 0) return;
+
+  const cheapestCost = results[0].year1.total;
+  let tieCount = 0;
+  while (tieCount < results.length && Math.abs(results[tieCount].year1.total - cheapestCost) < TIE_EPSILON) {
+    tieCount++;
+  }
+
+  results.forEach((r, i) => {
+    if (i < tieCount) container.appendChild(renderResult(r, i + 1, labels, true));
+  });
+
+  const rest = results.slice(tieCount);
+  if (rest.length === 0) return;
+
+  const details = el('details', 'tariff-disclosure');
+  const summary = el('summary', null, `Show all ${results.length} ${familyLabel} tariffs ▾`);
+  details.appendChild(summary);
+  rest.forEach((r, i) => details.appendChild(renderResult(r, tieCount + i + 1, labels, false)));
+  details.addEventListener('toggle', () => {
+    summary.textContent = details.open
+      ? `Show fewer ${familyLabel} tariffs ▴`
+      : `Show all ${results.length} ${familyLabel} tariffs ▾`;
+  });
+  container.appendChild(details);
+}
+
 /** One side of the Economy 7 vs 24-hour comparison strip. `res` is the
  *  cheapest result for that family, or null when nothing matched the
  *  current filter — shown as "No matching tariff", never left blank. */
@@ -378,7 +426,7 @@ function renderMeterTypeSection(usage, paymentMethod, e7Res) {
     $('standardResultsHeading').textContent = standardRes.results.length < standardRes.totalConsidered
       ? `Cheapest ${standardRes.results.length} of ${standardRes.totalConsidered} 24-hour tariffs, by estimated Year 1 cost`
       : `All ${standardRes.totalConsidered} matching 24-hour tariffs, by estimated Year 1 cost`;
-    standardRes.results.forEach((r, i) => standardResults.appendChild(renderResult(r, i + 1, standardRes.paymentMethodLabels)));
+    renderResultList(standardResults, standardRes.results, standardRes.paymentMethodLabels, '24-hour');
   }
 
   const verdict = compareMeterTypes({ economy7: e7Res, standard: standardRes });
@@ -424,7 +472,7 @@ function run(event) {
     $('resultsHeading').textContent = res.results.length < res.totalConsidered
       ? `Cheapest ${res.results.length} of ${res.totalConsidered} tariffs, by estimated Year 1 cost`
       : `All ${res.totalConsidered} matching tariffs, by estimated Year 1 cost`;
-    res.results.forEach((r, i) => results.appendChild(renderResult(r, i + 1, res.paymentMethodLabels)));
+    renderResultList(results, res.results, res.paymentMethodLabels, 'Economy 7');
   }
 
   // compareMeterTypes only reads the cheapest result (index 0), and compare()
