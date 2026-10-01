@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { validateDataset } from '../src/validate.js';
+import { contractViolations } from '../src/contract.js';
+import { paymentMethodOptions } from '../src/format.js';
 
 /**
  * Static-deployment safety net.
@@ -80,6 +82,39 @@ test('the optional standard-tariff dataset, if present, is internally consistent
   const datedSuffix = pointer.dataset.replace(/^tariffs-standard-/, '').replace(/\.json$/, '');
   assert.ok(existsSync(root + `docs/RECONCILIATION-standard-${datedSuffix}.md`), 'expected a matching reconciliation document');
   assert.ok(existsSync(root + `docs/source-rows-standard-${datedSuffix}.json`), 'expected a matching source-row trace');
+});
+
+/**
+ * Published before src/contract.js existed, and served only until the next
+ * dataset replaces it. It lacks `schema_version`, `payment_methods`,
+ * `supplier_notes` and two per-tariff fields; the page still labels its
+ * payment methods only because the Economy 7 dataset supplies the labels.
+ * Published files are never edited, so it is named here rather than fixed.
+ * Nothing may be added to this list.
+ */
+const PREDATES_CONTRACT = new Set(['tariffs-standard-2026-09-12-r2.json']);
+
+const servedDatasets = () =>
+  ['data/latest.json', 'data/latest-standard.json']
+    .filter((pointer) => existsSync(root + pointer))
+    .map((pointer) => {
+      const file = JSON.parse(read(pointer)).dataset;
+      return { pointer, file, dataset: JSON.parse(read('data/' + file)) };
+    });
+
+test('every dataset the pointers serve meets the published dataset contract', () => {
+  for (const { pointer, file, dataset } of servedDatasets()) {
+    if (PREDATES_CONTRACT.has(file)) continue;
+    assert.deepEqual(contractViolations(dataset), [], `${pointer} → ${file}`);
+  }
+});
+
+test('the payment-method filter offers every method the served tariffs are priced for', () => {
+  const served = servedDatasets().map((s) => s.dataset);
+  const priced = new Set(served.flatMap((d) => d.tariffs.flatMap((t) => t.rates.map((r) => r.payment_method))));
+  const offered = paymentMethodOptions(...served);
+  assert.deepEqual(offered.map((o) => o.value).sort(), [...priced].sort());
+  for (const o of offered) assert.ok(typeof o.label === 'string' && o.label.trim() !== '' && o.label !== o.value, `${o.value} has a label`);
 });
 
 test('no development or tooling files are required at runtime', () => {

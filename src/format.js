@@ -116,6 +116,24 @@ export function paymentMethodSummary(result, labels = {}) {
   return label(result.paymentMethod);
 }
 
+/**
+ * The payment-method filter's options: every method a tariff in any of the
+ * datasets is priced for, labelled from the datasets' `payment_methods` maps
+ * (later datasets' labels win), in the order those maps list them.
+ *
+ * Only a labelled method can be offered, so a dataset without the map yields
+ * no options at all — the failure the first extracted candidate would have
+ * shipped. src/contract.js is what prevents that; this is what it protects.
+ */
+export function paymentMethodOptions(...datasets) {
+  const present = datasets.filter(Boolean);
+  const offered = new Set(present.flatMap((d) => (d.tariffs || []).flatMap((t) => (t.rates || []).map((r) => r.payment_method))));
+  const labels = Object.assign({}, ...present.map((d) => d.payment_methods || {}));
+  return Object.entries(labels)
+    .filter(([value]) => offered.has(value))
+    .map(([value, label]) => ({ value, label }));
+}
+
 /** Explains a usage-threshold discount cap, when one bites at this usage. */
 export function capSummary(result) {
   const cap = result.discountCap;

@@ -16,6 +16,32 @@ tariff name appears in `src/calc.js`.
 Publishing a new month means adding a dated file and changing one filename in
 `data/latest.json`. No HTML or JavaScript changes.
 
+## Dataset contract
+
+A dataset file has five top-level keys, in this order: `schema_version` (2),
+`dataset` (the header below), `payment_methods` (the display label for each
+payment-method key), `supplier_notes` (the source's notices, keyed by the
+supplier they are printed for), and `tariffs`. Every tariff record carries every
+field shown under **Tariff record**, `headline_discount_wording` and
+`start_date` included; `null` where the source does not state a value, never
+absent.
+
+`src/contract.js` states this and checks it. `validate.js` decides whether each
+tariff can be costed and tolerates missing structure so the page degrades
+gracefully; the contract decides whether a dataset can be published at all.
+They answer different questions. A dataset can validate cleanly and still break
+the page: without `payment_methods`, the payment-method filter offers nothing
+and results show raw keys. The extraction pipeline refuses to produce such a
+dataset, and the deployment tests refuse to serve one. The single exception,
+`tariffs-standard-2026-09-12-r2.json`, was published before the contract
+existed. It is listed in `test/deployment.test.js` and served only until the
+next Standard dataset replaces it.
+
+`headline_discount_wording` is `up_to` where the source says "up to N%",
+`exact` where it prints a percentage without that qualifier, and `null` where
+there is no headline percentage. `start_date` is the tariff's printed "Start
+Date: dd/mm/yyyy", and `null` where the row prints none.
+
 ## Dataset header
 
 ```json

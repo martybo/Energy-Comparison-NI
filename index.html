@@ -233,7 +233,7 @@ import { compare, usageFromAnnualSplit, usageFromAnnualDayNight, compareMeterTyp
 import { loadValidated } from './src/validate.js';
 import {
   gbp, year1Monthly, ongoingHeadline, ongoingMonthly, creditSummary, conditionSummary,
-  datasetStatus, paymentMethodSummary, capSummary, capLimitation, rateLine,
+  datasetStatus, paymentMethodSummary, paymentMethodOptions, capSummary, capLimitation, rateLine,
   meterTypeSwitchCaveat, meterTypeVerdictHeadline, meterTypeVerdictDetail
 } from './src/format.js';
 
@@ -536,13 +536,7 @@ async function init() {
   }
 
   const select = $('paymentMethod');
-  const offered = new Set(active.dataset.tariffs.flatMap((t) => t.rates.map((r) => r.payment_method)));
-  if (activeStandard) {
-    for (const m of activeStandard.dataset.tariffs.flatMap((t) => t.rates.map((r) => r.payment_method))) offered.add(m);
-  }
-  const labels = { ...(active.dataset.payment_methods || {}), ...(activeStandard?.dataset.payment_methods || {}) };
-  for (const [value, label] of Object.entries(labels)) {
-    if (!offered.has(value)) continue;
+  for (const { value, label } of paymentMethodOptions(active.dataset, activeStandard?.dataset)) {
     const option = el('option', null, label);
     option.value = value;
     select.appendChild(option);
