@@ -36,6 +36,7 @@
 import { PAYMENT_METHOD_PHRASES } from './table.mjs';
 import { MappingError } from './mapping-error.mjs';
 import { decisionForRow, decisionsForFamily, printedLabel } from './decisions.mjs';
+import { SCHEMA_VERSION, PAYMENT_METHOD_LABELS, TARIFF_KEYS, contractViolations } from '../../src/contract.js';
 
 export { MappingError };
 
@@ -86,6 +87,9 @@ function sourceNotes(text) {
 
 const RE = {
   percent: /(\d+(?:\.\d+)?)\s*%/,
+  // "Get up to 13% off", "discount of up to 10.5%": the printed percentage is
+  // a ceiling, not the discount every customer gets.
+  upTo: /up\s*to\s*(\d+(?:\.\d+)?)\s*%/i,
   exitFee: /£\s*(\d+(?:\.\d+)?)\s*(?:early\s*)?exit\s*fee/i,
   noExitFee: /no\s*exit\s*fees?/i,
   variableContract: /variable\s*contract/i,
@@ -220,6 +224,7 @@ function deriveTier1(row, familyId) {
   else if (RE.newAndExisting.test(stated)) newCustomersOnly = false;
 
   const startDate = RE.startDate.exec(stated);
+  const upTo = RE.upTo.exec(stated);
 
   return {
     meter_type: METER_TYPE[familyId],
@@ -228,12 +233,13 @@ function deriveTier1(row, familyId) {
     // advertised percentage means the printed rate is already discounted.
     rate_basis: headline === null ? 'standard' : 'discounted',
     headline_discount_pct: headline,
+    headline_discount_wording: headline === null ? null : upTo && Number(upTo[1]) === headline ? 'up_to' : 'exact',
     ...intro,
     contract,
     eligibility: { new_customers_only: newCustomersOnly, notes: [] },
     adjustments,
     notes: sourceNotes(info),
-    source_start_date: startDate ? `${startDate[3]}-${startDate[2]}-${startDate[1]}` : null,
+    start_date: startDate ? `${startDate[3]}-${startDate[2]}-${startDate[1]}` : null,
     // Signals that the source indicates a capped discount whose *structure*
     // only Tier 2 can supply.
     states_savings_cap: RE.savingsCap.test(stated) ? Number(RE.savingsCap.exec(stated)[1]) : null,
@@ -429,6 +435,56 @@ function resolveProducts(row, previousProducts, decisions) {
   }
 
   return { kind: 'carried_grouping', products: chosen, carriedFrom: candidates.map((c) => c.id) };
+}
+
+/** A record's keys in the contract's order, so a dataset file reads the same however it was built. */
+function inContractOrder(record) {
+  const ordered = {};
+  for (const key of TARIFF_KEYS) if (key in record) ordered[key] = record[key];
+  for (const key of Object.keys(record)) if (!(key in ordered)) ordered[key] = record[key];
+  return ordered;
+}
+
+/**
+ * The source's own notices, keyed by the supplier they are printed for.
+ *
+ * Two kinds are printed: a headed section notice ("Click Energy tariff
+ * removal"), whose heading names the supplier, and a scheduled-change line
+ * printed inside a supplier's section, which does not. The latter belongs to
+ * the supplier priced on its page. Where more than one is, the notice is not
+ * guessed onto either: it becomes a review item.
+ *
+ * Only what the source prints is carried, quoted. A notice the source has
+ * stopped printing — a scheduled change that has now happened — is gone from
+ * the dataset with it.
+ */
+function supplierNotes(table, reviewRequired) {
+  const notes = {};
+  const suppliers = [...(table.suppliers ?? [])].sort((a, b) => b.length - a.length);
+  for (const notice of table.notices ?? []) {
+    let supplier = null;
+    let quoted = notice.text;
+    if (notice.heading) {
+      supplier = suppliers.find((s) => notice.heading.toLowerCase().startsWith(s.toLowerCase())) ?? null;
+      quoted = `${notice.heading}: ${notice.text}`;
+    } else {
+      const priced = [...new Set(table.rows.filter((r) => r.page === notice.page).map((r) => r.supplier))];
+      supplier = priced.length === 1 ? priced[0] : null;
+    }
+    if (!supplier) {
+      reviewRequired.push({
+        reason: 'notice_unattributed',
+        field: 'supplier_notes',
+        product_id: null,
+        detail: { cell: notice.heading ?? notice.text, page: notice.page },
+        message: `The source prints a notice on page ${notice.page} ("${notice.text}") that cannot be attributed to one supplier. It has not been assigned to any: a person must say whose it is.`
+      });
+      continue;
+    }
+    const note = `The source states: "${quoted}"`;
+    notes[supplier] = notes[supplier] ? `${notes[supplier]} ${note}` : note;
+  }
+  return notes;
 }
 
 /**
@@ -641,6 +697,7 @@ export function mapToCanonical({ table, previous, decisions: decisionsFile = nul
         status: tier1.status,
         rate_basis: tier1.rate_basis,
         headline_discount_pct: tier1.headline_discount_pct,
+        headline_discount_wording: tier1.headline_discount_wording,
         intro_period_months: tier1.intro_period_months,
         intro_period_basis: tier1.intro_period_basis,
         reverts_to: null,
@@ -648,6 +705,7 @@ export function mapToCanonical({ table, previous, decisions: decisionsFile = nul
         eligibility: tier1.eligibility,
         rates,
         adjustments: [...tier1.adjustments],
+        start_date: tier1.start_date,
         notes: tier1.notes
       };
 
@@ -659,11 +717,13 @@ export function mapToCanonical({ table, previous, decisions: decisionsFile = nul
         'status',
         'rate_basis',
         'headline_discount_pct',
+        'headline_discount_wording',
         'intro_period_months',
         'intro_period_basis',
         'contract',
         'eligibility',
         'rates',
+        'start_date',
         'notes'
       ]) {
         provenance[field] = FIELD_PROVENANCE.SOURCE_DERIVED;
@@ -883,7 +943,7 @@ export function mapToCanonical({ table, previous, decisions: decisionsFile = nul
       const provenance = { status: FIELD_PROVENANCE.SOURCE_DERIVED, name: FIELD_PROVENANCE.SOURCE_DERIVED };
 
       if (retained) {
-        for (const field of ['rate_basis', 'headline_discount_pct', 'intro_period_months', 'intro_period_basis', 'reverts_to', 'contract', 'eligibility', 'adjustments']) {
+        for (const field of ['rate_basis', 'headline_discount_pct', 'headline_discount_wording', 'intro_period_months', 'intro_period_basis', 'reverts_to', 'contract', 'eligibility', 'adjustments', 'start_date']) {
           provenance[field] = FIELD_PROVENANCE.CARRIED_FORWARD;
         }
         carryForwardAudit.push({
@@ -901,7 +961,16 @@ export function mapToCanonical({ table, previous, decisions: decisionsFile = nul
 
       products.set(id, {
         record: retained
-          ? { ...retained, status: 'withdrawn', rates: [], notes: noticeNotes }
+          ? {
+              ...retained,
+              // A previous record that predates these fields still states
+              // nothing about them; null says so rather than dropping them.
+              headline_discount_wording: retained.headline_discount_wording ?? null,
+              start_date: retained.start_date ?? null,
+              status: 'withdrawn',
+              rates: [],
+              notes: noticeNotes
+            }
           : {
               id,
               supplier,
@@ -910,6 +979,7 @@ export function mapToCanonical({ table, previous, decisions: decisionsFile = nul
               status: 'withdrawn',
               rate_basis: 'standard',
               headline_discount_pct: null,
+              headline_discount_wording: null,
               intro_period_months: null,
               intro_period_basis: 'unstated',
               reverts_to: null,
@@ -917,6 +987,7 @@ export function mapToCanonical({ table, previous, decisions: decisionsFile = nul
               eligibility: { new_customers_only: null, notes: [] },
               rates: [],
               adjustments: [],
+              start_date: null,
               notes: noticeNotes
             },
         provenance,
@@ -926,7 +997,8 @@ export function mapToCanonical({ table, previous, decisions: decisionsFile = nul
     }
   }
 
-  const tariffs = [...products.values()].map((p) => p.record);
+  const tariffs = [...products.values()].map((p) => inContractOrder(p.record));
+  const supplier_notes = supplierNotes(table, reviewRequired);
 
   const dataset = {
     effective_from: table.source.comparison_date,
@@ -945,9 +1017,32 @@ export function mapToCanonical({ table, previous, decisions: decisionsFile = nul
     notes: datasetNotes(familyId, table.source, decisionsApplied)
   };
 
+  const output = {
+    schema_version: SCHEMA_VERSION,
+    dataset,
+    payment_methods: { ...PAYMENT_METHOD_LABELS },
+    supplier_notes,
+    tariffs
+  };
+
+  // The structure the page depends on, checked before anything is proposed.
+  // A shortfall here is a defect in this mapper, not in the source, so it
+  // fails the run rather than producing a candidate to review.
+  const violations = contractViolations(output, { reference: previousDataset });
+  if (violations.length > 0) {
+    throw new MappingError(
+      'DATASET_CONTRACT',
+      `The mapped dataset does not meet the published dataset contract (src/contract.js): ${violations
+        .slice(0, 5)
+        .map((v) => v.message)
+        .join(' ')}${violations.length > 5 ? ` …and ${violations.length - 5} more.` : ''}`,
+      { violations }
+    );
+  }
+
   return {
     family: familyId,
-    dataset: { dataset, tariffs },
+    dataset: output,
     source_row_trace: sourceRowTrace,
     field_provenance: fieldProvenance,
     carry_forward_audit: carryForwardAudit,

@@ -217,7 +217,39 @@ Gates are raised for:
 - a **continuing** product for which the application's validator now warns but
   did not warn on the published dataset (`validator_warning_introduced`) — see
   below;
-- slot accounting that does not balance.
+- slot accounting that does not balance;
+- a scheduled-change notice printed on a page priced for more than one
+  supplier, so it cannot be attributed (`notice_unattributed`).
+
+### The dataset contract
+
+The mapper writes the whole dataset contract (`src/contract.js`, documented in
+`docs/DATA.md`), not only what the calculation needs: `schema_version`, the
+`payment_methods` labels, `supplier_notes` and every tariff field. If its output
+falls short of the contract, or drops anything the published dataset carries,
+even a field the contract does not name, the run fails with
+`extraction_failed` (`DATASET_CONTRACT`). That is a defect in the mapper, not
+something to review in a candidate.
+
+This exists because the first live candidate (#36) carried every tariff
+correctly and passed every test, but had no `payment_methods` map, so the
+page's payment-method filter would have offered nothing and results would have
+shown raw keys. It also dropped `supplier_notes`, `schema_version`,
+`headline_discount_wording` and `start_date`. The Standard `-r2` dataset,
+already published, has the same gap. Its 24-hour results show raw keys today,
+because only the Economy 7 dataset supplies the labels.
+
+`supplier_notes` carries the notices the source prints, quoted. A headed notice
+("Click Energy tariff removal") names its supplier. A scheduled-change line
+belongs to the one supplier priced on its page. A notice the source no longer
+prints, such as a scheduled change that has now happened, leaves the dataset
+with it.
+
+The reconciliation compares every tariff field, not a chosen list. A field the
+published dataset does not carry at all has no earlier value to compare, so it
+is listed under **Fields the published dataset did not carry**, with the
+values it takes and which tariffs take them, rather than counted as a product
+change.
 
 ### The Standard row that needed a decision
 

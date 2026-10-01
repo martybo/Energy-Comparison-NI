@@ -29,6 +29,10 @@ const COMPARED_FIELDS = [
 ];
 
 const sameValue = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+const hasKey = (object, key) => object !== null && typeof object === 'object' && Object.prototype.hasOwnProperty.call(object, key);
+
+/** Dataset-level keys compared alongside the header; `dataset` and `tariffs` are compared in detail. */
+const DATASET_LEVEL_KEYS = ['schema_version', 'payment_methods', 'supplier_notes'];
 
 /**
  * `notes` is the source's ADDITIONAL INFORMATION column, transcribed. The
@@ -139,17 +143,28 @@ export function reconcile({ candidate, published, publishedLabel = null }) {
   const changed = [];
   const wordingOnly = [];
   const unchanged = [];
+  const restoredTariffFields = [];
 
   for (const [id, after] of current) {
     const before = previous.get(id);
     if (!before) continue;
 
+    // Every field is compared, not a chosen list, so no field can change or
+    // disappear without being named. A field the published record does not
+    // carry at all is not a change in what is known about the tariff: the
+    // published dataset predates it. It is reported separately, as restored.
     const fields = [];
-    for (const field of COMPARED_FIELDS) {
-      if (!sameValue(before[field], after[field])) fields.push({ field, from: before[field] ?? null, to: after[field] ?? null });
-    }
-    for (const field of ['contract', 'eligibility', 'adjustments']) {
-      if (!sameValue(before[field], after[field])) fields.push({ field, from: before[field] ?? null, to: after[field] ?? null });
+    const keys = [...new Set([...COMPARED_FIELDS, 'contract', 'eligibility', 'adjustments', ...Object.keys(before), ...Object.keys(after)])].filter(
+      (k) => k !== 'id' && k !== 'rates'
+    );
+    for (const field of keys) {
+      if (!hasKey(before, field) && hasKey(after, field)) {
+        restoredTariffFields.push({ field, id, value: after[field] });
+        continue;
+      }
+      if (!sameValue(before[field], after[field]) || hasKey(before, field) !== hasKey(after, field)) {
+        fields.push({ field, from: before[field] ?? null, to: hasKey(after, field) ? after[field] ?? null : '(field absent)' });
+      }
     }
     const rates = diffRates(before, after);
     const rateChanged = rates.added.length > 0 || rates.removed.length > 0 || rates.repriced.length > 0;
@@ -164,10 +179,35 @@ export function reconcile({ candidate, published, publishedLabel = null }) {
   }
 
   const datasetFields = [];
+  const restoredDatasetFields = [];
   for (const [field, value] of Object.entries(candidate.dataset.dataset)) {
     const before = published?.dataset?.[field];
     if (before !== undefined && !sameValue(before, value)) datasetFields.push({ field, from: before, to: value });
+    else if (published && !hasKey(published.dataset, field)) restoredDatasetFields.push({ field: `dataset.${field}`, value });
   }
+  for (const field of DATASET_LEVEL_KEYS) {
+    if (!hasKey(candidate.dataset, field)) continue;
+    const value = candidate.dataset[field];
+    if (published && !hasKey(published, field)) restoredDatasetFields.push({ field, value });
+    else if (published && !sameValue(published[field], value)) datasetFields.push({ field, from: published[field], to: value });
+  }
+  // Grouped by field, with the values it takes, so a reviewer can check them
+  // against the source without reading one line per tariff.
+  const restoredByField = new Map();
+  for (const r of restoredTariffFields) {
+    if (!restoredByField.has(r.field)) restoredByField.set(r.field, new Map());
+    const byValue = restoredByField.get(r.field);
+    const key = JSON.stringify(r.value ?? null);
+    if (!byValue.has(key)) byValue.set(key, []);
+    byValue.get(key).push(r.id);
+  }
+  const restoredFields = {
+    dataset: restoredDatasetFields,
+    tariffs: [...restoredByField].map(([field, byValue]) => ({
+      field,
+      values: [...byValue].map(([value, ids]) => ({ value: JSON.parse(value), ids }))
+    }))
+  };
 
   const printedSlots = candidate.totals.payment_method_slots;
   const mappedRates = candidate.totals.rate_rows;
@@ -241,6 +281,7 @@ export function reconcile({ candidate, published, publishedLabel = null }) {
     },
     slot_accounting: slotAccounting,
     dataset_fields: datasetFields,
+    restored_fields: restoredFields,
     products: {
       added: added.map((t) => ({ id: t.id, supplier: t.supplier, name: t.name, status: t.status, methods: (t.rates ?? []).map((r) => r.payment_method) })),
       awaiting_decision: awaitingDecision.map((t) => ({ id: t.id, supplier: t.supplier, name: t.name, status: t.status, methods: (t.rates ?? []).map((r) => r.payment_method) })),
@@ -320,6 +361,26 @@ export function renderReconciliation(report) {
     out.push('## Dataset-level changes');
     out.push('');
     for (const f of report.dataset_fields) out.push(`- \`${f.field}\`: ${p(f.from)} → ${p(f.to)}`);
+    out.push('');
+  }
+
+  const restored = report.restored_fields ?? { dataset: [], tariffs: [] };
+  if (restored.dataset.length + restored.tariffs.length > 0) {
+    out.push('## Fields the published dataset did not carry');
+    out.push('');
+    out.push(
+      'Part of the dataset contract (`src/contract.js`) but absent from the published dataset, so there is no earlier value to compare. ' +
+        'They are not counted as product changes below. Each tariff value is derived from the printed source.'
+    );
+    out.push('');
+    for (const f of restored.dataset) out.push(`- \`${f.field}\`: ${p(f.value)}`);
+    for (const f of restored.tariffs) {
+      out.push(`- \`${f.field}\` on ${f.values.reduce((n, v) => n + v.ids.length, 0)} tariffs:`);
+      for (const v of f.values) {
+        const value = v.value === null ? 'null (the source does not state it)' : `\`${p(v.value)}\``;
+        out.push(`  - ${value} — ${v.ids.length}: ${v.ids.map((id) => `\`${id}\``).join(', ')}`);
+      }
+    }
     out.push('');
   }
 
