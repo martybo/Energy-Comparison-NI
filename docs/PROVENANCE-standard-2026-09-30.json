@@ -1,0 +1,1021 @@
+{
+  "published_as": "data/tariffs-standard-2026-09-30.json",
+  "source_origin": "https://www.consumercouncil.org.uk/print/pdf/node/13468",
+  "source_provenance": {
+    "landing_page_url": "https://www.consumercouncil.org.uk/consumers/help-consumers/electricity-oil-and-gas/switching-electricity-or-gas-supplier/electricity-price-comparison-table",
+    "pdf_url": "https://www.consumercouncil.org.uk/print/pdf/node/13468",
+    "fetched_at": "2026-10-01T21:48:05.650Z",
+    "content_type": "application/pdf",
+    "pdf_bytes": 140470,
+    "stable_content_sha256": "06c4e67a8e5095fcd0e60ed812567523457be82ea366f2a55f2472a60227cced"
+  },
+  "outcome": "changed",
+  "field_provenance": {
+    "budget-energy-billpay-25-discount": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived"
+    },
+    "budget-energy-keypad-loyalty-20-discount": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived"
+    },
+    "budget-energy-100-loyalty-18-discount": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived"
+    },
+    "budget-energy-keypad-60-loyalty-and-16-discount": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived"
+    },
+    "budget-energy-keypad-standard-24hr": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived"
+    },
+    "budget-energy-bill-pay-standard-24hr": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived"
+    },
+    "click-energy-bill-pay-24h": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived"
+    },
+    "click-energy-keypad-24h": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived"
+    },
+    "power-ni-monthly-direct-debit-with-online-billing-standard": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "discount_cap": "carried_forward",
+      "product_grouping": "carried_forward"
+    },
+    "power-ni-quarterly-direct-debit-with-online-billing-standard": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "discount_cap": "carried_forward",
+      "product_grouping": "carried_forward"
+    },
+    "power-ni-monthly-direct-debit-standard": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "discount_cap": "carried_forward"
+    },
+    "power-ni-keypad-standard": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived"
+    },
+    "power-ni-quarterly-direct-debit-standard": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "discount_cap": "carried_forward"
+    },
+    "power-ni-standard-with-online-billing-standard": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "discount_cap": "carried_forward",
+      "product_grouping": "carried_forward"
+    },
+    "power-ni-standard-standard": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived"
+    },
+    "sse-airtricity-1-year-home-electricity-15-discount-standard": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "reverts_to": "carried_forward"
+    },
+    "sse-airtricity-1-year-home-electricity-13-discount-standard": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "reverts_to": "carried_forward"
+    },
+    "sse-airtricity-1-year-keypad-10-5-discount-plus-30-welcome-credit-24hr": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "reverts_to": "carried_forward"
+    },
+    "sse-airtricity-1-year-home-electricity-10-discount-plus-60-welcome-credit-standard": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "reverts_to": "carried_forward",
+      "product_grouping": "carried_forward"
+    },
+    "sse-airtricity-1-year-home-electricity-10-discount-standard": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "reverts_to": "carried_forward"
+    },
+    "sse-airtricity-1-year-home-electricity-9-discount-standard": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "reverts_to": "carried_forward"
+    },
+    "sse-airtricity-1-year-home-electricity-8-discount-plus-60-welcome-credit-standard": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "reverts_to": "carried_forward"
+    },
+    "sse-airtricity-smartsaver-std-6-24hr": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived"
+    },
+    "sse-airtricity-smartsaver-std-4-24hr": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived"
+    },
+    "sse-airtricity-1-year-home-electricity-4-discount-plus-60-welcome-credit-standard": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "reverts_to": "carried_forward"
+    },
+    "sse-airtricity-keypad-standard-24hr-2-5": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived"
+    },
+    "sse-airtricity-1-year-home-electricity-2-discount-plus-60-welcome-credit-standard": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "reverts_to": "carried_forward"
+    },
+    "sse-airtricity-smartsaver-std-1-24hr": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived"
+    },
+    "sse-airtricity-smartsaver-std-24hr": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "product_grouping": "human_decision"
+    },
+    "sse-airtricity-standard-rate-24hr": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "product_grouping": "human_decision"
+    },
+    "sse-airtricity-keypad-standard-rate-24hr": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "product_grouping": "human_decision"
+    },
+    "share-energy-share-24-credit": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived",
+      "product_grouping": "carried_forward"
+    },
+    "share-energy-share-24-keypad": {
+      "supplier": "source_derived",
+      "name": "source_derived",
+      "meter_type": "source_derived",
+      "status": "source_derived",
+      "rate_basis": "source_derived",
+      "headline_discount_pct": "source_derived",
+      "headline_discount_wording": "source_derived",
+      "intro_period_months": "source_derived",
+      "intro_period_basis": "source_derived",
+      "contract": "source_derived",
+      "eligibility": "source_derived",
+      "rates": "source_derived",
+      "start_date": "source_derived",
+      "notes": "source_derived"
+    },
+    "click-energy-bill-pay-round-the-clock": {
+      "status": "source_derived",
+      "name": "source_derived",
+      "rate_basis": "carried_forward",
+      "headline_discount_pct": "carried_forward",
+      "headline_discount_wording": "carried_forward",
+      "intro_period_months": "carried_forward",
+      "intro_period_basis": "carried_forward",
+      "reverts_to": "carried_forward",
+      "contract": "carried_forward",
+      "eligibility": "carried_forward",
+      "adjustments": "carried_forward",
+      "start_date": "carried_forward"
+    },
+    "click-energy-keypad-round-the-clock": {
+      "status": "source_derived",
+      "name": "source_derived",
+      "rate_basis": "carried_forward",
+      "headline_discount_pct": "carried_forward",
+      "headline_discount_wording": "carried_forward",
+      "intro_period_months": "carried_forward",
+      "intro_period_basis": "carried_forward",
+      "reverts_to": "carried_forward",
+      "contract": "carried_forward",
+      "eligibility": "carried_forward",
+      "adjustments": "carried_forward",
+      "start_date": "carried_forward"
+    },
+    "click-energy-bill-pay-twilight-std": {
+      "status": "source_derived",
+      "name": "source_derived",
+      "rate_basis": "carried_forward",
+      "headline_discount_pct": "carried_forward",
+      "headline_discount_wording": "carried_forward",
+      "intro_period_months": "carried_forward",
+      "intro_period_basis": "carried_forward",
+      "reverts_to": "carried_forward",
+      "contract": "carried_forward",
+      "eligibility": "carried_forward",
+      "adjustments": "carried_forward",
+      "start_date": "carried_forward"
+    },
+    "click-energy-keypad-twilight-std": {
+      "status": "source_derived",
+      "name": "source_derived",
+      "rate_basis": "carried_forward",
+      "headline_discount_pct": "carried_forward",
+      "headline_discount_wording": "carried_forward",
+      "intro_period_months": "carried_forward",
+      "intro_period_basis": "carried_forward",
+      "reverts_to": "carried_forward",
+      "contract": "carried_forward",
+      "eligibility": "carried_forward",
+      "adjustments": "carried_forward",
+      "start_date": "carried_forward"
+    }
+  },
+  "carry_forward_audit": [
+    {
+      "product_id": "power-ni-monthly-direct-debit-with-online-billing-standard",
+      "field": "discount_cap",
+      "value": {
+        "type": "discount_cap",
+        "applies": "ongoing",
+        "basis": "annual_spend_at_standard_rate",
+        "threshold_gbp": 1000,
+        "standard_rate_ref": "power-ni-standard-standard",
+        "max_saving_gbp": 60,
+        "source_wording": "Discounts apply only up to £250 per quarter (£1,000 per year); usage beyond this is charged at the standard rate.",
+        "modelling_note": "Modelled as the annual £1,000 threshold. The calculator does not collect quarterly consumption, so results for strongly seasonal usage may differ from the supplier's actual annual bill."
+      },
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "power-ni-monthly-direct-debit-with-online-billing-standard",
+      "eligible_because": "Product identity unchanged and the maximum saving the source states still matches the carried cap; the source states the cap exists but not its threshold structure.",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "power-ni-monthly-direct-debit-with-online-billing-standard",
+      "field": "product_grouping",
+      "value": {
+        "printed_cell": "Monthly Direct Debit with online billing",
+        "methods": [
+          "direct_debit_ebill"
+        ]
+      },
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "power-ni-monthly-direct-debit-with-online-billing-standard",
+      "eligible_because": "One printed row names several products; the previous dataset records how its payment methods divide between them and the same products are still named.",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "power-ni-quarterly-direct-debit-with-online-billing-standard",
+      "field": "discount_cap",
+      "value": {
+        "type": "discount_cap",
+        "applies": "ongoing",
+        "basis": "annual_spend_at_standard_rate",
+        "threshold_gbp": 1000,
+        "standard_rate_ref": "power-ni-standard-standard",
+        "max_saving_gbp": 46,
+        "source_wording": "Discounts apply only up to £250 per quarter (£1,000 per year); usage beyond this is charged at the standard rate.",
+        "modelling_note": "Modelled as the annual £1,000 threshold. The calculator does not collect quarterly consumption, so results for strongly seasonal usage may differ from the supplier's actual annual bill."
+      },
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "power-ni-quarterly-direct-debit-with-online-billing-standard",
+      "eligible_because": "Product identity unchanged and the maximum saving the source states still matches the carried cap; the source states the cap exists but not its threshold structure.",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "power-ni-quarterly-direct-debit-with-online-billing-standard",
+      "field": "product_grouping",
+      "value": {
+        "printed_cell": "Quarterly Direct Debit with online billing",
+        "methods": [
+          "direct_debit_ebill"
+        ]
+      },
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "power-ni-quarterly-direct-debit-with-online-billing-standard",
+      "eligible_because": "One printed row names several products; the previous dataset records how its payment methods divide between them and the same products are still named.",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "power-ni-monthly-direct-debit-standard",
+      "field": "discount_cap",
+      "value": {
+        "type": "discount_cap",
+        "applies": "ongoing",
+        "basis": "annual_spend_at_standard_rate",
+        "threshold_gbp": 1000,
+        "standard_rate_ref": "power-ni-standard-standard",
+        "max_saving_gbp": 40,
+        "source_wording": "Discounts apply only up to £250 per quarter (£1,000 per year); usage beyond this is charged at the standard rate.",
+        "modelling_note": "Modelled as the annual £1,000 threshold. The calculator does not collect quarterly consumption, so results for strongly seasonal usage may differ from the supplier's actual annual bill."
+      },
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "power-ni-monthly-direct-debit-standard",
+      "eligible_because": "Product identity unchanged and the maximum saving the source states still matches the carried cap; the source states the cap exists but not its threshold structure.",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "power-ni-quarterly-direct-debit-standard",
+      "field": "discount_cap",
+      "value": {
+        "type": "discount_cap",
+        "applies": "ongoing",
+        "basis": "annual_spend_at_standard_rate",
+        "threshold_gbp": 1000,
+        "standard_rate_ref": "power-ni-standard-standard",
+        "max_saving_gbp": 26,
+        "source_wording": "Discounts apply only up to £250 per quarter (£1,000 per year); usage beyond this is charged at the standard rate.",
+        "modelling_note": "Modelled as the annual £1,000 threshold. The calculator does not collect quarterly consumption, so results for strongly seasonal usage may differ from the supplier's actual annual bill."
+      },
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "power-ni-quarterly-direct-debit-standard",
+      "eligible_because": "Product identity unchanged and the maximum saving the source states still matches the carried cap; the source states the cap exists but not its threshold structure.",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "power-ni-standard-with-online-billing-standard",
+      "field": "discount_cap",
+      "value": {
+        "type": "discount_cap",
+        "applies": "ongoing",
+        "basis": "annual_spend_at_standard_rate",
+        "threshold_gbp": 1000,
+        "standard_rate_ref": "power-ni-standard-standard",
+        "max_saving_gbp": 20,
+        "source_wording": "Discounts apply only up to £250 per quarter (£1,000 per year); usage beyond this is charged at the standard rate.",
+        "modelling_note": "Modelled as the annual £1,000 threshold. The calculator does not collect quarterly consumption, so results for strongly seasonal usage may differ from the supplier's actual annual bill."
+      },
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "power-ni-standard-with-online-billing-standard",
+      "eligible_because": "Product identity unchanged and the maximum saving the source states still matches the carried cap; the source states the cap exists but not its threshold structure.",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "power-ni-standard-with-online-billing-standard",
+      "field": "product_grouping",
+      "value": {
+        "printed_cell": "Standard with online billing",
+        "methods": [
+          "direct_debit_ebill"
+        ]
+      },
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "power-ni-standard-with-online-billing-standard",
+      "eligible_because": "One printed row names several products; the previous dataset records how its payment methods divide between them and the same products are still named.",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "sse-airtricity-1-year-home-electricity-15-discount-standard",
+      "field": "reverts_to",
+      "value": "sse-airtricity-standard-rate-24hr",
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "sse-airtricity-1-year-home-electricity-15-discount-standard",
+      "eligible_because": "Product identity unchanged: same canonical id, supplier and name in the previous dataset, and the source still states a fixed term.",
+      "identity_basis": "same_id_supplier_and_name",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "sse-airtricity-1-year-home-electricity-13-discount-standard",
+      "field": "reverts_to",
+      "value": "sse-airtricity-standard-rate-24hr",
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "sse-airtricity-1-year-home-electricity-13-discount-standard",
+      "eligible_because": "Product identity unchanged: same canonical id, supplier and name in the previous dataset, and the source still states a fixed term.",
+      "identity_basis": "same_id_supplier_and_name",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "sse-airtricity-1-year-keypad-10-5-discount-plus-30-welcome-credit-24hr",
+      "field": "reverts_to",
+      "value": "sse-airtricity-keypad-standard-rate-24hr",
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "sse-airtricity-1-year-keypad-10-5-discount-plus-30-welcome-credit-24hr",
+      "eligible_because": "Product identity unchanged: same canonical id, supplier and name in the previous dataset, and the source still states a fixed term.",
+      "identity_basis": "same_id_supplier_and_name",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "sse-airtricity-1-year-home-electricity-10-discount-plus-60-welcome-credit-standard",
+      "field": "reverts_to",
+      "value": "sse-airtricity-standard-rate-24hr",
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "sse-airtricity-1-year-home-electricity-10-discount-plus-60-welcome-credit-standard",
+      "eligible_because": "Product identity unchanged: same canonical id, supplier and name in the previous dataset, and the source still states a fixed term.",
+      "identity_basis": "same_id_supplier_and_name",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "sse-airtricity-1-year-home-electricity-10-discount-plus-60-welcome-credit-standard",
+      "field": "product_grouping",
+      "value": {
+        "printed_cell": "1 Year Home Electricity 10% discount plus £60 welcome credit",
+        "methods": [
+          "direct_debit_ebill"
+        ]
+      },
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "sse-airtricity-1-year-home-electricity-10-discount-plus-60-welcome-credit-standard",
+      "eligible_because": "One printed row names several products; the previous dataset records how its payment methods divide between them and the same products are still named.",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "sse-airtricity-1-year-home-electricity-10-discount-standard",
+      "field": "reverts_to",
+      "value": "sse-airtricity-standard-rate-24hr",
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "sse-airtricity-1-year-home-electricity-10-discount-standard",
+      "eligible_because": "Product identity unchanged: same canonical id, supplier and name in the previous dataset, and the source still states a fixed term.",
+      "identity_basis": "same_id_supplier_and_name",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "sse-airtricity-1-year-home-electricity-9-discount-standard",
+      "field": "reverts_to",
+      "value": "sse-airtricity-standard-rate-24hr",
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "sse-airtricity-1-year-home-electricity-9-discount-standard",
+      "eligible_because": "Product identity unchanged: same canonical id, supplier and name in the previous dataset, and the source still states a fixed term.",
+      "identity_basis": "same_id_supplier_and_name",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "sse-airtricity-1-year-home-electricity-8-discount-plus-60-welcome-credit-standard",
+      "field": "reverts_to",
+      "value": "sse-airtricity-standard-rate-24hr",
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "sse-airtricity-1-year-home-electricity-8-discount-plus-60-welcome-credit-standard",
+      "eligible_because": "Product identity unchanged: same canonical id, supplier and name in the previous dataset, and the source still states a fixed term.",
+      "identity_basis": "same_id_supplier_and_name",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "sse-airtricity-1-year-home-electricity-4-discount-plus-60-welcome-credit-standard",
+      "field": "reverts_to",
+      "value": "sse-airtricity-standard-rate-24hr",
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "sse-airtricity-1-year-home-electricity-4-discount-plus-60-welcome-credit-standard",
+      "eligible_because": "Product identity unchanged: same canonical id, supplier and name in the previous dataset, and the source still states a fixed term.",
+      "identity_basis": "same_id_supplier_and_name",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "sse-airtricity-1-year-home-electricity-2-discount-plus-60-welcome-credit-standard",
+      "field": "reverts_to",
+      "value": "sse-airtricity-standard-rate-24hr",
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "sse-airtricity-1-year-home-electricity-2-discount-plus-60-welcome-credit-standard",
+      "eligible_because": "Product identity unchanged: same canonical id, supplier and name in the previous dataset, and the source still states a fixed term.",
+      "identity_basis": "same_id_supplier_and_name",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "share-energy-share-24-credit",
+      "field": "product_grouping",
+      "value": {
+        "printed_cell": "Share 24 Credit- Direct Debit e-bill Share 24 Credit- Direct debit postal bill",
+        "methods": [
+          "direct_debit_ebill",
+          "direct_debit_postal"
+        ]
+      },
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "share-energy-share-24-credit",
+      "eligible_because": "One printed row names several products; the previous dataset records how its payment methods divide between them and the same products are still named.",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "click-energy-bill-pay-round-the-clock",
+      "field": "withdrawn_product_terms",
+      "value": {
+        "retained_from_status": "withdrawn"
+      },
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "click-energy-bill-pay-round-the-clock",
+      "eligible_because": "The source prints a removal notice naming this tariff and no longer prices it. The notice is evidence about availability, not about the tariff's terms, so the previously recorded terms are retained unchanged alongside the new status.",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "click-energy-keypad-round-the-clock",
+      "field": "withdrawn_product_terms",
+      "value": {
+        "retained_from_status": "withdrawn"
+      },
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "click-energy-keypad-round-the-clock",
+      "eligible_because": "The source prints a removal notice naming this tariff and no longer prices it. The notice is evidence about availability, not about the tariff's terms, so the previously recorded terms are retained unchanged alongside the new status.",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "click-energy-bill-pay-twilight-std",
+      "field": "withdrawn_product_terms",
+      "value": {
+        "retained_from_status": "withdrawn"
+      },
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "click-energy-bill-pay-twilight-std",
+      "eligible_because": "The source prints a removal notice naming this tariff and no longer prices it. The notice is evidence about availability, not about the tariff's terms, so the previously recorded terms are retained unchanged alongside the new status.",
+      "source_provides_value": false,
+      "source_contradicts": false
+    },
+    {
+      "product_id": "click-energy-keypad-twilight-std",
+      "field": "withdrawn_product_terms",
+      "value": {
+        "retained_from_status": "withdrawn"
+      },
+      "previous_dataset": "data/tariffs-standard-2026-09-12-r2.json",
+      "previous_product_id": "click-energy-keypad-twilight-std",
+      "eligible_because": "The source prints a removal notice naming this tariff and no longer prices it. The notice is evidence about availability, not about the tariff's terms, so the previously recorded terms are retained unchanged alongside the new status.",
+      "source_provides_value": false,
+      "source_contradicts": false
+    }
+  ],
+  "repeated_slots": [],
+  "shared_slots": [
+    {
+      "payment_method": "on_receipt_postal",
+      "products": [
+        "sse-airtricity-smartsaver-std-24hr",
+        "sse-airtricity-standard-rate-24hr"
+      ],
+      "extra_rate_rows": 1,
+      "source_row": 29,
+      "page": 8,
+      "decision_id": "standard-sse-24hr-standard-rate-row-grouping"
+    }
+  ],
+  "review_required": [],
+  "decisions_applied": [
+    {
+      "decision_id": "standard-sse-24hr-standard-rate-row-grouping",
+      "kind": "grouping",
+      "printed_names": [
+        "SmartSaver Std 24hr",
+        "Keypad Standard Rate 24hr",
+        "Standard Rate 24hr"
+      ],
+      "printed_payment_methods": [
+        "on_receipt_postal",
+        "prepayment"
+      ],
+      "products": [
+        {
+          "product_id": "sse-airtricity-smartsaver-std-24hr",
+          "printed_name": "SmartSaver Std 24hr",
+          "payment_methods": [
+            "on_receipt_postal"
+          ]
+        },
+        {
+          "product_id": "sse-airtricity-standard-rate-24hr",
+          "printed_name": "Standard Rate 24hr",
+          "payment_methods": [
+            "on_receipt_postal"
+          ]
+        },
+        {
+          "product_id": "sse-airtricity-keypad-standard-rate-24hr",
+          "printed_name": "Keypad Standard Rate 24hr",
+          "payment_methods": [
+            "prepayment"
+          ]
+        }
+      ],
+      "source_discrepancies": [
+        {
+          "product_id": "sse-airtricity-keypad-standard-rate-24hr",
+          "discrepancy": "SSE Airtricity's own Keypad tariff sheet (KEYPAD-24H-E7-2.5, V10, prices quoted from 1 August 2026) states that all Keypad customers receive a continuous 2.5% discount off the SSE Airtricity standard rate, i.e. 39.77p per kWh inc. VAT, which the Council prints separately as 'Keypad Standard 24hr 2.5%'. The Council prints 40.79p for this tariff. Transcribed as the Council prints it: the Council is the source of record, and the supplier's statement is recorded here rather than used to override it."
+        }
+      ],
+      "source_row": 29,
+      "page": 8,
+      "decided_by": "martybo (repository owner), 2026-10-01",
+      "reason": "Pay on receipt of bill at 40.79p is assigned to both 'SmartSaver Std 24hr' and 'Standard Rate 24hr', which this row represents at that rate; 'Keypad Standard Rate 24hr' takes Prepayment meter as the Council prints it, with SSE's contradicting statement recorded as a source discrepancy; the unprinted on_receipt_ebill slot is not carried. The separate question of what the 1-year Keypad tariffs revert to is not decided here."
+    }
+  ],
+  "decisions_redundant": [
+    {
+      "decision_id": "standard-sse-1-year-home-keypad-10-5-identity",
+      "product_id": "sse-airtricity-1-year-keypad-10-5-discount-plus-30-welcome-credit-24hr",
+      "message": "The previous dataset already records the printed name, so this decision is no longer needed and can be removed from the decisions file."
+    }
+  ],
+  "decisions_unmatched": [],
+  "slot_accounting": {
+    "printed_slots": 42,
+    "mapped_rate_rows": 43,
+    "page_break_repeats": 0,
+    "rate_rows_from_shared_slots": 1,
+    "slots_in_unresolved_rows": 0,
+    "accounted": 42,
+    "balanced": true
+  }
+}
