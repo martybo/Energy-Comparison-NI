@@ -28,7 +28,8 @@ import { reconcile, renderReconciliation } from './reconcile.mjs';
 import { OUTCOMES, classifyFamily, classifyRun, failedFamily, validatorFailure } from './outcomes.mjs';
 import { TARIFF_FAMILIES } from '../source-monitor/sources.mjs';
 import { fetchText, fetchBinary, SourceFetchError } from '../source-monitor/fetch-utils.mjs';
-import { selectCurrentPdf, assertIsPdf, SourceDiscoveryError } from '../source-monitor/discover.mjs';
+import { SourceDiscoveryError } from '../source-monitor/discover.mjs';
+import { fetchCurrentPdf } from './live-source.mjs';
 import { validateDataset } from '../../src/validate.js';
 import { publicationNames } from './publication.mjs';
 
@@ -101,18 +102,14 @@ async function readSource(familyId, args) {
   }
 
   const family = TARIFF_FAMILIES.find((f) => f.id === familyId);
-  let pdfUrl;
-  let buffer;
+  let fetched;
   try {
-    const html = await fetchText(family.landingPageUrl, TIMEOUT_MS);
-    pdfUrl = selectCurrentPdf(html, family.landingPageUrl, family).url;
-    buffer = await fetchBinary(pdfUrl, TIMEOUT_MS);
-    assertIsPdf(buffer, pdfUrl);
+    fetched = await fetchCurrentPdf(family, { fetchText, fetchBinary, timeoutMs: TIMEOUT_MS });
   } catch (error) {
     error.outcome = OUTCOMES.SOURCE_UNAVAILABLE;
     throw error;
   }
-  return { extraction: extractTextItems(buffer), origin: pdfUrl };
+  return { extraction: extractTextItems(fetched.buffer), origin: fetched.pdfUrl, provenance: fetched.provenance };
 }
 
 const args = parseArgs(process.argv.slice(2));
