@@ -82,6 +82,7 @@ test('a correction to an already-published snapshot is published beside it, neve
   assert.deepEqual(filesUnder(join(dir, 'publish')), [
     'data/latest-standard.json',
     'data/tariffs-standard-2026-09-12-r2.json',
+    'docs/PROVENANCE-standard-2026-09-12-r2.json',
     'docs/RECONCILIATION-standard-2026-09-12-r2.md',
     'docs/source-rows-standard-2026-09-12-r2.json'
   ]);
@@ -101,6 +102,30 @@ test('the proposed pointer keeps everything else the published pointer says', ()
   assert.deepEqual({ ...proposed, dataset: current.dataset }, current);
 });
 
+test('the published provenance carries the decisions and the source discrepancy permanently', () => {
+  // Once merged, this file — not a review directory a later run overwrites —
+  // is where the reasons behind the published data live.
+  const dir = out();
+  run(dir);
+  const provenance = JSON.parse(readFileSync(join(dir, 'publish/docs/PROVENANCE-standard-2026-09-12-r2.json'), 'utf8'));
+  assert.equal(provenance.published_as, 'data/tariffs-standard-2026-09-12-r2.json');
+  assert.deepEqual(
+    provenance.decisions_applied.map((d) => d.decision_id).sort(),
+    ['standard-sse-1-year-home-keypad-10-5-identity', 'standard-sse-24hr-standard-rate-row-grouping']
+  );
+  const grouping = provenance.decisions_applied.find((d) => d.kind === 'grouping');
+  assert.match(grouping.source_discrepancies[0].discrepancy, /2\.5%/);
+  assert.equal(provenance.shared_slots.length, 1);
+  assert.ok(provenance.field_provenance['sse-airtricity-standard-rate-24hr']);
+  assert.ok(provenance.carry_forward_audit.length > 0);
+});
+
+test('no review-only material is published with a data change', () => {
+  const dir = out();
+  run(dir);
+  assert.ok(!filesUnder(join(dir, 'publish')).some((f) => f.startsWith('docs/candidates/')));
+});
+
 test('publication names follow the convention the deployment tests enforce', () => {
   const standard = { stem: 'tariffs-standard', docsPrefix: 'standard-' };
   const economy7 = { stem: 'tariffs', docsPrefix: '' };
@@ -108,10 +133,14 @@ test('publication names follow the convention the deployment tests enforce', () 
     suffix: '2026-10-30',
     dataset: 'data/tariffs-2026-10-30.json',
     reconciliation: 'docs/RECONCILIATION-2026-10-30.md',
-    sourceRows: 'docs/source-rows-2026-10-30.json'
+    sourceRows: 'docs/source-rows-2026-10-30.json',
+    provenance: 'docs/PROVENANCE-2026-10-30.json'
   });
   const taken = new Set(['data/tariffs-standard-2026-09-12.json', 'docs/RECONCILIATION-standard-2026-09-12-r2.md']);
   assert.equal(publicationNames(standard, '2026-09-12', (p) => taken.has(p)).suffix, '2026-09-12-r3');
+  // A provenance record already published under a name also takes it.
+  const provenanceTaken = new Set(['docs/PROVENANCE-standard-2026-09-12.json']);
+  assert.equal(publicationNames(standard, '2026-09-12', (p) => provenanceTaken.has(p)).suffix, '2026-09-12-r2');
 });
 
 // --- the undecided state: blocked, nothing proposed ------------------------

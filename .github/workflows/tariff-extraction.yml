@@ -81,14 +81,16 @@ jobs:
           echo "candidate_pr=$(jq -r '.policy.candidate_pr' candidate/outcome.json)" >> "$GITHUB_OUTPUT"
           echo "data_families=$(jq -r '.data_update_families | join(",")' candidate/outcome.json)" >> "$GITHUB_OUTPUT"
           echo "review_only=$(jq -r '.review_only_families | join(",")' candidate/outcome.json)" >> "$GITHUB_OUTPUT"
-          echo "branch=candidate/tariffs-$(date -u +%Y-%m-%d)-${outcome}" >> "$GITHUB_OUTPUT"
+          # Unique per run and attempt: a new candidate never builds on a
+          # branch an earlier, closed or abandoned candidate left behind.
+          echo "branch=candidate/tariffs-$(date -u +%Y-%m-%d)-${outcome}-run${{ github.run_number }}-${{ github.run_attempt }}" >> "$GITHUB_OUTPUT"
           {
             echo "## Outcome: \`$outcome\`"
             echo
             cat candidate/summary.md | tail -n +2
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Open the candidate pull request
+      - name: Build, test and open the candidate pull request
         if: steps.outcome.outputs.candidate_pr == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -96,51 +98,43 @@ jobs:
           DATA_FAMILIES: ${{ steps.outcome.outputs.data_families }}
           REVIEW_ONLY: ${{ steps.outcome.outputs.review_only }}
           BRANCH: ${{ steps.outcome.outputs.branch }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
-          # A scheduled run happens twice a month, so the same unresolved
-          # question would otherwise open the same pull request again. An open
-          # candidate for this outcome is updated in place instead.
-          if [ -z "$DATA_FAMILIES" ]; then reuse_title='Blocked: Consumer Council extraction needs a decision'; else reuse_title='Candidate tariff update from the Consumer Council source'; fi
-          existing=$(gh pr list --state open --json number,headRefName,title \
-            --jq ".[] | select(.headRefName | startswith(\"candidate/\")) | select(.title == \"$reuse_title\") | .number" | head -n1)
-          existing_branch=''
-          if [ -n "$existing" ]; then
-            existing_branch=$(gh pr view "$existing" --json headRefName --jq .headRefName)
-            echo "Reusing open candidate #$existing on $existing_branch."
-            BRANCH="$existing_branch"
-            git fetch origin "$BRANCH"
-            git switch -c "$BRANCH" "origin/$BRANCH"
-          elif git fetch origin "$BRANCH" 2>/dev/null; then
-            # A previous run pushed this branch without getting as far as
-            # opening the pull request — the commissioning run on 2026-10-01
-            # did exactly that, refused at the last step. Build on it, so a
-            # re-run fast-forwards instead of being rejected as a
-            # non-fast-forward, and so a reviewer's own commit on the candidate
-            # branch is not discarded.
-            echo "Reusing the branch a previous run pushed: $BRANCH."
-            git switch -c "$BRANCH" "origin/$BRANCH"
+          if [ -z "$DATA_FAMILIES" ]; then
+            title='Blocked: Consumer Council extraction needs a decision'
           else
-            git switch -c "$BRANCH"
+            title='Candidate tariff update from the Consumer Council source'
           fi
 
-          mkdir -p docs/candidates
-          cp candidate/summary.md "docs/candidates/summary.md"
-          cp candidate/reconciliation-*.md candidate/provenance-*.json candidate/source-rows-*.json docs/candidates/ 2>/dev/null || true
+          # A scheduled run happens twice a month, so the same outcome would
+          # otherwise open the same pull request again. An open candidate with
+          # this title is updated instead — rebuilt from scratch below, so it
+          # always holds exactly what this run produced.
+          existing=$(gh pr list --state open --json number,headRefName,title \
+            --jq ".[] | select(.headRefName | startswith(\"candidate/\")) | select(.title == \"$title\") | .number" | head -n1)
+          if [ -n "$existing" ]; then
+            BRANCH=$(gh pr view "$existing" --json headRefName --jq .headRefName)
+            echo "Updating open candidate #$existing on $BRANCH."
+          fi
 
-          # The pipeline writes publishable files under candidate/publish only
-          # for a table it read cleanly and found a real change in, and
-          # withdraws even that if the run failed to read the other document.
-          # Their presence is therefore the whole permission to change
-          # published tariffs; this step adds no policy of its own — except
-          # that it never overwrites an existing file other than the two
-          # pointers. A published dataset or its documents are never replaced
-          # in place: a correction to an already-published snapshot is
-          # published beside it under a revision suffix.
-          if [ -d candidate/publish ]; then
+          # The candidate is always built from the base branch as checked out,
+          # never on top of an earlier candidate's commits, so nothing a
+          # previous run wrote can linger in it.
+          git switch -C "$BRANCH"
+
+          if [ -n "$DATA_FAMILIES" ]; then
+            # A data candidate carries the publication and nothing else: the
+            # dated dataset, the pointer, and the reconciliation, source-row
+            # trace and provenance that stay beside it permanently once
+            # merged. The pipeline writes these only for a table it read
+            # cleanly and found a real change in. This step adds no policy of
+            # its own, except that it never overwrites an existing file other
+            # than the two pointers: a correction to an already-published
+            # snapshot is published beside it under a revision suffix.
             while IFS= read -r -d '' file; do
               dest=${file#candidate/publish/}
               case "$dest" in
@@ -155,49 +149,79 @@ jobs:
               mkdir -p "$(dirname "$dest")"
               cp "$file" "$dest"
             done < <(find candidate/publish -type f -print0)
+          else
+            # A review-only candidate carries no tariff data, only the
+            # material a person needs to resolve what blocked it. It is never
+            # merged, so this directory never reaches the default branch.
+            mkdir -p docs/candidates
+            cp candidate/summary.md docs/candidates/summary.md
+            cp candidate/reconciliation-*.md candidate/provenance-*.json candidate/source-rows-*.json docs/candidates/ 2>/dev/null || true
           fi
+
+          # Candidate pull requests are opened with GITHUB_TOKEN, which by
+          # design triggers no workflows, so no CI will run on them. The full
+          # suite therefore runs here, on exactly the tree being proposed —
+          # including the deployment tests that check whatever the pointers
+          # now name. If it fails, nothing is pushed and no pull request is
+          # opened or updated.
+          set +e
+          npm test > candidate-tests.log 2>&1
+          tests_status=$?
+          set -e
+          tests_summary=$(grep -E '^# (tests|pass|fail) ' candidate-tests.log | sed 's/^# //' | paste -sd ' ' -)
+          if [ "$tests_status" -ne 0 ]; then
+            grep -E '^not ok' candidate-tests.log || true
+            echo "::error title=Candidate failed its tests::The proposed tree does not pass the test suite (${tests_summary}). No pull request has been opened or updated."
+            exit 1
+          fi
+          echo "Candidate tree passes: ${tests_summary}"
+          rm -f candidate-tests.log
 
           git add data docs
           if git diff --cached --quiet; then
-            # Nothing new since the last run. That is not a reason to stop: the
-            # branch may already carry this material from a run that failed
-            # before opening the pull request, and there would then be a
-            # candidate nobody can see. Fall through to the push and the
-            # create, both of which are no-ops if they are already done.
-            echo 'No change to the candidate material since the last run.'
-          else
-            git commit -m "candidate(#17): Consumer Council extraction — ${OUTCOME}" -m "$(cat candidate/summary.md)"
+            echo 'The candidate changes nothing in the repository; not opening a pull request.'
+            exit 0
           fi
-          git push -u origin "$BRANCH"
+          git commit -q -m "candidate: Consumer Council extraction — ${OUTCOME}" -m "$(cat candidate/summary.md)"
 
           if [ -n "$existing" ]; then
+            git fetch -q origin "$BRANCH"
+            if [ "$(git rev-parse HEAD^{tree})" = "$(git rev-parse "origin/$BRANCH^{tree}")" ]; then
+              gh pr comment "$existing" --body "Re-ran the extraction ([run]($RUN_URL)): outcome \`${OUTCOME}\`, identical to this candidate. Tests on the candidate tree: ${tests_summary}."
+              exit 0
+            fi
+            # The branch is the workflow's own; it is replaced with this run's
+            # candidate so the pull request shows exactly what this run
+            # proposes. Changes belong in the code or the recorded decisions,
+            # never in a candidate branch.
+            git push --force-with-lease="$BRANCH:origin/$BRANCH" origin "$BRANCH"
             {
-              printf '%s\n\n' "Re-ran the extraction: outcome \`${OUTCOME}\`. The candidate above is updated to this run."
+              printf '%s\n\n' "Re-ran the extraction ([run]($RUN_URL)): outcome \`${OUTCOME}\`. This candidate has been rebuilt from this run. Tests on the candidate tree: **${tests_summary}**."
               cat candidate/summary.md
-              printf '\n---\n%s\n' '_Generated by [Claude Code](https://claude.ai/code)_'
             } > pr-comment.md
             gh pr comment "$existing" --body-file pr-comment.md
             exit 0
           fi
 
+          git push -u origin "$BRANCH"
+
           if [ -z "$DATA_FAMILIES" ]; then
-            title='Blocked: Consumer Council extraction needs a decision'
             printf '%s\n\n' 'This candidate carries **no tariff data**. The extraction read the source but could not resolve something in it, so nothing here can be merged into the published dataset. Resolve the questions below, then re-run the workflow.' > pr-body.md
           else
-            title='Candidate tariff update from the Consumer Council source'
-            printf '%s\n\n' 'This candidate proposes a tariff-data change. Merging it publishes the new dataset, so **the review on this pull request is the gate**. Check the reconciliation below against the source before merging. Nothing has been merged or deployed automatically.' > pr-body.md
+            printf '%s\n\n' 'This candidate proposes a tariff-data change. Merging it publishes the new dataset, so **the review on this pull request is the gate**. Check the reconciliation and provenance it adds under `docs/` against the source before merging. Nothing has been merged or deployed automatically.' > pr-body.md
             if [ -n "$REVIEW_ONLY" ]; then
-              printf '%s\n\n' "Note: the **${REVIEW_ONLY}** table is blocked on an unresolved question and contributes no data to this candidate. Only ${DATA_FAMILIES} is proposed for publication." >> pr-body.md
+              printf '%s\n\n' "Note: the **${REVIEW_ONLY}** table is blocked on an unresolved question and contributes no data to this candidate; its reconciliation is in the [run's artefact]($RUN_URL). Only ${DATA_FAMILIES} is proposed for publication." >> pr-body.md
             fi
           fi
+          printf '%s\n\n' "**Tested before opening:** the full suite passed on exactly this tree — ${tests_summary} ([run]($RUN_URL)). Pull requests opened by this workflow trigger no CI of their own, so this is the test result for this candidate." >> pr-body.md
           cat candidate/summary.md >> pr-body.md
-          printf '\n%s\n' '<!-- Opened by .github/workflows/tariff-extraction.yml for issue #17. Never auto-merged. -->' >> pr-body.md
+          printf '\n%s\n' '<!-- Opened by .github/workflows/tariff-extraction.yml. Never auto-merged. -->' >> pr-body.md
 
           if ! gh pr create \
             --base "${{ github.ref_name }}" \
             --head "$BRANCH" \
             --title "$title" \
             --body-file pr-body.md; then
-            echo "::error title=Candidate pull request not opened::The branch $BRANCH is pushed and this run's artifacts are uploaded, so nothing the extraction produced is lost. If the message above is \"GitHub Actions is not permitted to create or approve pull requests\", enable Settings -> Actions -> General -> Workflow permissions -> \"Allow GitHub Actions to create and approve pull requests\". The workflow already requests pull-requests: write, which is necessary but not sufficient on its own. Re-run this workflow afterwards; it will reuse the pushed branch."
+            echo "::error title=Candidate pull request not opened::The branch $BRANCH is pushed and this run's artifacts are uploaded, so nothing the extraction produced is lost. If the message above is \"GitHub Actions is not permitted to create or approve pull requests\", enable Settings -> Actions -> General -> Workflow permissions -> \"Allow GitHub Actions to create and approve pull requests\". The workflow already requests pull-requests: write, which is necessary but not sufficient on its own. Re-run this workflow afterwards."
             exit 1
           fi

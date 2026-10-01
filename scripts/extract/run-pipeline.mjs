@@ -175,19 +175,21 @@ for (const familyId of Object.keys(FAMILIES)) {
   // Always written: what the run saw and why it concluded what it did. These
   // are review material and carry no dataset.
   write(`reconciliation-${familyId}-${date}.md`, renderReconciliation(report));
-  writeJson(`provenance-${familyId}-${date}.json`, {
+  const provenanceRecord = {
     source_origin: read.origin,
     source_provenance: read.provenance ?? null,
     outcome: verdict.outcome,
     field_provenance: candidate.field_provenance,
     carry_forward_audit: candidate.carry_forward_audit,
     repeated_slots: candidate.repeated_slots,
+    shared_slots: candidate.shared_slots,
     review_required: candidate.review_required,
     decisions_applied: candidate.decisions_applied,
     decisions_redundant: candidate.decisions_redundant,
     decisions_unmatched: candidate.decisions_unmatched,
     slot_accounting: report.slot_accounting
-  });
+  };
+  writeJson(`provenance-${familyId}-${date}.json`, provenanceRecord);
   write(`source-rows-${familyId}-${date}.json`, JSON.stringify(candidate.source_row_trace) + '\n');
 
   // Written only for a clean change: the dated dataset and the pointer that
@@ -208,6 +210,7 @@ for (const familyId of Object.keys(FAMILIES)) {
     publish(names.dataset, JSON.stringify(candidate.dataset, null, 2) + '\n');
     publish(names.reconciliation, renderReconciliation(report));
     publish(names.sourceRows, JSON.stringify(candidate.source_row_trace) + '\n');
+    publish(names.provenance, JSON.stringify({ published_as: names.dataset, ...provenanceRecord }, null, 2) + '\n');
     const pointer = JSON.parse(readFileSync(config.pointer, 'utf8'));
     publish(config.pointer, JSON.stringify({ ...pointer, dataset: names.dataset.replace(/^data\//, '') }, null, 2) + '\n');
     families[families.length - 1].publication = names;
