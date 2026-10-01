@@ -54,13 +54,33 @@ node scripts/extract/run-pipeline.mjs --out candidate --live
 
 # From a PDF already on disk.
 node scripts/extract/run-pipeline.mjs --out candidate --pdf standard=/tmp/standard.pdf
+
+# Trying a decision before recording it (defaults to the committed file).
+node scripts/extract/run-pipeline.mjs --out candidate --decisions /tmp/decisions.json
 ```
+
+The published dataset each table is compared against is whatever its pointer
+(`data/latest.json`, `data/latest-standard.json`) currently names, so the run
+after a candidate is merged compares against what was actually published.
 
 The candidate directory always contains `outcome.json`, `summary.md`, and a
 reconciliation, provenance record and source-row trace per table. It contains a
-`data/` subdirectory **only** when a table was read cleanly and genuinely
+`publish/` subdirectory **only** when a table was read cleanly and genuinely
 changed, and that subdirectory's existence is the automation's entire
-permission to propose a change to published tariffs.
+permission to propose a change to published tariffs. It is laid out exactly as
+the files will sit in the repository: the dated dataset, the pointer that
+selects it, and the `docs/RECONCILIATION-…md` and `docs/source-rows-…json` that
+`test/deployment.test.js` requires beside any published dataset.
+
+### A published file is never replaced
+
+A dataset is published under its source's date (`tariffs-standard-2026-10-30.json`).
+A correction to a snapshot that is *already* published — the same stated date
+— must not overwrite the published files, so it takes the first free revision
+suffix instead (`tariffs-standard-2026-09-12-r2.json`, with matching documents)
+and the pointer moves to it. The original stays exactly as it was. The workflow
+enforces the same rule independently: it refuses to overwrite any existing file
+other than the two pointers.
 
 ## Outcomes
 
@@ -159,20 +179,61 @@ A gate means the run read the source but cannot responsibly turn part of it into
 data. The candidate carries the reconciliation and provenance and **no dataset**,
 so there is nothing to merge while the question stands.
 
-Current gates on the Standard table, both left unresolved on purpose:
+Gates are raised for:
 
-1. **One printed row, three tariff names, two payment phrases.** Page 8 prints
-   one price against `SmartSaver Std 24hr`, `Keypad Standard Rate 24hr` and
-   `Standard Rate 24hr`, with two payment phrases. Every allocation that
-   balances the payment methods silently drops a name. Refused.
+- a printed row whose names or payment methods cannot all be accounted for
+  (`ambiguous_product_grouping`);
+- a product that needs domain knowledge the source does not state and that
+  cannot be carried forward (`tier2_missing_for_new_product`,
+  `tier2_missing_for_existing_product`);
+- a carried value the source contradicts, or one the previous dataset held that
+  the source no longer signals (`carried_value_contradicted_by_source`,
+  `carried_value_lost`);
+- money stated beside "credit" that no pattern can place
+  (`unplaced_credit_amount`);
+- one product and payment method printed twice at different prices
+  (`conflicting_rate_for_payment_method`);
+- a recorded decision that cannot be applied (`decision_not_applicable`);
+- a **continuing** product for which the application's validator now warns but
+  did not warn on the published dataset (`validator_warning_introduced`) — see
+  below;
+- slot accounting that does not balance.
 
-2. **`1 Year Home Keypad 10.5%…` where the published dataset has `1 Year
-   Keypad 10.5%…`.** Eight sibling tariffs share a `reverts_to` target, which
-   makes guessing easy and still unjustified: the identity is unresolved, so the
-   source wording is preserved, `reverts_to` is withheld, and the pair is
-   reported as a *suspected rename* without being merged. If later source
-   versions show the name is consistently changed, that becomes an explicit
-   mapping rule — not an inference.
+### The Standard row that needed a decision
+
+**One printed row, three tariff names, two payment methods.** Page 8 prints one
+price (40.790p) against bulleted lists: `SmartSaver Std 24hr`, `Keypad Standard
+Rate 24hr`, `Standard Rate 24hr`; and `Pay on receipt of bill`, `Prepayment
+meter`. Nothing pairs them, and the bullet order does not either — the
+30/09/2026 table reorders the three names while leaving the two methods as they
+were. Every allocation that balances the methods drops a name, so without a
+decision the row is refused, and the eight SSE fixed-term tariffs that revert to
+`Standard Rate 24hr` each raise `validator_warning_introduced`. It is now
+resolved by the recorded decision `standard-sse-24hr-standard-rate-row-grouping`;
+see [Recorded decisions](#recorded-decisions).
+
+### Validator warnings as gates
+
+`src/validate.js` deliberately treats some problems as *warnings*, so the app
+can degrade gracefully — a `reverts_to` naming no tariff just makes that
+tariff's ongoing cost unknown. That is right for the app and wrong for a
+proposed update: a candidate that quietly makes a published tariff's ongoing
+cost unknown has lost information. So a warning on a **continuing** product
+(in both the published dataset and the candidate) that the published dataset
+did not have is a gate. Warnings on a product new to the candidate are reported
+but do not gate: an unknown ongoing cost on a new discounted tariff is a normal
+property of the source, and gating on it would block ordinary months.
+`src/validate.js` itself is unchanged.
+
+Separately, a candidate the validator *rejects* — any `rejected` record or any
+dataset-level `errors` — is an `extraction_failed`, not a change.
+
+### Printed but awaiting a decision
+
+A published product missing from the candidate is not necessarily gone. If the
+source still prints it inside a gated row, the reconciliation lists it under
+**Printed but awaiting a decision**, not **No longer present**, so a reviewer
+does not read an unresolved row as a withdrawal the Council never made.
 
 ### Slot accounting
 
@@ -188,6 +249,96 @@ itself a gate. Two source quirks it handles explicitly:
   (`Share Eco 7- Pay on receipt of bill or e- bill`). That is one product priced
   per method. Anything in a name cell that is neither a product name nor
   payment wording is a gate.
+
+## Recorded decisions
+
+Where the source genuinely cannot be resolved from the document alone, a person
+decides, and the decision is recorded in
+[`scripts/extract/source-decisions.json`](../scripts/extract/source-decisions.json).
+The pipeline applies recorded decisions; it never makes one.
+
+Each decision is **source-specific, not a general rule**:
+
+- it is anchored to the exact printed row it was made about — supplier, tariff
+  name as printed, and the set of payment methods printed, plus the printed
+  rates when the decision depends on them;
+- if the Council changes that row, the decision simply stops matching, the row
+  is not understood again, and the run blocks for a fresh decision rather than
+  carrying an old one onto a new situation;
+- it records what was decided, by whom, why, and the evidence.
+
+The mapper refuses a malformed decision (an unknown kind, a missing reason,
+missing evidence, two decisions matching one row) as an `extraction_failed`,
+rather than skipping it: a typo must not quietly switch a decision off.
+
+The reconciliation lists every decision under **Recorded decisions**: those
+applied, those no longer needed because the published dataset now matches the
+source (remove these), and those that no longer match anything because the
+source changed.
+
+### Kinds
+
+**`identity`** — a printed tariff name is the same product as one in the
+previous dataset, which recorded its name differently. The product keeps its
+id; its name becomes exactly what the source prints (the decision may not
+rename it to anything else). Its identity is tagged `human_decision` in field
+provenance, and any Tier 2 value carried across it names the decision as the
+basis in the carry-forward audit. An identity decision is anchored on the
+printed name and payment methods, not the price: it is about what a name
+refers to, and a new month's price must not demand it be decided again.
+
+**`grouping`** — one printed row lists several tariff names against payment
+methods without pairing them. The decision states which printed names take
+which printed methods; every printed name and every printed method must be
+covered, and no method the row does not print may be assigned. It is anchored on
+the set of printed names (in any order — bullet order has been shown to carry
+no meaning), the printed methods, **and the printed price**, because the reasoning
+behind it rests on that price: if the price moves, the row is decided again.
+Each resulting product's grouping is tagged `human_decision`.
+
+A grouping decision may give one printed method to more than one name. The
+resulting extra rate rows are the decision's, not the source's, so slot
+accounting shows them on their own line ("extra rate rows from one printed slot
+shared by a recorded decision") rather than reading them as slots gained.
+
+A decision may also record a **source discrepancy** against a product: evidence
+from outside the Council's table that disagrees with what the Council prints.
+It is recorded in provenance and the reconciliation and never used to override
+the Council, which is the source of record. It is not written into the
+tariff's `notes`, which carry the source's own wording.
+
+### Current decisions
+
+- `standard-sse-1-year-home-keypad-10-5-identity` (identity) — the Standard
+  table prints `1 Year Home Keypad 10.5% discount plus £30 welcome credit
+  (24hr)`; the published dataset recorded it without "Home". The published
+  dataset was transcribed from the 12/09/2026 table, and its own source-row
+  trace places this product on page 6 as the third SSE row, one prepayment slot
+  — the row that prints "Home". Printed identically in the 12/09, 14/09 and
+  30/09 tables. A transcription correction: id kept, name corrected.
+
+- `standard-sse-24hr-standard-rate-row-grouping` (grouping) — the page-8 row
+  above, at 40.79p:
+  - `SmartSaver Std 24hr` → Pay on receipt of bill
+  - `Standard Rate 24hr` → Pay on receipt of bill
+  - `Keypad Standard Rate 24hr` → Prepayment meter
+
+  Both `SmartSaver Std 24hr` and `Standard Rate 24hr` are represented in this
+  row by the 40.79p bill-payment rate; the decision makes no claim that they
+  are the same product. SSE Airtricity's own tariff sheet independently gives
+  40.79p as its Standard 24 Hour rate. **Recorded source discrepancy:** SSE's
+  own Keypad sheet says all Keypad customers get a continuous 2.5% discount off
+  the standard rate (39.77p, which the Council prints separately as `Keypad
+  Standard 24hr 2.5%`); the Council prints 40.79p for `Keypad Standard Rate
+  24hr`, and that is what is transcribed. The published `on_receipt_ebill` slot
+  for `Standard Rate 24hr` is **not carried**: no Council Standard table prints
+  that method at that rate, SSE's sheets show no undiscounted e-bill rate, and
+  it came from the 2026-09-12 audit's judgement rather than the source.
+
+  **Not decided here:** what the 1-year Keypad tariffs revert to. Both
+  published datasets revert them to the undiscounted Keypad product (40.79p /
+  41.59p); by SSE's statement a Keypad customer would revert to the 2.5% rate.
+  That is a separate data-review decision affecting both tables.
 
 ## Source quirks this depends on
 
@@ -231,7 +382,9 @@ live site.
 It runs the test suite, runs the pipeline, uploads the candidate directory as an
 artefact on every run including a failed one, then does only what
 `outcome.json` permits. It adds no policy of its own: it copies
-`candidate/data/` if it exists, and the pipeline decides whether it exists.
+`candidate/publish/` into the repository if it exists, and the pipeline decides
+whether it exists — except that it refuses to overwrite any existing file other
+than the two pointers.
 
 A scheduled run happens twice a month, so an open candidate for the same
 outcome is updated in place and commented on rather than opened again.

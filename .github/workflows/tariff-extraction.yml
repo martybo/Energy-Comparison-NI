@@ -131,16 +131,33 @@ jobs:
           cp candidate/summary.md "docs/candidates/summary.md"
           cp candidate/reconciliation-*.md candidate/provenance-*.json candidate/source-rows-*.json docs/candidates/ 2>/dev/null || true
 
-          # The pipeline writes a dataset under candidate/data only for a table
-          # it read cleanly and found a real change in, and withdraws even that
-          # if the run failed to read the other document. The presence of these
-          # files is therefore the whole permission to change published
-          # tariffs; this step adds no policy of its own.
-          if [ -d candidate/data ]; then
-            cp candidate/data/*.json data/
+          # The pipeline writes publishable files under candidate/publish only
+          # for a table it read cleanly and found a real change in, and
+          # withdraws even that if the run failed to read the other document.
+          # Their presence is therefore the whole permission to change
+          # published tariffs; this step adds no policy of its own — except
+          # that it never overwrites an existing file other than the two
+          # pointers. A published dataset or its documents are never replaced
+          # in place: a correction to an already-published snapshot is
+          # published beside it under a revision suffix.
+          if [ -d candidate/publish ]; then
+            while IFS= read -r -d '' file; do
+              dest=${file#candidate/publish/}
+              case "$dest" in
+                data/latest.json|data/latest-standard.json) ;;
+                *)
+                  if [ -e "$dest" ]; then
+                    echo "::error title=Refusing to overwrite::$dest already exists; a published file is never replaced in place."
+                    exit 1
+                  fi
+                  ;;
+              esac
+              mkdir -p "$(dirname "$dest")"
+              cp "$file" "$dest"
+            done < <(find candidate/publish -type f -print0)
           fi
 
-          git add data docs/candidates
+          git add data docs
           if git diff --cached --quiet; then
             # Nothing new since the last run. That is not a reason to stop: the
             # branch may already carry this material from a run that failed

@@ -34,20 +34,18 @@
  */
 
 import { PAYMENT_METHOD_PHRASES } from './table.mjs';
+import { MappingError } from './mapping-error.mjs';
+import { decisionForRow, decisionsForFamily, printedLabel } from './decisions.mjs';
 
-export class MappingError extends Error {
-  constructor(code, message, details = {}) {
-    super(message);
-    this.name = 'MappingError';
-    this.code = code;
-    this.details = details;
-  }
-}
+export { MappingError };
 
 export const FIELD_PROVENANCE = {
   SOURCE_DERIVED: 'source_derived',
   CARRIED_FORWARD: 'carried_forward',
-  NEEDS_REVIEW: 'needs_review'
+  NEEDS_REVIEW: 'needs_review',
+  /** Established by a recorded human decision about this exact printed row
+   *  (scripts/extract/source-decisions.json), not derived or inferred. */
+  HUMAN_DECISION: 'human_decision'
 };
 
 /** The only fields permitted to be carried forward rather than source-derived. */
@@ -74,6 +72,8 @@ export function canonicalId(supplier, name) {
   const nameSlug = slug(name);
   return nameSlug.startsWith(supplierSlug) ? nameSlug : `${supplierSlug}-${nameSlug}`;
 }
+
+const normalise = (text) => String(text ?? '').replace(/\s+/g, ' ').trim();
 
 /** Tidies the source's wording into sentences without changing its meaning. */
 function sourceNotes(text) {
@@ -310,9 +310,75 @@ function nameCellResidue(cell, chosenNames) {
  * printed names or payment methods cannot all be accounted for is a review
  * item, never a guess.
  */
-function resolveProducts(row, previousProducts) {
+function resolveProducts(row, previousProducts, decisions) {
   const cell = row.tariff_name;
   const directId = canonicalId(row.supplier, cell);
+
+  // A recorded human decision about exactly this printed row is applied
+  // before any matching of our own. It is authoritative because a person made
+  // it with the evidence in front of them — but it is only ever applied, never
+  // stretched: it matches this row's exact printed text or not at all.
+  const decision = decisionForRow(decisions, row);
+  if (decision?.kind === 'grouping') {
+    const products = [];
+    for (const entry of decision.decision.products) {
+      // An existing product is named by id; a name the previous dataset does
+      // not have becomes a product under the standard id convention.
+      if (entry.product_id && !previousProducts.has(entry.product_id)) {
+        return {
+          kind: 'decision_not_applicable',
+          products: [],
+          decision,
+          detail: { problem: 'target_missing', product_id: entry.product_id },
+          message: `Recorded decision "${decision.id}" assigns "${entry.printed_name}" to product ${entry.product_id}, which the previous dataset does not contain. The decision cannot be applied, and the row has not been mapped some other way instead.`
+        };
+      }
+      products.push({
+        id: entry.product_id ?? canonicalId(row.supplier, entry.printed_name),
+        name: normalise(entry.printed_name),
+        methods: row.payment_methods.filter((m) => entry.payment_methods.includes(m.method)),
+        sourceDiscrepancy: entry.source_discrepancy ?? null
+      });
+    }
+    // One printed method the decision assigns to several names: say so, so
+    // the slot accounting can show it rather than read it as a gained slot.
+    const assignments = {};
+    for (const product of products) for (const m of product.methods) assignments[m.method] = (assignments[m.method] ?? 0) + 1;
+    const sharedSlots = Object.entries(assignments)
+      .filter(([, n]) => n > 1)
+      .map(([method, n]) => ({ payment_method: method, products: products.filter((p) => p.methods.some((m) => m.method === method)).map((p) => p.id), extra_rate_rows: n - 1 }));
+    return { kind: 'decided_grouping', products, decision, sharedSlots };
+  }
+  if (decision) {
+    const target = decision.decision.product_id;
+    const prior = previousProducts.get(target) ?? null;
+    if (!prior) {
+      return {
+        kind: 'decision_not_applicable',
+        products: [],
+        decision,
+        detail: { problem: 'target_missing', product_id: target },
+        message: `Recorded decision "${decision.id}" names product ${target}, which the previous dataset does not contain. The decision cannot be applied, and the row has not been mapped some other way instead.`
+      };
+    }
+    if (previousProducts.has(directId) && directId !== target) {
+      return {
+        kind: 'decision_not_applicable',
+        products: [],
+        decision,
+        detail: { problem: 'conflicts_with_direct_match', product_id: target, direct_match: directId },
+        message: `Recorded decision "${decision.id}" says this row is ${target}, but its printed name is already the name of ${directId}. Neither has been preferred.`
+      };
+    }
+    if (normalise(prior.name) === normalise(cell)) {
+      // The published name already matches what is printed — the correction
+      // the decision existed for has been published. Map it directly, and say
+      // the decision can be retired.
+      return { kind: 'direct', products: [{ id: target, name: cell, methods: row.payment_methods }], redundantDecision: decision };
+    }
+    return { kind: 'decided_identity', products: [{ id: target, name: cell, methods: row.payment_methods }], decision };
+  }
+
   if (previousProducts.has(directId)) {
     return { kind: 'direct', products: [{ id: directId, name: cell, methods: row.payment_methods }] };
   }
@@ -365,6 +431,36 @@ function resolveProducts(row, previousProducts) {
   return { kind: 'carried_grouping', products: chosen, carriedFrom: candidates.map((c) => c.id) };
 }
 
+/**
+ * The dataset-level note. It says how the dataset was made and quotes the
+ * source's own statement in full; anything it says the source states, the
+ * source printed.
+ */
+function datasetNotes(familyId, source, decisionsApplied) {
+  const table = familyId === 'economy7' ? 'Economy 7 Price Comparison Table' : 'Electricity Price Comparison Table';
+  const parts = [
+    `Extracted automatically from the Consumer Council ${table}, including its ADDITIONAL INFORMATION column.`,
+    `The source states: "${source.statement}"`
+  ];
+  if (source.states_incentives_excluded) {
+    parts.push(
+      "The source states its comparisons do not factor in supplier incentives such as welcome credit; this dataset carries the credits the source describes as structured adjustments so the calculation engine can apply them."
+    );
+  } else {
+    parts.push('Credits the source describes are carried as structured adjustments so the calculation engine can apply them.');
+  }
+  if (familyId === 'economy7' && source.typical_annual_kwh !== null) {
+    parts.push(`The source states a typical annual consumption of ${source.typical_annual_kwh.toLocaleString('en-GB')} kWh but does not state a day/night split.`);
+  }
+  parts.push('Fields the source does not state are null (unknown), never inferred.');
+  if (decisionsApplied.length > 0) {
+    parts.push(
+      `Where a printed row could not be resolved from the source alone, a recorded human decision says how it was resolved (${decisionsApplied.map((d) => d.decision_id).join(', ')}; scripts/extract/source-decisions.json).`
+    );
+  }
+  return parts.join(' ');
+}
+
 // --- mapping ----------------------------------------------------------------
 
 /**
@@ -375,7 +471,7 @@ function resolveProducts(row, previousProducts) {
  * Returns the candidate dataset, per-field provenance, the carry-forward
  * audit, and the review items that must be resolved by a person.
  */
-export function mapToCanonical({ table, previous }) {
+export function mapToCanonical({ table, previous, decisions: decisionsFile = null }) {
   if (!table || !Array.isArray(table.rows) || table.rows.length === 0) {
     throw new MappingError('NO_SOURCE_ROWS', 'No assembled source rows to map');
   }
@@ -400,6 +496,12 @@ export function mapToCanonical({ table, previous }) {
     });
   }
 
+  const decisions = decisionsForFamily(decisionsFile, familyId);
+  const decisionsApplied = [];
+  const decisionsRedundant = [];
+  const sharedSlots = [];
+  const decisionsMatched = new Set();
+
   const products = new Map();
   const fieldProvenance = {};
   const carryForwardAudit = [];
@@ -413,7 +515,33 @@ export function mapToCanonical({ table, previous }) {
       : { unit_p_per_kwh: row.rates.unit_p_per_kwh, standing_p_per_day: row.rates.standing_p_per_day };
 
   for (const row of table.rows) {
-    const resolution = resolveProducts(row, previousProducts);
+    const resolution = resolveProducts(row, previousProducts, decisions);
+    if (resolution.decision) decisionsMatched.add(resolution.decision.id);
+    if (resolution.redundantDecision) {
+      decisionsMatched.add(resolution.redundantDecision.id);
+      decisionsRedundant.push({
+        decision_id: resolution.redundantDecision.id,
+        product_id: resolution.redundantDecision.decision.product_id,
+        message: 'The previous dataset already records the printed name, so this decision is no longer needed and can be removed from the decisions file.'
+      });
+    }
+
+    if (resolution.kind === 'decision_not_applicable') {
+      reviewRequired.push({
+        reason: 'decision_not_applicable',
+        field: 'product_identity',
+        source_row: row.index,
+        page: row.page,
+        supplier: row.supplier,
+        printed_tariff_cell: row.tariff_name,
+        decision_id: resolution.decision.id,
+        detail: resolution.detail,
+        unresolved_slots: row.payment_methods.length,
+        message: resolution.message
+      });
+      sourceRowTrace.push([row.page, row.payment_methods.length, []]);
+      continue;
+    }
 
     if (resolution.kind === 'ambiguous') {
       reviewRequired.push({
@@ -424,11 +552,34 @@ export function mapToCanonical({ table, previous }) {
         supplier: row.supplier,
         printed_tariff_cell: row.tariff_name,
         detail: resolution.detail,
+        // Every slot the row prints is unresolved, not only those a would-be
+        // allocation happened to reach.
+        unresolved_slots: row.payment_methods.length,
         message:
           'This printed row appears to cover more than one product and no grouping could be inherited for it. A person must decide how its payment methods map to products; it has not been guessed.'
       });
       sourceRowTrace.push([row.page, row.payment_methods.length, []]);
       continue;
+    }
+
+    if (resolution.kind === 'decided_grouping') {
+      decisionsApplied.push({
+        decision_id: resolution.decision.id,
+        kind: 'grouping',
+        printed_names: resolution.decision.match.printed_tariff_names,
+        printed_payment_methods: row.payment_methods.map((m) => m.method),
+        products: resolution.products.map((p) => ({ product_id: p.id, printed_name: p.name, payment_methods: p.methods.map((m) => m.method) })),
+        source_discrepancies: resolution.products
+          .filter((p) => p.sourceDiscrepancy)
+          .map((p) => ({ product_id: p.id, discrepancy: p.sourceDiscrepancy })),
+        source_row: row.index,
+        page: row.page,
+        decided_by: resolution.decision.decided_by,
+        reason: resolution.decision.reason
+      });
+      for (const shared of resolution.sharedSlots) {
+        sharedSlots.push({ ...shared, source_row: row.index, page: row.page, decision_id: resolution.decision.id });
+      }
     }
 
     const tier1 = deriveTier1(row, familyId);
@@ -518,6 +669,30 @@ export function mapToCanonical({ table, previous }) {
         provenance[field] = FIELD_PROVENANCE.SOURCE_DERIVED;
       }
 
+      if (resolution.kind === 'decided_grouping') {
+        // Which payment methods this printed name takes is a recorded human
+        // decision; everything else about the record is still the source's.
+        provenance.product_grouping = FIELD_PROVENANCE.HUMAN_DECISION;
+      }
+
+      if (resolution.kind === 'decided_identity') {
+        // The name is still exactly what the source prints; only the link to
+        // the previous product comes from the decision, and it is tagged so.
+        provenance.product_identity = FIELD_PROVENANCE.HUMAN_DECISION;
+        const before = previousProducts.get(target.id);
+        decisionsApplied.push({
+          decision_id: resolution.decision.id,
+          kind: resolution.decision.kind,
+          product_id: target.id,
+          previous_name: before.name,
+          printed_name: row.tariff_name,
+          source_row: row.index,
+          page: row.page,
+          decided_by: resolution.decision.decided_by,
+          reason: resolution.decision.reason
+        });
+      }
+
       if (tier1.unplaced_credit_amounts.length > 0) {
         reviewRequired.push({
           reason: 'unplaced_credit_amount',
@@ -547,7 +722,10 @@ export function mapToCanonical({ table, previous }) {
             previous_dataset: previousLabel,
             previous_product_id: prior.id,
             eligible_because:
-              'Product identity unchanged: same canonical id, supplier and name in the previous dataset, and the source still states a fixed term.',
+              resolution.kind === 'decided_identity'
+                ? `Product identity established by recorded decision "${resolution.decision.id}" (${resolution.decision.decided_by}): the printed name differs from the previous dataset's, and a person has recorded, with evidence, that it is the same product. The source still states a fixed term.`
+                : 'Product identity unchanged: same canonical id, supplier and name in the previous dataset, and the source still states a fixed term.',
+            identity_basis: resolution.kind === 'decided_identity' ? `decision:${resolution.decision.id}` : 'same_id_supplier_and_name',
             source_provides_value: false,
             source_contradicts: false
           });
@@ -764,7 +942,7 @@ export function mapToCanonical({ table, previous }) {
     conditions_verified: true,
     conditions_verified_meaning:
       'The source ADDITIONAL INFORMATION column was transcribed for every record. It does not mean every condition is known: fields the source leaves unstated remain null on the individual tariff.',
-    notes: `Extracted automatically from the Consumer Council ${familyId === 'economy7' ? 'Economy 7' : 'electricity'} Price Comparison Table, ${table.source.statement}`
+    notes: datasetNotes(familyId, table.source, decisionsApplied)
   };
 
   return {
@@ -774,6 +952,15 @@ export function mapToCanonical({ table, previous }) {
     field_provenance: fieldProvenance,
     carry_forward_audit: carryForwardAudit,
     repeated_slots: repeatedSlots,
+    decisions_applied: decisionsApplied,
+    decisions_redundant: decisionsRedundant,
+    // A decision that matched no printed row: the Council has changed the row
+    // it was made about, so it no longer applies. Not a failure in itself —
+    // whatever the row now says is resolved, or gated, on its own terms.
+    decisions_unmatched: decisions
+      .filter((d) => !decisionsMatched.has(d.id))
+      .map((d) => ({ decision_id: d.id, supplier: d.match.supplier, printed_tariff_name: printedLabel(d) })),
+    shared_slots: sharedSlots,
     review_required: reviewRequired,
     totals: {
       source_rows: table.rows.length,
@@ -783,6 +970,7 @@ export function mapToCanonical({ table, previous }) {
       withdrawn: tariffs.filter((t) => t.status === 'withdrawn').length,
       rate_rows: tariffs.reduce((sum, t) => sum + t.rates.length, 0),
       repeated_slots: repeatedSlots.length,
+      slots_shared_by_decision: sharedSlots.reduce((sum, shared) => sum + shared.extra_rate_rows, 0),
       carried_forward_values: carryForwardAudit.filter((a) => !a.source_contradicts).length,
       review_items: reviewRequired.length
     }

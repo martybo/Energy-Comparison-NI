@@ -28,10 +28,16 @@ const standard = run('standard', 'tariffs-standard-2026-09-12.json');
 
 // --- the candidate is a valid dataset by the application's own rules --------
 
-test('both candidate datasets pass src/validate.js with no rejected records', () => {
+test('both candidate datasets pass src/validate.js with no rejected records or errors', () => {
   for (const [family, result] of [['economy7', economy7], ['standard', standard]]) {
-    const { invalid } = validateDataset(result.dataset);
-    assert.deepEqual(invalid ?? [], [], `${family} produced records the validator rejects`);
+    const { valid, rejected, errors } = validateDataset(result.dataset);
+    // Read the keys the validator actually returns. An earlier version of
+    // this test read `invalid`, which the validator never returns, so it
+    // could not fail.
+    assert.ok(Array.isArray(rejected) && Array.isArray(errors), 'validator result shape changed');
+    assert.deepEqual(rejected, [], `${family} produced records the validator rejects`);
+    assert.deepEqual(errors, [], `${family} produced dataset-level validator errors`);
+    assert.equal(valid.length, result.dataset.tariffs.length, `${family}: every candidate record must be accepted`);
   }
 });
 

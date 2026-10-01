@@ -11,6 +11,8 @@
  * gate is open.
  */
 
+import { validateDataset } from '../../src/validate.js';
+
 const RATE_FIELDS = ['unit_p_per_kwh', 'day_p_per_kwh', 'night_p_per_kwh', 'standing_p_per_day'];
 
 /** Scalar and small-structure fields whose change is worth naming explicitly. */
@@ -116,7 +118,24 @@ export function reconcile({ candidate, published, publishedLabel = null }) {
   const current = new Map(candidate.dataset.tariffs.map((t) => [t.id, t]));
 
   const added = [...current.values()].filter((t) => !previous.has(t.id));
-  const removed = [...previous.values()].filter((t) => !current.has(t.id));
+  const missing = [...previous.values()].filter((t) => !current.has(t.id));
+
+  // A published product absent from the candidate is not necessarily gone. If
+  // the source still prints it inside a row awaiting a decision, it is
+  // unresolved, and reporting it as "no longer present" would read to a
+  // reviewer as a withdrawal the Council never made.
+  const unresolvedItems = candidate.review_required.filter((item) => (item.unresolved_slots ?? 0) > 0);
+  const awaitingIds = new Set();
+  for (const item of unresolvedItems) {
+    for (const id of item.detail?.candidates ?? []) awaitingIds.add(id);
+    if (item.detail?.product_id) awaitingIds.add(item.detail.product_id);
+  }
+  const lower = (text) => String(text ?? '').replace(/\s+/g, ' ').trim().toLowerCase();
+  const printedInUnresolvedRow = (tariff) =>
+    awaitingIds.has(tariff.id) ||
+    unresolvedItems.some((item) => item.supplier === tariff.supplier && lower(item.printed_tariff_cell).includes(lower(tariff.name)));
+  const awaitingDecision = missing.filter(printedInUnresolvedRow);
+  const removed = missing.filter((t) => !printedInUnresolvedRow(t));
   const changed = [];
   const wordingOnly = [];
   const unchanged = [];
@@ -153,27 +172,55 @@ export function reconcile({ candidate, published, publishedLabel = null }) {
   const printedSlots = candidate.totals.payment_method_slots;
   const mappedRates = candidate.totals.rate_rows;
   const repeats = candidate.repeated_slots?.length ?? 0;
-  const unresolvedRows = candidate.review_required.filter((r) => r.reason === 'ambiguous_product_grouping');
-  const unresolvedSlots = unresolvedRows.reduce(
-    (sum, item) => sum + (item.detail?.allocated ?? []).reduce((n, a) => n + a.methods.length, 0),
-    0
-  );
+  // Each printed row the mapper could not resolve leaves all of its printed
+  // slots unresolved, and says how many.
+  const unresolvedSlots = candidate.review_required.reduce((sum, item) => sum + (item.unresolved_slots ?? 0), 0);
 
   // The integrity check that makes the rest of the report trustworthy: every
   // payment slot the source printed must be accounted for, as a mapped rate, a
   // page-break repeat, or a row a person still has to resolve.
-  const accounted = mappedRates + repeats + unresolvedSlots;
+  // A recorded grouping decision may give one printed slot to more than one
+  // tariff. Those extra rate rows are the decision's, not the source's, so
+  // they are counted out here and shown separately rather than letting the
+  // accounting read them as slots gained.
+  const sharedByDecision = candidate.totals.slots_shared_by_decision ?? 0;
+  const accounted = mappedRates - sharedByDecision + repeats + unresolvedSlots;
   const slotAccounting = {
     printed_slots: printedSlots,
     mapped_rate_rows: mappedRates,
     page_break_repeats: repeats,
+    rate_rows_from_shared_slots: sharedByDecision,
     slots_in_unresolved_rows: unresolvedSlots,
     accounted,
     balanced: accounted === printedSlots
   };
 
+  // The application's validator treats some problems as warnings so the app
+  // can degrade gracefully — a reverts_to that names no tariff just makes the
+  // ongoing cost unknown. That is right for the app and wrong for a proposed
+  // update: a candidate that quietly makes eight tariffs' ongoing cost
+  // unknown has lost information, and review is where that must surface. So
+  // any warning the candidate has that the published dataset does not is a
+  // gate. src/validate.js itself is unchanged.
+  const warningKey = (w) => `${w.code}|${w.tariffId ?? ''}`;
+  const publishedWarnings = new Set(published ? validateDataset(published).warnings.map(warningKey) : []);
+  const introducedWarnings = validateDataset(candidate.dataset).warnings.filter((w) => !publishedWarnings.has(warningKey(w)));
+  // Only a product that continues from the published dataset can have lost
+  // information. A product new to the candidate is already listed as added
+  // and reviewed as such, and an unknown ongoing cost on a new discounted
+  // tariff is a normal property of the source, not a regression — gating on
+  // it would block ordinary months. Its warnings are still reported.
+  const degradedWarnings = introducedWarnings.filter((w) => w.tariffId && previous.has(w.tariffId) && current.has(w.tariffId));
+
   const gates = [
     ...candidate.review_required.map((item) => ({ kind: 'review_required', ...item })),
+    ...degradedWarnings.map((w) => ({
+      kind: 'validator_warning_introduced',
+      reason: 'validator_warning_introduced',
+      product_id: w.tariffId ?? null,
+      validator_code: w.code,
+      message: `The application's validator warns "${w.code}" for this continuing tariff in the candidate but not in the published dataset, so the candidate has lost information about it: ${w.message}`
+    })),
     ...(slotAccounting.balanced
       ? []
       : [
@@ -196,6 +243,7 @@ export function reconcile({ candidate, published, publishedLabel = null }) {
     dataset_fields: datasetFields,
     products: {
       added: added.map((t) => ({ id: t.id, supplier: t.supplier, name: t.name, status: t.status, methods: (t.rates ?? []).map((r) => r.payment_method) })),
+      awaiting_decision: awaitingDecision.map((t) => ({ id: t.id, supplier: t.supplier, name: t.name, status: t.status, methods: (t.rates ?? []).map((r) => r.payment_method) })),
       removed: removed.map((t) => ({ id: t.id, supplier: t.supplier, name: t.name, status: t.status, methods: (t.rates ?? []).map((r) => r.payment_method) })),
       changed,
       wording_only: wordingOnly,
@@ -203,7 +251,13 @@ export function reconcile({ candidate, published, publishedLabel = null }) {
     },
     suspected_renames: suspectRenames(removed, added),
     carry_forward: candidate.carry_forward_audit,
+    decisions: {
+      applied: candidate.decisions_applied ?? [],
+      redundant: candidate.decisions_redundant ?? [],
+      unmatched: candidate.decisions_unmatched ?? []
+    },
     repeated_slots: candidate.repeated_slots ?? [],
+    introduced_validator_warnings: introducedWarnings.map((w) => ({ ...w, gated: degradedWarnings.includes(w) })),
     gates,
     publishable: gates.length === 0,
     totals: candidate.totals
@@ -222,7 +276,11 @@ export function renderReconciliation(report) {
   out.push('');
   out.push(
     report.publishable
-      ? '**No open gates.** Every payment slot the source printed is accounted for and no value needed a human decision. The candidate still requires human review before it is published.'
+      ? `**No open gates.** Every payment slot the source printed is accounted for${
+          report.decisions.applied.length > 0
+            ? `, and ${report.decisions.applied.length} recorded human decision${report.decisions.applied.length === 1 ? ' was' : 's were'} applied where the source alone could not settle a row — see **Recorded decisions**`
+            : ', and no value needed a human decision'
+        }. The candidate still requires human review before it is published.`
       : `**${report.gates.length} open gate${report.gates.length === 1 ? '' : 's'}.** The candidate is not publishable until each is resolved by a person.`
   );
   out.push('');
@@ -236,6 +294,7 @@ export function renderReconciliation(report) {
   out.push(`| Payment-method slots printed | ${a.printed_slots} |`);
   out.push(`| Rate rows mapped | ${a.mapped_rate_rows} |`);
   out.push(`| Page-break repeats (counted once) | ${a.page_break_repeats} |`);
+  if (a.rate_rows_from_shared_slots) out.push(`| Extra rate rows from one printed slot shared by a recorded decision | ${a.rate_rows_from_shared_slots} |`);
   out.push(`| Slots in rows awaiting a decision | ${a.slots_in_unresolved_rows} |`);
   out.push(`| Balanced | ${a.balanced ? 'yes' : '**no**'} |`);
   out.push(`| Products (active / withdrawn) | ${report.totals.products} (${report.totals.active} / ${report.totals.withdrawn}) |`);
@@ -264,11 +323,11 @@ export function renderReconciliation(report) {
     out.push('');
   }
 
-  const { added, removed, changed, wording_only: wordingOnly, unchanged_count } = report.products;
+  const { added, removed, awaiting_decision: awaiting = [], changed, wording_only: wordingOnly, unchanged_count } = report.products;
   out.push('## Products');
   out.push('');
   out.push(
-    `${added.length} added, ${removed.length} no longer present, ${changed.length} materially changed, ` +
+    `${added.length} added, ${removed.length} no longer present, ${awaiting.length} printed but awaiting a decision, ${changed.length} materially changed, ` +
       `${wordingOnly.length} changed only in the transcribed source wording, ${unchanged_count} unchanged.`
   );
   out.push('');
@@ -280,6 +339,15 @@ export function renderReconciliation(report) {
       out.push(`- \`${r.previous_id}\` "${r.previous_name}" → \`${r.candidate_id}\` "${r.candidate_name}"`);
       out.push(`  - ${r.basis}`);
     }
+    out.push('');
+  }
+
+  if (awaiting.length > 0) {
+    out.push('### Printed but awaiting a decision');
+    out.push('');
+    out.push('Still printed by the source, inside a row listed under **Gates**. Not withdrawn: absent from the candidate only until that row is resolved.');
+    out.push('');
+    for (const t of awaiting) out.push(`- \`${t.id}\` — ${t.supplier}, "${t.name}"`);
     out.push('');
   }
 
@@ -322,6 +390,32 @@ export function renderReconciliation(report) {
       }
       out.push('');
       out.push('</details>');
+    }
+    out.push('');
+  }
+
+  const { applied, redundant, unmatched } = report.decisions;
+  if (applied.length + redundant.length + unmatched.length > 0) {
+    out.push('## Recorded decisions');
+    out.push('');
+    out.push('Decisions a person has made about specific printed rows the source alone cannot resolve, from `scripts/extract/source-decisions.json`. Each applies only to the exact printed text it was made about.');
+    out.push('');
+    for (const d of applied) {
+      if (d.kind === 'grouping') {
+        out.push(`- **applied** \`${d.decision_id}\` (grouping; page ${d.page}, source row ${d.source_row})`);
+        out.push(`  - printed names: ${d.printed_names.map((n) => `"${n}"`).join(', ')}; printed methods: ${d.printed_payment_methods.join(', ')}`);
+        for (const p of d.products) out.push(`  - "${p.printed_name}" → \`${p.product_id}\`: ${p.payment_methods.join(', ')}`);
+        for (const x of d.source_discrepancies) out.push(`  - **source discrepancy recorded** for \`${x.product_id}\`: ${x.discrepancy}`);
+      } else {
+        out.push(`- **applied** \`${d.decision_id}\` → \`${d.product_id}\` (page ${d.page}, source row ${d.source_row})`);
+        out.push(`  - published name: "${d.previous_name}"`);
+        out.push(`  - printed name: "${d.printed_name}"`);
+      }
+      out.push(`  - decided by ${d.decided_by}: ${d.reason}`);
+    }
+    for (const d of redundant) out.push(`- **no longer needed** \`${d.decision_id}\` — ${d.message}`);
+    for (const d of unmatched) {
+      out.push(`- **no longer matches the source** \`${d.decision_id}\` — ${d.supplier}, "${d.printed_tariff_name}" is not printed any more. It has not been applied to anything else.`);
     }
     out.push('');
   }

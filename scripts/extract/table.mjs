@@ -302,31 +302,45 @@ function collectNotices(items) {
 
 /** Reads the source's own stated comparison date and VAT basis. */
 function sourceStatement(items) {
-  const line = items.map((i) => /Prices for\s+(\d{2})\/(\d{2})\/(\d{4})\s+including VAT of\s+(\d+)%/.exec(i.text)).find(Boolean);
-  if (!line) {
+  const pattern = /Prices for\s+(\d{2})\/(\d{2})\/(\d{4})\s+including VAT of\s+(\d+)%/;
+  const first = items.find((i) => pattern.test(i.text));
+  if (!first) {
     throw new TableAssemblyError(
       'MISSING_SOURCE_STATEMENT',
       'The document does not state its comparison date and VAT basis ("Prices for DD/MM/YYYY including VAT of N%")'
     );
   }
+  const line = pattern.exec(first.text);
+
+  // The statement is a short paragraph wrapped over several positioned runs
+  // ("… (Annual cost is" / "calculated using a typical annual consumption …"
+  // / "applicable including VAT at 5%)"). Taking only the first run published
+  // a sentence cut off mid-bracket, so the paragraph is followed down the
+  // page: same page, size and left edge, until a gap wider than a line.
+  const lines = [first.text];
+  let previousY = first.y;
+  const continuation = items
+    .filter((i) => i.page === first.page && i.fontSize === first.fontSize && Math.abs(i.x - first.x) < 1 && i.y < first.y)
+    .sort((a, b) => b.y - a.y);
+  for (const item of continuation) {
+    if (previousY - item.y > first.fontSize * 2) break;
+    lines.push(item.text);
+    previousY = item.y;
+  }
+
   const annualBasis = items.map((i) => /typical annual consumption of\s+([\d,]+)\s*kWh/i.exec(i.text)).find(Boolean);
   return {
     comparison_date: `${line[3]}-${line[2]}-${line[1]}`,
     vat_percent: Number(line[4]),
     vat_treatment: 'inclusive',
     typical_annual_kwh: annualBasis ? Number(annualBasis[1].replace(/,/g, '')) : null,
-    statement: normalise(line.input)
+    statement: normalise(lines.join(' ')),
+    // Recorded only where the document says it, so the dataset's notes never
+    // attribute to the source something it did not print.
+    states_incentives_excluded: items.some((i) => /comparisons do not factor in the various supplier incentives/i.test(i.text))
   };
 }
 
-/**
- * Assembles a family's table from an extraction produced by extractTextItems.
- *
- * Returns `{ family, schema, source, suppliers, rows, notices, totals }`.
- * Throws TableAssemblyError on anything structurally unexpected: incorrect
- * headers, unparseable rates, unrecognised payment wording, a row whose
- * supplier disagrees with its section heading, or no rows at all.
- */
 export function assembleTable(extraction, familyId) {
   const schema = TABLE_SCHEMAS[familyId];
   if (!schema) {
