@@ -154,7 +154,9 @@ test('scheduled future changes are captured as notices, not folded into current 
 
   const standardScheduled = standard.notices.filter((n) => n.kind === 'scheduled_change');
   assert.deepEqual(
-    standardScheduled.map((n) => /scheduled for ([^.]+?) \./.exec(n.text)?.[1]),
+    // The date is printed as its own styled run, so the sentence arrives in
+    // pieces and is rejoined without the stray space before the full stop.
+    standardScheduled.map((n) => /scheduled for ([^.]+?)\s*\./.exec(n.text)?.[1]),
     ['01 August 2026', '01 October 2026']
   );
 });

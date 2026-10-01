@@ -117,7 +117,55 @@ const PAYMENT_MATCHERS = [...PAYMENT_METHOD_PHRASES]
     pattern: new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/-/g, '-\\s*'), 'i')
   }));
 
-const normalise = (text) => text.replace(/\s+/g, ' ').trim();
+/**
+ * The Council's print endpoint renders its HTML source into the PDF without
+ * fully decoding entities: the September 2026 Standard table prints the
+ * literal text "&amp;" in Budget Energy's "£60 Loyalty &amp; 16% Discount"
+ * cell. "&amp;" is not what the document says, so the entity is decoded here
+ * rather than carried into tariff names and ids.
+ *
+ * Only entities actually observed in the source are decoded. Anything else
+ * that looks like an entity is refused instead of passed through, so a new
+ * one cannot reach a tariff name unnoticed.
+ */
+const HTML_ENTITIES = { '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'", '&nbsp;': ' ' };
+const ENTITY_LIKE = /&(?:#\d+|#x[0-9a-f]+|[a-z][a-z0-9]*);/gi;
+
+function decodeEntities(text, where = 'source text') {
+  return text.replace(ENTITY_LIKE, (match) => {
+    const decoded = HTML_ENTITIES[match.toLowerCase()];
+    if (decoded === undefined) {
+      throw new TableAssemblyError(
+        'UNKNOWN_HTML_ENTITY',
+        `${where}: the source prints the undecoded entity "${match}". Decoding it is a guess about the author's intent; add it to HTML_ENTITIES once confirmed.`,
+        { where, entity: match }
+      );
+    }
+    return decoded;
+  });
+}
+
+/**
+ * A styled span in the Council's HTML becomes its own positioned run in the
+ * PDF, so one printed sentence arrives as several runs. They are joined with a
+ * space, which is right between words but wrong around punctuation: "Keypad
+ * reward" + ": free electricity from £1" + "- £4" joins as
+ * "Keypad reward : free electricity from £1 - £4".
+ *
+ * Only repairs that cannot change the meaning are applied — a space before
+ * closing punctuation is never intentional, and a spaced hyphen between two
+ * money amounts is a range. Missing sentence punctuation is left exactly as
+ * the source prints it rather than being tidied into sentences.
+ */
+function repairRunSpacing(text) {
+  return text
+    .replace(/\s+([;:,.%!?])/g, '$1')
+    .replace(/\(\s+/g, '(')
+    .replace(/\s+\)/g, ')')
+    .replace(/(£[\d.,]+)\s*[-\u2013]\s*(£[\d.,]+)/g, '$1-$2');
+}
+
+const normalise = (text) => decodeEntities(repairRunSpacing(text.replace(/\s+/g, ' ').trim()));
 
 /** "37.030p" -> 37.03. Anything else is malformed and must not be guessed at. */
 function parsePence(raw, where) {
@@ -396,6 +444,14 @@ export function assembleTable(extraction, familyId) {
       page: row.page,
       supplier,
       tariff_name: tariffName,
+      // The printed name lines, in page order. A single TARIFF NAME cell can
+      // list several tariffs that share one price (SSE Airtricity's 24hr
+      // standard rates), and a name can wrap across lines. Geometry alone
+      // cannot tell those apart, so the lines are carried through for the
+      // mapping layer to account for rather than being silently joined.
+      tariff_name_lines: row.lines
+        .map((line) => normalise(line.cells['TARIFF NAME'] ?? ''))
+        .filter((text) => text !== ''),
       payment_methods: payments,
       payment_method_text: normalise(paymentCell),
       rates,
