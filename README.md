@@ -91,12 +91,17 @@ add a new dated `data/tariffs-YYYY-MM-DD.json`, point `data/latest.json` at it,
 and generate a matching source reconciliation and row trace alongside it so
 the new dataset's provenance is auditable the same way the current one is.
 
-A scheduled workflow (`.github/workflows/source-monitor.yml`) watches the
-Consumer Council's own landing pages and flags when a new or changed tariff
-PDF appears, so a maintainer knows when a refresh is due instead of having to
-check by hand. It only detects and surfaces a change — publishing the data
-above is still a deliberate, reviewed step. See
-[`docs/SOURCE-MONITORING.md`](docs/SOURCE-MONITORING.md).
+Two scheduled workflows do most of that work. `source-monitor.yml` watches the
+Consumer Council's own landing pages and flags when a new or changed tariff PDF
+appears, so a maintainer knows when a refresh is due instead of having to check
+by hand — see [`docs/SOURCE-MONITORING.md`](docs/SOURCE-MONITORING.md).
+`tariff-extraction.yml` then reads the current PDFs, derives a candidate
+dataset, reconciles it against the published one and opens a pull request for
+review — see [`docs/EXTRACTION.md`](docs/EXTRACTION.md).
+
+Neither one publishes anything. The review on that pull request is the gate:
+nothing is merged or deployed automatically, and a run that only partly
+understood the source proposes no tariff data at all.
 
 ## Layout
 
@@ -108,10 +113,12 @@ above is still a deliberate, reviewed step. See
 | `src/format.js` | Display formatting. The only place rounding happens. |
 | `data/` | Tariff snapshots and the `latest.json` pointer. |
 | `docs/DATA.md` | Schema reference and the monthly update runbook. |
+| `docs/EXTRACTION.md` | How a month's tariffs are derived from the source PDFs, and what the automation will not do. |
 | `scripts/source-monitor/` | Consumer Council source discovery and change detection. See `docs/SOURCE-MONITORING.md`. |
+| `scripts/extract/` | Consumer Council PDF extraction, canonical mapping and reconciliation. See `docs/EXTRACTION.md`. |
 | `monitoring/source-state/` | Committed provenance of the last-known Consumer Council source per tariff family. |
 | `test/` | `node --test` suite, including deployment safety checks. |
-| `.github/workflows/` | CI, GitHub Pages deployment, and Consumer Council source monitoring. |
+| `.github/workflows/` | CI, GitHub Pages deployment, Consumer Council source monitoring and tariff extraction. |
 
 The engine contains no supplier-specific or tariff-specific logic, so adding a
 supplier or tariff is a data change only. See
