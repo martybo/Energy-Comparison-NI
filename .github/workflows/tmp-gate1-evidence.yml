@@ -1,18 +1,16 @@
 name: TEMP gate-1 evidence fetch
 
-# Temporary, on a scratch branch only. Retrieves the Standard and Economy 7
-# PDFs the source monitor already downloaded on 2026-09-15 (run 34965859647)
-# and 2026-10-01 (run 36869771782) from their run artefacts, and commits them
-# to this branch so the Gate 1 investigation can read them from an
-# environment that cannot reach the artefact store. Fetches nothing from the
-# Consumer Council. Never touches main. Delete this branch when done.
+# Temporary, on a scratch branch only. Gathers evidence for the Standard
+# Gate 1 decision (which SSE 24hr product takes which payment method):
+# SSE Airtricity's own published Northern Ireland tariff sheets. Commits
+# what it finds to this branch so it can be read from an environment that
+# cannot reach sseairtricity.com. Never touches main. Delete when done.
 
 on:
   push:
     branches: [tmp/gate1-evidence]
 
 permissions:
-  actions: read
   contents: write
 
 jobs:
@@ -20,27 +18,48 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Download the monitor's own artefacts
+      - name: Fetch SSE Airtricity NI tariff sheets
         env:
-          GH_TOKEN: ${{ github.token }}
+          UA: 'EnergyComparisonNI-SourceMonitor/1.0 (+https://github.com/martybo/Energy-Comparison-NI)'
         run: |
-          set -euo pipefail
-          mkdir -p .evidence
-          for pair in 2026-09-15:10395238010 2026-10-01:11165018597; do
-            label=${pair%%:*}; id=${pair##*:}
-            gh api "repos/${{ github.repository }}/actions/artifacts/$id/zip" > "/tmp/$label.zip"
-            mkdir -p "/tmp/$label" && unzip -o -q "/tmp/$label.zip" -d "/tmp/$label"
-            echo "== $label =="; find "/tmp/$label" -type f | sed 's/^/  /'
-            find "/tmp/$label" -type f -name '*.pdf' | while read -r f; do
-              cp "$f" ".evidence/$label-$(basename "$f")"
-            done
+          set -uo pipefail
+          mkdir -p .evidence/sse && cd .evidence/sse
+          base='https://www.sseairtricity.com'
+          : > links.txt
+          # Index pages that may list the current sheets; harvest every
+          # current NI tariff PDF they link to.
+          for page in /ni/home/help/our-tariffs/ /ni/home/our-tariffs/ /ni/home/tariffs/ /ni/home/help/tariffs/ /ni/; do
+            code=$(curl -sS -L -A "$UA" -o page.html -w '%{http_code}' "$base$page" || echo 000)
+            echo "index $page -> $code" | tee -a fetch-log.txt
+            [ "$code" = 200 ] && grep -oE '/assets/Tariffs/NI/Current/[^"'"'"' <>]+\.pdf' page.html >> links.txt || true
           done
-          ls -la .evidence
+          # Plus the sheets known from search results, and the obvious names
+          # for the standard and SmartSaver products.
+          printf '%s\n' \
+            /assets/Tariffs/NI/Current/CR-24H-E7-STANDARD.pdf \
+            /assets/Tariffs/NI/Current/KEYPAD-24H-E7-STANDARD.pdf \
+            /assets/Tariffs/NI/Current/KEYPAD-24H-E7-2.5.pdf \
+            /assets/Tariffs/NI/Current/1YR-CR-24H-E7-31.pdf \
+            /assets/Tariffs/NI/Current/1YR-CR-24H-E7-10.pdf \
+            /assets/Tariffs/NI/Current/SMARTSAVER-CR-24H-E7.pdf \
+            /assets/Tariffs/NI/Current/CR-24H-E7-SMARTSAVER.pdf >> links.txt
+          sort -u links.txt -o links.txt
+          while read -r path; do
+            name=$(basename "$path")
+            code=$(curl -sS -L -A "$UA" -o "$name" -w '%{http_code}' "$base$path" || echo 000)
+            if [ "$code" = 200 ] && head -c 5 "$name" | grep -q '%PDF-'; then
+              echo "ok   $path" | tee -a fetch-log.txt
+            else
+              echo "miss $path ($code)" | tee -a fetch-log.txt; rm -f "$name"
+            fi
+          done < links.txt
+          rm -f page.html
+          ls -la
       - name: Commit to this scratch branch
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add .evidence
-          git commit -m "tmp: monitor-captured PDFs for the Gate 1 investigation"
+          git add .evidence/sse
+          git commit -m "tmp: SSE Airtricity NI tariff sheets for the Gate 1 decision" || exit 0
           git push origin HEAD:tmp/gate1-evidence
