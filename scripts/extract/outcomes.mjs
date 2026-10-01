@@ -86,7 +86,14 @@ export function classifyFamily(report) {
     return {
       family: report.family,
       outcome: OUTCOMES.BLOCKED,
-      reason: `${report.gates.length} unresolved question${report.gates.length === 1 ? '' : 's'} about the source: ${[...new Set(report.gates.map((g) => g.reason ?? g.kind))].join(', ')}.`,
+      // Counted per reason: one ambiguous row can raise several dependent
+      // gates (every tariff reverting to a product it leaves unmapped), and a
+      // bare total would overstate how many questions a person has to answer.
+      reason: `${report.gates.length} gate${report.gates.length === 1 ? '' : 's'}: ${Object.entries(
+        report.gates.reduce((counts, g) => ({ ...counts, [g.reason ?? g.kind]: (counts[g.reason ?? g.kind] ?? 0) + 1 }), {})
+      )
+        .map(([reason, n]) => `${reason} ×${n}`)
+        .join(', ')}.`,
       gates: report.gates.length,
       material_changes: report.products.added.length + report.products.removed.length + report.products.changed.length
     };
@@ -167,4 +174,35 @@ function headlineFor(outcome, families) {
     default:
       return `No canonical change (${per}).`;
   }
+}
+
+/**
+ * What the application's own validator (src/validate.js) says about a
+ * candidate, reduced to a failure or null.
+ *
+ * `validateDataset` reports records it refuses as `rejected` and
+ * dataset-level problems as `errors`. Either one means the candidate is not a
+ * dataset the application would accept, so it is an extraction failure — the
+ * extraction produced something wrong — never a change to propose. This reads
+ * those exact keys: an earlier version read a key the validator does not
+ * return, and so could never fail.
+ */
+export function validatorFailure(validation) {
+  const rejected = validation?.rejected ?? [];
+  const errors = validation?.errors ?? [];
+  if (!Array.isArray(validation?.rejected) || !Array.isArray(validation?.errors)) {
+    return {
+      code: 'VALIDATOR_RESULT_UNREADABLE',
+      message: 'src/validate.js did not return the rejected/errors arrays this pipeline reads; refusing to treat an unreadable verdict as a pass.',
+      rejected: [],
+      errors: []
+    };
+  }
+  if (rejected.length === 0 && errors.length === 0) return null;
+  return {
+    code: 'CANDIDATE_REJECTED_BY_VALIDATOR',
+    message: `src/validate.js rejects the candidate: ${rejected.length} record(s) refused, ${errors.length} dataset error(s)${rejected.length ? ` (${rejected.map((r) => r.where).join(', ')})` : ''}.`,
+    rejected,
+    errors
+  };
 }

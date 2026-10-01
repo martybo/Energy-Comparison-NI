@@ -34,20 +34,18 @@
  */
 
 import { PAYMENT_METHOD_PHRASES } from './table.mjs';
+import { MappingError } from './mapping-error.mjs';
+import { decisionForRow, decisionsForFamily } from './decisions.mjs';
 
-export class MappingError extends Error {
-  constructor(code, message, details = {}) {
-    super(message);
-    this.name = 'MappingError';
-    this.code = code;
-    this.details = details;
-  }
-}
+export { MappingError };
 
 export const FIELD_PROVENANCE = {
   SOURCE_DERIVED: 'source_derived',
   CARRIED_FORWARD: 'carried_forward',
-  NEEDS_REVIEW: 'needs_review'
+  NEEDS_REVIEW: 'needs_review',
+  /** Established by a recorded human decision about this exact printed row
+   *  (scripts/extract/source-decisions.json), not derived or inferred. */
+  HUMAN_DECISION: 'human_decision'
 };
 
 /** The only fields permitted to be carried forward rather than source-derived. */
@@ -74,6 +72,8 @@ export function canonicalId(supplier, name) {
   const nameSlug = slug(name);
   return nameSlug.startsWith(supplierSlug) ? nameSlug : `${supplierSlug}-${nameSlug}`;
 }
+
+const normalise = (text) => String(text ?? '').replace(/\s+/g, ' ').trim();
 
 /** Tidies the source's wording into sentences without changing its meaning. */
 function sourceNotes(text) {
@@ -310,9 +310,45 @@ function nameCellResidue(cell, chosenNames) {
  * printed names or payment methods cannot all be accounted for is a review
  * item, never a guess.
  */
-function resolveProducts(row, previousProducts) {
+function resolveProducts(row, previousProducts, decisions) {
   const cell = row.tariff_name;
   const directId = canonicalId(row.supplier, cell);
+
+  // A recorded human decision about exactly this printed row is applied
+  // before any matching of our own. It is authoritative because a person made
+  // it with the evidence in front of them — but it is only ever applied, never
+  // stretched: it matches this row's exact printed text or not at all.
+  const decision = decisionForRow(decisions, row);
+  if (decision) {
+    const target = decision.decision.product_id;
+    const prior = previousProducts.get(target) ?? null;
+    if (!prior) {
+      return {
+        kind: 'decision_not_applicable',
+        products: [],
+        decision,
+        detail: { problem: 'target_missing', product_id: target },
+        message: `Recorded decision "${decision.id}" names product ${target}, which the previous dataset does not contain. The decision cannot be applied, and the row has not been mapped some other way instead.`
+      };
+    }
+    if (previousProducts.has(directId) && directId !== target) {
+      return {
+        kind: 'decision_not_applicable',
+        products: [],
+        decision,
+        detail: { problem: 'conflicts_with_direct_match', product_id: target, direct_match: directId },
+        message: `Recorded decision "${decision.id}" says this row is ${target}, but its printed name is already the name of ${directId}. Neither has been preferred.`
+      };
+    }
+    if (normalise(prior.name) === normalise(cell)) {
+      // The published name already matches what is printed — the correction
+      // the decision existed for has been published. Map it directly, and say
+      // the decision can be retired.
+      return { kind: 'direct', products: [{ id: target, name: cell, methods: row.payment_methods }], redundantDecision: decision };
+    }
+    return { kind: 'decided_identity', products: [{ id: target, name: cell, methods: row.payment_methods }], decision };
+  }
+
   if (previousProducts.has(directId)) {
     return { kind: 'direct', products: [{ id: directId, name: cell, methods: row.payment_methods }] };
   }
@@ -375,7 +411,7 @@ function resolveProducts(row, previousProducts) {
  * Returns the candidate dataset, per-field provenance, the carry-forward
  * audit, and the review items that must be resolved by a person.
  */
-export function mapToCanonical({ table, previous }) {
+export function mapToCanonical({ table, previous, decisions: decisionsFile = null }) {
   if (!table || !Array.isArray(table.rows) || table.rows.length === 0) {
     throw new MappingError('NO_SOURCE_ROWS', 'No assembled source rows to map');
   }
@@ -400,6 +436,11 @@ export function mapToCanonical({ table, previous }) {
     });
   }
 
+  const decisions = decisionsForFamily(decisionsFile, familyId);
+  const decisionsApplied = [];
+  const decisionsRedundant = [];
+  const decisionsMatched = new Set();
+
   const products = new Map();
   const fieldProvenance = {};
   const carryForwardAudit = [];
@@ -413,7 +454,33 @@ export function mapToCanonical({ table, previous }) {
       : { unit_p_per_kwh: row.rates.unit_p_per_kwh, standing_p_per_day: row.rates.standing_p_per_day };
 
   for (const row of table.rows) {
-    const resolution = resolveProducts(row, previousProducts);
+    const resolution = resolveProducts(row, previousProducts, decisions);
+    if (resolution.decision) decisionsMatched.add(resolution.decision.id);
+    if (resolution.redundantDecision) {
+      decisionsMatched.add(resolution.redundantDecision.id);
+      decisionsRedundant.push({
+        decision_id: resolution.redundantDecision.id,
+        product_id: resolution.redundantDecision.decision.product_id,
+        message: 'The previous dataset already records the printed name, so this decision is no longer needed and can be removed from the decisions file.'
+      });
+    }
+
+    if (resolution.kind === 'decision_not_applicable') {
+      reviewRequired.push({
+        reason: 'decision_not_applicable',
+        field: 'product_identity',
+        source_row: row.index,
+        page: row.page,
+        supplier: row.supplier,
+        printed_tariff_cell: row.tariff_name,
+        decision_id: resolution.decision.id,
+        detail: resolution.detail,
+        unresolved_slots: row.payment_methods.length,
+        message: resolution.message
+      });
+      sourceRowTrace.push([row.page, row.payment_methods.length, []]);
+      continue;
+    }
 
     if (resolution.kind === 'ambiguous') {
       reviewRequired.push({
@@ -424,6 +491,9 @@ export function mapToCanonical({ table, previous }) {
         supplier: row.supplier,
         printed_tariff_cell: row.tariff_name,
         detail: resolution.detail,
+        // Every slot the row prints is unresolved, not only those a would-be
+        // allocation happened to reach.
+        unresolved_slots: row.payment_methods.length,
         message:
           'This printed row appears to cover more than one product and no grouping could be inherited for it. A person must decide how its payment methods map to products; it has not been guessed.'
       });
@@ -518,6 +588,24 @@ export function mapToCanonical({ table, previous }) {
         provenance[field] = FIELD_PROVENANCE.SOURCE_DERIVED;
       }
 
+      if (resolution.kind === 'decided_identity') {
+        // The name is still exactly what the source prints; only the link to
+        // the previous product comes from the decision, and it is tagged so.
+        provenance.product_identity = FIELD_PROVENANCE.HUMAN_DECISION;
+        const before = previousProducts.get(target.id);
+        decisionsApplied.push({
+          decision_id: resolution.decision.id,
+          kind: resolution.decision.kind,
+          product_id: target.id,
+          previous_name: before.name,
+          printed_name: row.tariff_name,
+          source_row: row.index,
+          page: row.page,
+          decided_by: resolution.decision.decided_by,
+          reason: resolution.decision.reason
+        });
+      }
+
       if (tier1.unplaced_credit_amounts.length > 0) {
         reviewRequired.push({
           reason: 'unplaced_credit_amount',
@@ -547,7 +635,10 @@ export function mapToCanonical({ table, previous }) {
             previous_dataset: previousLabel,
             previous_product_id: prior.id,
             eligible_because:
-              'Product identity unchanged: same canonical id, supplier and name in the previous dataset, and the source still states a fixed term.',
+              resolution.kind === 'decided_identity'
+                ? `Product identity established by recorded decision "${resolution.decision.id}" (${resolution.decision.decided_by}): the printed name differs from the previous dataset's, and a person has recorded, with evidence, that it is the same product. The source still states a fixed term.`
+                : 'Product identity unchanged: same canonical id, supplier and name in the previous dataset, and the source still states a fixed term.',
+            identity_basis: resolution.kind === 'decided_identity' ? `decision:${resolution.decision.id}` : 'same_id_supplier_and_name',
             source_provides_value: false,
             source_contradicts: false
           });
@@ -774,6 +865,14 @@ export function mapToCanonical({ table, previous }) {
     field_provenance: fieldProvenance,
     carry_forward_audit: carryForwardAudit,
     repeated_slots: repeatedSlots,
+    decisions_applied: decisionsApplied,
+    decisions_redundant: decisionsRedundant,
+    // A decision that matched no printed row: the Council has changed the row
+    // it was made about, so it no longer applies. Not a failure in itself —
+    // whatever the row now says is resolved, or gated, on its own terms.
+    decisions_unmatched: decisions
+      .filter((d) => !decisionsMatched.has(d.id))
+      .map((d) => ({ decision_id: d.id, supplier: d.match.supplier, printed_tariff_name: d.match.printed_tariff_name })),
     review_required: reviewRequired,
     totals: {
       source_rows: table.rows.length,

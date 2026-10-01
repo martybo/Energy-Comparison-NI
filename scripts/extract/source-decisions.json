@@ -1,0 +1,31 @@
+{
+  "comment": "Recorded human decisions about specific printed rows of the Consumer Council tables that the source alone cannot resolve. Each is anchored to the exact printed row it was made about and stops applying if the Council changes that row. The pipeline applies these; it never makes one. See docs/EXTRACTION.md, 'Recorded decisions'.",
+  "decisions": [
+    {
+      "id": "standard-sse-1-year-home-keypad-10-5-identity",
+      "kind": "identity",
+      "family": "standard",
+      "match": {
+        "supplier": "SSE Airtricity",
+        "printed_tariff_name": "1 Year Home Keypad 10.5% discount plus £30 welcome credit (24hr)",
+        "printed_payment_methods": ["prepayment"]
+      },
+      "decision": {
+        "product_id": "sse-airtricity-1-year-keypad-10-5-discount-plus-30-welcome-credit-24hr",
+        "canonical_name": "1 Year Home Keypad 10.5% discount plus £30 welcome credit (24hr)"
+      },
+      "evidence": {
+        "summary": "The published name omits 'Home'. The published dataset was transcribed from the 12/09/2026 Standard table, and its own source-row trace places this product on page 6 as the third SSE row, one prepayment slot — the row that prints 'Home'. The Economy 7 sibling tariff is printed without 'Home' ('1 Year Keypad 10.5% … (E7 meter)'), which is the likely origin of the slip.",
+        "source_snapshots": [
+          { "stated_prices_for": "2026-09-12", "page": 6, "printed_unit_p_per_kwh": 36.51, "printed_standing_p_per_day": 0 },
+          { "stated_prices_for": "2026-09-14", "page": 6, "printed_unit_p_per_kwh": 36.51, "printed_standing_p_per_day": 0 },
+          { "stated_prices_for": "2026-09-30", "page": 6, "printed_unit_p_per_kwh": 36.51, "printed_standing_p_per_day": 0 }
+        ],
+        "previous_dataset": "data/tariffs-standard-2026-09-12.json",
+        "previous_source_row_trace": "docs/source-rows-standard-2026-09-12.json, entry 20: [6, 1, [\"sse-airtricity-1-year-keypad-10-5-discount-plus-30-welcome-credit-24hr\"]]"
+      },
+      "decided_by": "martybo (repository owner), 2026-10-01",
+      "reason": "Transcription correction: the printed row is the published product; its name is corrected to the source's wording and its id is kept."
+    }
+  ]
+}

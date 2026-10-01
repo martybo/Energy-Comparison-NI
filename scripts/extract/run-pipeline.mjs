@@ -25,7 +25,7 @@ import { extractTextItems, PdfExtractionError } from './pdf-text.mjs';
 import { assembleTable, TableAssemblyError } from './table.mjs';
 import { mapToCanonical, MappingError } from './map-canonical.mjs';
 import { reconcile, renderReconciliation } from './reconcile.mjs';
-import { OUTCOMES, classifyFamily, classifyRun, failedFamily } from './outcomes.mjs';
+import { OUTCOMES, classifyFamily, classifyRun, failedFamily, validatorFailure } from './outcomes.mjs';
 import { TARIFF_FAMILIES } from '../source-monitor/sources.mjs';
 import { fetchText, fetchBinary, SourceFetchError } from '../source-monitor/fetch-utils.mjs';
 import { selectCurrentPdf, assertIsPdf, SourceDiscoveryError } from '../source-monitor/discover.mjs';
@@ -48,6 +48,14 @@ const FAMILIES = {
 };
 
 const TIMEOUT_MS = 30_000;
+
+/**
+ * Recorded human decisions about specific printed rows. Read every run, and
+ * malformed content fails the run rather than being skipped: a typo must not
+ * quietly switch a decision off.
+ */
+const DECISIONS_PATH = 'scripts/extract/source-decisions.json';
+const decisions = JSON.parse(readFileSync(DECISIONS_PATH, 'utf8'));
 
 function parseArgs(argv) {
   const args = { out: null, live: false, pdfs: new Map() };
@@ -123,7 +131,7 @@ for (const familyId of Object.keys(FAMILIES)) {
   const published = JSON.parse(readFileSync(config.published, 'utf8'));
 
   try {
-    candidate = mapToCanonical({ table, previous: { dataset: published, label: config.published } });
+    candidate = mapToCanonical({ table, previous: { dataset: published, label: config.published }, decisions });
   } catch (error) {
     if (!(error instanceof MappingError)) throw error;
     families.push(failedFamily(familyId, OUTCOMES.EXTRACTION_FAILED, error));
@@ -133,15 +141,10 @@ for (const familyId of Object.keys(FAMILIES)) {
   // The validator the application itself uses. A candidate that does not pass
   // it is an extraction failure, not a data change, and the validator is never
   // relaxed to let an extraction through.
-  const { invalid } = validateDataset(candidate.dataset);
-  if ((invalid ?? []).length > 0) {
-    families.push(
-      failedFamily(familyId, OUTCOMES.EXTRACTION_FAILED, {
-        code: 'CANDIDATE_REJECTED_BY_VALIDATOR',
-        message: `${invalid.length} record(s) do not satisfy src/validate.js: ${invalid.map((r) => r.id ?? '(no id)').join(', ')}`
-      })
-    );
-    writeJson(`rejected-${familyId}.json`, invalid);
+  const failure = validatorFailure(validateDataset(candidate.dataset));
+  if (failure) {
+    families.push(failedFamily(familyId, OUTCOMES.EXTRACTION_FAILED, failure));
+    writeJson(`rejected-${familyId}.json`, { rejected: failure.rejected, errors: failure.errors });
     continue;
   }
 
@@ -162,6 +165,9 @@ for (const familyId of Object.keys(FAMILIES)) {
     carry_forward_audit: candidate.carry_forward_audit,
     repeated_slots: candidate.repeated_slots,
     review_required: candidate.review_required,
+    decisions_applied: candidate.decisions_applied,
+    decisions_redundant: candidate.decisions_redundant,
+    decisions_unmatched: candidate.decisions_unmatched,
     slot_accounting: report.slot_accounting
   });
   write(`source-rows-${familyId}-${date}.json`, JSON.stringify(candidate.source_row_trace) + '\n');
