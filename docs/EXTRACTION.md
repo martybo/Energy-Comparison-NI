@@ -59,6 +59,12 @@ node scripts/extract/run-pipeline.mjs --out candidate --pdf standard=/tmp/standa
 node scripts/extract/run-pipeline.mjs --out candidate --decisions /tmp/decisions.json
 ```
 
+A live run records, in the published provenance, where each table's data came
+from: the landing page, the discovered PDF URL, when it was fetched, and the
+same stable content hash the source monitor records — so a published dataset
+can be matched to the monitor's record of the document it was read from. A
+fixture run records the fixture and the provenance captured with it.
+
 The published dataset each table is compared against is whatever its pointer
 (`data/latest.json`, `data/latest-standard.json`) currently names, so the run
 after a candidate is merged compares against what was actually published.
