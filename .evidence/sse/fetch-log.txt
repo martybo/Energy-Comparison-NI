@@ -1,0 +1,12 @@
+index /ni/home/help/our-tariffs/ -> 404
+index /ni/home/our-tariffs/ -> 404
+index /ni/home/tariffs/ -> 404
+index /ni/home/help/tariffs/ -> 404
+index /ni/ -> 200
+ok   /assets/Tariffs/NI/Current/1YR-CR-24H-E7-10.pdf
+ok   /assets/Tariffs/NI/Current/1YR-CR-24H-E7-31.pdf
+miss /assets/Tariffs/NI/Current/CR-24H-E7-SMARTSAVER.pdf (500)
+miss /assets/Tariffs/NI/Current/CR-24H-E7-STANDARD.pdf (500)
+ok   /assets/Tariffs/NI/Current/KEYPAD-24H-E7-2.5.pdf
+miss /assets/Tariffs/NI/Current/KEYPAD-24H-E7-STANDARD.pdf (500)
+miss /assets/Tariffs/NI/Current/SMARTSAVER-CR-24H-E7.pdf (500)
