@@ -13,9 +13,14 @@ export function publicationNames(config, date, exists = existsSync) {
       suffix,
       dataset: `data/${config.stem}-${suffix}.json`,
       reconciliation: `docs/RECONCILIATION-${config.docsPrefix}${suffix}.md`,
-      sourceRows: `docs/source-rows-${config.docsPrefix}${suffix}.json`
+      sourceRows: `docs/source-rows-${config.docsPrefix}${suffix}.json`,
+      // The provenance record — field provenance, carry-forward audit,
+      // recorded decisions and any source discrepancies they note — is
+      // published beside the dataset it explains, so it stays with the data
+      // rather than surviving only in a closed pull request's history.
+      provenance: `docs/PROVENANCE-${config.docsPrefix}${suffix}.json`
     };
-    if (![names.dataset, names.reconciliation, names.sourceRows].some((path) => exists(path))) return names;
+    if (![names.dataset, names.reconciliation, names.sourceRows, names.provenance].some((path) => exists(path))) return names;
   }
   throw new Error(`No free publication name for ${config.stem} ${date}`);
 }

@@ -69,8 +69,11 @@ reconciliation, provenance record and source-row trace per table. It contains a
 changed, and that subdirectory's existence is the automation's entire
 permission to propose a change to published tariffs. It is laid out exactly as
 the files will sit in the repository: the dated dataset, the pointer that
-selects it, and the `docs/RECONCILIATION-…md` and `docs/source-rows-…json` that
-`test/deployment.test.js` requires beside any published dataset.
+selects it, the `docs/RECONCILIATION-…md` and `docs/source-rows-…json` that
+`test/deployment.test.js` requires beside any published dataset, and the
+`docs/PROVENANCE-…json` record — field provenance, the carry-forward audit, the
+recorded decisions applied and any source discrepancies they note — so the
+reasons behind published data stay with it.
 
 ### A published file is never replaced
 
@@ -381,13 +384,42 @@ live site.
 
 It runs the test suite, runs the pipeline, uploads the candidate directory as an
 artefact on every run including a failed one, then does only what
-`outcome.json` permits. It adds no policy of its own: it copies
-`candidate/publish/` into the repository if it exists, and the pipeline decides
-whether it exists — except that it refuses to overwrite any existing file other
-than the two pointers.
+`outcome.json` permits:
 
-A scheduled run happens twice a month, so an open candidate for the same
-outcome is updated in place and commented on rather than opened again.
+- **A data candidate** carries the publication and nothing else: the dated
+  dataset, the pointer, and the reconciliation, source-row trace and provenance
+  that stay beside it once merged. It copies `candidate/publish/` into the
+  repository, adding no policy of its own except that it refuses to overwrite
+  any existing file other than the two pointers. If the other table was
+  blocked, that table's reconciliation is linked from the pull request to the
+  run's artefact rather than committed.
+- **A review-only candidate** (blocked, no data) carries the review material in
+  `docs/candidates/`. It is never merged, so that directory never reaches the
+  default branch.
+
+**Candidate pull requests get no CI of their own.** They are opened with
+`GITHUB_TOKEN`, and GitHub by design triggers no workflows from events that
+token creates. So before pushing anything, the workflow runs the full suite on
+exactly the tree it is about to propose — including the deployment tests, which
+check whatever the pointers now name. If that fails, nothing is pushed and no
+pull request is opened or updated. The pull request states the result and
+links the run; that is the test result for the candidate.
+
+Each run builds its candidate from the base branch, never on top of an earlier
+candidate's commits, on a branch named for the run
+(`candidate/tariffs-<date>-<outcome>-run<number>-<attempt>`), so nothing a closed
+or abandoned candidate left behind can reach a new one. A scheduled run happens
+twice a month, so when a candidate with the same title is already open it is
+rebuilt from this run in place — its branch replaced with exactly what this run
+proposes — and commented on, rather than opened again. Candidate branches are
+the workflow's own: a change belongs in the code or the recorded decisions,
+never in a candidate branch.
+
+Pull request descriptions written by this workflow, and by people working on
+it, avoid GitHub's closing keywords (`close`, `fix`, `resolve` followed by
+`#N`) unless closing that issue or pull request on merge is intended: a
+description saying "close #29 once the new candidate exists" closed #29 the
+moment the pull request carrying it was merged.
 
 ### Repository settings it needs
 
