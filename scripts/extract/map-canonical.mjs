@@ -35,7 +35,7 @@
 
 import { PAYMENT_METHOD_PHRASES } from './table.mjs';
 import { MappingError } from './mapping-error.mjs';
-import { decisionForRow, decisionsForFamily } from './decisions.mjs';
+import { decisionForRow, decisionsForFamily, printedLabel } from './decisions.mjs';
 
 export { MappingError };
 
@@ -319,6 +319,36 @@ function resolveProducts(row, previousProducts, decisions) {
   // it with the evidence in front of them — but it is only ever applied, never
   // stretched: it matches this row's exact printed text or not at all.
   const decision = decisionForRow(decisions, row);
+  if (decision?.kind === 'grouping') {
+    const products = [];
+    for (const entry of decision.decision.products) {
+      // An existing product is named by id; a name the previous dataset does
+      // not have becomes a product under the standard id convention.
+      if (entry.product_id && !previousProducts.has(entry.product_id)) {
+        return {
+          kind: 'decision_not_applicable',
+          products: [],
+          decision,
+          detail: { problem: 'target_missing', product_id: entry.product_id },
+          message: `Recorded decision "${decision.id}" assigns "${entry.printed_name}" to product ${entry.product_id}, which the previous dataset does not contain. The decision cannot be applied, and the row has not been mapped some other way instead.`
+        };
+      }
+      products.push({
+        id: entry.product_id ?? canonicalId(row.supplier, entry.printed_name),
+        name: normalise(entry.printed_name),
+        methods: row.payment_methods.filter((m) => entry.payment_methods.includes(m.method)),
+        sourceDiscrepancy: entry.source_discrepancy ?? null
+      });
+    }
+    // One printed method the decision assigns to several names: say so, so
+    // the slot accounting can show it rather than read it as a gained slot.
+    const assignments = {};
+    for (const product of products) for (const m of product.methods) assignments[m.method] = (assignments[m.method] ?? 0) + 1;
+    const sharedSlots = Object.entries(assignments)
+      .filter(([, n]) => n > 1)
+      .map(([method, n]) => ({ payment_method: method, products: products.filter((p) => p.methods.some((m) => m.method === method)).map((p) => p.id), extra_rate_rows: n - 1 }));
+    return { kind: 'decided_grouping', products, decision, sharedSlots };
+  }
   if (decision) {
     const target = decision.decision.product_id;
     const prior = previousProducts.get(target) ?? null;
@@ -401,6 +431,36 @@ function resolveProducts(row, previousProducts, decisions) {
   return { kind: 'carried_grouping', products: chosen, carriedFrom: candidates.map((c) => c.id) };
 }
 
+/**
+ * The dataset-level note. It says how the dataset was made and quotes the
+ * source's own statement in full; anything it says the source states, the
+ * source printed.
+ */
+function datasetNotes(familyId, source, decisionsApplied) {
+  const table = familyId === 'economy7' ? 'Economy 7 Price Comparison Table' : 'Electricity Price Comparison Table';
+  const parts = [
+    `Extracted automatically from the Consumer Council ${table}, including its ADDITIONAL INFORMATION column.`,
+    `The source states: "${source.statement}"`
+  ];
+  if (source.states_incentives_excluded) {
+    parts.push(
+      "The source states its comparisons do not factor in supplier incentives such as welcome credit; this dataset carries the credits the source describes as structured adjustments so the calculation engine can apply them."
+    );
+  } else {
+    parts.push('Credits the source describes are carried as structured adjustments so the calculation engine can apply them.');
+  }
+  if (familyId === 'economy7' && source.typical_annual_kwh !== null) {
+    parts.push(`The source states a typical annual consumption of ${source.typical_annual_kwh.toLocaleString('en-GB')} kWh but does not state a day/night split.`);
+  }
+  parts.push('Fields the source does not state are null (unknown), never inferred.');
+  if (decisionsApplied.length > 0) {
+    parts.push(
+      `Where a printed row could not be resolved from the source alone, a recorded human decision says how it was resolved (${decisionsApplied.map((d) => d.decision_id).join(', ')}; scripts/extract/source-decisions.json).`
+    );
+  }
+  return parts.join(' ');
+}
+
 // --- mapping ----------------------------------------------------------------
 
 /**
@@ -439,6 +499,7 @@ export function mapToCanonical({ table, previous, decisions: decisionsFile = nul
   const decisions = decisionsForFamily(decisionsFile, familyId);
   const decisionsApplied = [];
   const decisionsRedundant = [];
+  const sharedSlots = [];
   const decisionsMatched = new Set();
 
   const products = new Map();
@@ -499,6 +560,26 @@ export function mapToCanonical({ table, previous, decisions: decisionsFile = nul
       });
       sourceRowTrace.push([row.page, row.payment_methods.length, []]);
       continue;
+    }
+
+    if (resolution.kind === 'decided_grouping') {
+      decisionsApplied.push({
+        decision_id: resolution.decision.id,
+        kind: 'grouping',
+        printed_names: resolution.decision.match.printed_tariff_names,
+        printed_payment_methods: row.payment_methods.map((m) => m.method),
+        products: resolution.products.map((p) => ({ product_id: p.id, printed_name: p.name, payment_methods: p.methods.map((m) => m.method) })),
+        source_discrepancies: resolution.products
+          .filter((p) => p.sourceDiscrepancy)
+          .map((p) => ({ product_id: p.id, discrepancy: p.sourceDiscrepancy })),
+        source_row: row.index,
+        page: row.page,
+        decided_by: resolution.decision.decided_by,
+        reason: resolution.decision.reason
+      });
+      for (const shared of resolution.sharedSlots) {
+        sharedSlots.push({ ...shared, source_row: row.index, page: row.page, decision_id: resolution.decision.id });
+      }
     }
 
     const tier1 = deriveTier1(row, familyId);
@@ -586,6 +667,12 @@ export function mapToCanonical({ table, previous, decisions: decisionsFile = nul
         'notes'
       ]) {
         provenance[field] = FIELD_PROVENANCE.SOURCE_DERIVED;
+      }
+
+      if (resolution.kind === 'decided_grouping') {
+        // Which payment methods this printed name takes is a recorded human
+        // decision; everything else about the record is still the source's.
+        provenance.product_grouping = FIELD_PROVENANCE.HUMAN_DECISION;
       }
 
       if (resolution.kind === 'decided_identity') {
@@ -855,7 +942,7 @@ export function mapToCanonical({ table, previous, decisions: decisionsFile = nul
     conditions_verified: true,
     conditions_verified_meaning:
       'The source ADDITIONAL INFORMATION column was transcribed for every record. It does not mean every condition is known: fields the source leaves unstated remain null on the individual tariff.',
-    notes: `Extracted automatically from the Consumer Council ${familyId === 'economy7' ? 'Economy 7' : 'electricity'} Price Comparison Table, ${table.source.statement}`
+    notes: datasetNotes(familyId, table.source, decisionsApplied)
   };
 
   return {
@@ -872,7 +959,8 @@ export function mapToCanonical({ table, previous, decisions: decisionsFile = nul
     // whatever the row now says is resolved, or gated, on its own terms.
     decisions_unmatched: decisions
       .filter((d) => !decisionsMatched.has(d.id))
-      .map((d) => ({ decision_id: d.id, supplier: d.match.supplier, printed_tariff_name: d.match.printed_tariff_name })),
+      .map((d) => ({ decision_id: d.id, supplier: d.match.supplier, printed_tariff_name: printedLabel(d) })),
+    shared_slots: sharedSlots,
     review_required: reviewRequired,
     totals: {
       source_rows: table.rows.length,
@@ -882,6 +970,7 @@ export function mapToCanonical({ table, previous, decisions: decisionsFile = nul
       withdrawn: tariffs.filter((t) => t.status === 'withdrawn').length,
       rate_rows: tariffs.reduce((sum, t) => sum + t.rates.length, 0),
       repeated_slots: repeatedSlots.length,
+      slots_shared_by_decision: sharedSlots.reduce((sum, shared) => sum + shared.extra_rate_rows, 0),
       carried_forward_values: carryForwardAudit.filter((a) => !a.source_contradicts).length,
       review_items: reviewRequired.length
     }

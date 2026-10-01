@@ -179,11 +179,17 @@ export function reconcile({ candidate, published, publishedLabel = null }) {
   // The integrity check that makes the rest of the report trustworthy: every
   // payment slot the source printed must be accounted for, as a mapped rate, a
   // page-break repeat, or a row a person still has to resolve.
-  const accounted = mappedRates + repeats + unresolvedSlots;
+  // A recorded grouping decision may give one printed slot to more than one
+  // tariff. Those extra rate rows are the decision's, not the source's, so
+  // they are counted out here and shown separately rather than letting the
+  // accounting read them as slots gained.
+  const sharedByDecision = candidate.totals.slots_shared_by_decision ?? 0;
+  const accounted = mappedRates - sharedByDecision + repeats + unresolvedSlots;
   const slotAccounting = {
     printed_slots: printedSlots,
     mapped_rate_rows: mappedRates,
     page_break_repeats: repeats,
+    rate_rows_from_shared_slots: sharedByDecision,
     slots_in_unresolved_rows: unresolvedSlots,
     accounted,
     balanced: accounted === printedSlots
@@ -270,7 +276,11 @@ export function renderReconciliation(report) {
   out.push('');
   out.push(
     report.publishable
-      ? '**No open gates.** Every payment slot the source printed is accounted for and no value needed a human decision. The candidate still requires human review before it is published.'
+      ? `**No open gates.** Every payment slot the source printed is accounted for${
+          report.decisions.applied.length > 0
+            ? `, and ${report.decisions.applied.length} recorded human decision${report.decisions.applied.length === 1 ? ' was' : 's were'} applied where the source alone could not settle a row — see **Recorded decisions**`
+            : ', and no value needed a human decision'
+        }. The candidate still requires human review before it is published.`
       : `**${report.gates.length} open gate${report.gates.length === 1 ? '' : 's'}.** The candidate is not publishable until each is resolved by a person.`
   );
   out.push('');
@@ -284,6 +294,7 @@ export function renderReconciliation(report) {
   out.push(`| Payment-method slots printed | ${a.printed_slots} |`);
   out.push(`| Rate rows mapped | ${a.mapped_rate_rows} |`);
   out.push(`| Page-break repeats (counted once) | ${a.page_break_repeats} |`);
+  if (a.rate_rows_from_shared_slots) out.push(`| Extra rate rows from one printed slot shared by a recorded decision | ${a.rate_rows_from_shared_slots} |`);
   out.push(`| Slots in rows awaiting a decision | ${a.slots_in_unresolved_rows} |`);
   out.push(`| Balanced | ${a.balanced ? 'yes' : '**no**'} |`);
   out.push(`| Products (active / withdrawn) | ${report.totals.products} (${report.totals.active} / ${report.totals.withdrawn}) |`);
@@ -390,9 +401,16 @@ export function renderReconciliation(report) {
     out.push('Decisions a person has made about specific printed rows the source alone cannot resolve, from `scripts/extract/source-decisions.json`. Each applies only to the exact printed text it was made about.');
     out.push('');
     for (const d of applied) {
-      out.push(`- **applied** \`${d.decision_id}\` → \`${d.product_id}\` (page ${d.page}, source row ${d.source_row})`);
-      out.push(`  - published name: "${d.previous_name}"`);
-      out.push(`  - printed name: "${d.printed_name}"`);
+      if (d.kind === 'grouping') {
+        out.push(`- **applied** \`${d.decision_id}\` (grouping; page ${d.page}, source row ${d.source_row})`);
+        out.push(`  - printed names: ${d.printed_names.map((n) => `"${n}"`).join(', ')}; printed methods: ${d.printed_payment_methods.join(', ')}`);
+        for (const p of d.products) out.push(`  - "${p.printed_name}" → \`${p.product_id}\`: ${p.payment_methods.join(', ')}`);
+        for (const x of d.source_discrepancies) out.push(`  - **source discrepancy recorded** for \`${x.product_id}\`: ${x.discrepancy}`);
+      } else {
+        out.push(`- **applied** \`${d.decision_id}\` → \`${d.product_id}\` (page ${d.page}, source row ${d.source_row})`);
+        out.push(`  - published name: "${d.previous_name}"`);
+        out.push(`  - printed name: "${d.printed_name}"`);
+      }
       out.push(`  - decided by ${d.decided_by}: ${d.reason}`);
     }
     for (const d of redundant) out.push(`- **no longer needed** \`${d.decision_id}\` — ${d.message}`);
