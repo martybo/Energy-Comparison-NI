@@ -43,9 +43,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The same Node as the source monitor and CI. The live fetch depends on
+      # it: on Node 22 the Consumer Council's Cloudflare front answered the
+      # first request of a fresh connection with a challenge (HTTP 403,
+      # cf-mitigated: challenge), so Economy 7, fetched first, was refused
+      # every run, while the identical request from Node 20 is served.
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: 20
 
       # The extraction has no dependencies to install: it reads the PDFs with
       # Node's own zlib. `npm test` runs the suite that covers it.

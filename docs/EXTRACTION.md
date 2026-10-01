@@ -65,6 +65,17 @@ same stable content hash the source monitor records — so a published dataset
 can be matched to the monitor's record of the document it was read from. A
 fixture run records the fixture and the provenance captured with it.
 
+The workflow runs the live fetch on the same Node as the source monitor and CI
+(20), and the two should be changed together. On Node 22 the Consumer
+Council's Cloudflare front answered the first request of each fresh connection
+with a challenge — HTTP 403, `cf-mitigated: challenge` — so the Economy 7 page,
+fetched first, was refused on every run while the identical request (same URL,
+same headers) from Node 20 was served. A probe on one runner showed it: Node
+20, 200 every time; Node 22, 403 then 200 on the same connection. The
+extraction does not retry past a challenge; if the site starts challenging
+Node 20 as well, the answer is to ask the Council to allow the tool's
+User-Agent, not to work around the challenge.
+
 The published dataset each table is compared against is whatever its pointer
 (`data/latest.json`, `data/latest-standard.json`) currently names, so the run
 after a candidate is merged compares against what was actually published.
