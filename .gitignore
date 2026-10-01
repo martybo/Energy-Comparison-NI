@@ -34,3 +34,10 @@ _site/
 # Uploaded as a workflow artefact, never committed — see
 # docs/SOURCE-MONITORING.md.
 monitoring/downloads/
+
+# Per-run extraction output from the tariff-extraction workflow. Uploaded as
+# a workflow artefact and copied into a candidate PR, never committed from a
+# local run — see docs/EXTRACTION.md.
+candidate/
+pr-body.md
+pr-comment.md

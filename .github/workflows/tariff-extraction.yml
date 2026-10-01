@@ -1,0 +1,169 @@
+name: Consumer Council tariff extraction
+
+# Phase 2 of tariff-update automation (issue #17): reads the current Consumer
+# Council PDFs, derives a candidate tariff dataset, reconciles it against the
+# published one, and opens a PR for a person to review.
+#
+# What it will never do, and what the job below is shaped to make impossible:
+#
+#   - merge anything, or enable auto-merge;
+#   - deploy anything (publication happens when a human merges the candidate,
+#     and GitHub Pages deploys from the default branch);
+#   - write to data/ on the default branch, or push to it at all;
+#   - propose a tariff-data change from a run that only partly understood the
+#     source. The pipeline decides that, not this workflow: it emits an
+#     outcome.json and this job only does what the outcome permits.
+#
+# See docs/EXTRACTION.md.
+
+on:
+  schedule:
+    # The day after the source monitor's own checks, so a change it has
+    # already recorded is extracted on the next run rather than racing it.
+    - cron: '41 7 2,16 * *'
+  workflow_dispatch:
+    inputs:
+      use_fixtures:
+        description: 'Read the committed text-item fixtures instead of the live site (for exercising the workflow itself)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: tariff-extraction
+  cancel-in-progress: false
+
+jobs:
+  extract:
+    name: Extract and reconcile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # The extraction has no dependencies to install: it reads the PDFs with
+      # Node's own zlib. `npm test` runs the suite that covers it.
+      - name: Run the test suite
+        run: npm test
+
+      - name: Extract, map and reconcile
+        id: run
+        run: |
+          set -o pipefail
+          mkdir -p candidate
+          if [ "${{ inputs.use_fixtures }}" = "true" ]; then
+            node scripts/extract/run-pipeline.mjs --out candidate | tee candidate/console.log
+          else
+            node scripts/extract/run-pipeline.mjs --out candidate --live | tee candidate/console.log
+          fi
+
+      # Always kept, including on a failed run: the console log and whatever
+      # reconciliation was produced are what a person needs to see first.
+      - name: Upload the run's artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tariff-extraction-${{ github.run_id }}
+          path: candidate/
+          if-no-files-found: warn
+
+      - name: Read the outcome
+        id: outcome
+        run: |
+          outcome=$(jq -r '.outcome' candidate/outcome.json)
+          echo "outcome=$outcome" >> "$GITHUB_OUTPUT"
+          echo "candidate_pr=$(jq -r '.policy.candidate_pr' candidate/outcome.json)" >> "$GITHUB_OUTPUT"
+          echo "data_families=$(jq -r '.data_update_families | join(",")' candidate/outcome.json)" >> "$GITHUB_OUTPUT"
+          echo "review_only=$(jq -r '.review_only_families | join(",")' candidate/outcome.json)" >> "$GITHUB_OUTPUT"
+          echo "branch=candidate/tariffs-$(date -u +%Y-%m-%d)-${outcome}" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Outcome: \`$outcome\`"
+            echo
+            cat candidate/summary.md | tail -n +2
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Open the candidate pull request
+        if: steps.outcome.outputs.candidate_pr == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OUTCOME: ${{ steps.outcome.outputs.outcome }}
+          DATA_FAMILIES: ${{ steps.outcome.outputs.data_families }}
+          REVIEW_ONLY: ${{ steps.outcome.outputs.review_only }}
+          BRANCH: ${{ steps.outcome.outputs.branch }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          # A scheduled run happens twice a month, so the same unresolved
+          # question would otherwise open the same pull request again. An open
+          # candidate for this outcome is updated in place instead.
+          if [ -z "$DATA_FAMILIES" ]; then reuse_title='Blocked: Consumer Council extraction needs a decision'; else reuse_title='Candidate tariff update from the Consumer Council source'; fi
+          existing=$(gh pr list --state open --json number,headRefName,title \
+            --jq ".[] | select(.headRefName | startswith(\"candidate/\")) | select(.title == \"$reuse_title\") | .number" | head -n1)
+          existing_branch=''
+          if [ -n "$existing" ]; then
+            existing_branch=$(gh pr view "$existing" --json headRefName --jq .headRefName)
+            echo "Reusing open candidate #$existing on $existing_branch."
+            BRANCH="$existing_branch"
+            git fetch origin "$BRANCH"
+            git switch -c "$BRANCH" "origin/$BRANCH"
+          else
+            git switch -c "$BRANCH"
+          fi
+
+          mkdir -p docs/candidates
+          cp candidate/summary.md "docs/candidates/summary.md"
+          cp candidate/reconciliation-*.md candidate/provenance-*.json candidate/source-rows-*.json docs/candidates/ 2>/dev/null || true
+
+          # The pipeline writes a dataset under candidate/data only for a table
+          # it read cleanly and found a real change in, and withdraws even that
+          # if the run failed to read the other document. The presence of these
+          # files is therefore the whole permission to change published
+          # tariffs; this step adds no policy of its own.
+          if [ -d candidate/data ]; then
+            cp candidate/data/*.json data/
+          fi
+
+          git add data docs/candidates
+          if git diff --cached --quiet; then
+            echo 'Nothing to propose; not opening a pull request.'
+            exit 0
+          fi
+          git commit -m "candidate(#17): Consumer Council extraction — ${OUTCOME}" -m "$(cat candidate/summary.md)"
+          git push -u origin "$BRANCH"
+
+          if [ -n "$existing" ]; then
+            {
+              printf '%s\n\n' "Re-ran the extraction: outcome \`${OUTCOME}\`. The candidate above is updated to this run."
+              cat candidate/summary.md
+              printf '\n---\n%s\n' '_Generated by [Claude Code](https://claude.ai/code)_'
+            } > pr-comment.md
+            gh pr comment "$existing" --body-file pr-comment.md
+            exit 0
+          fi
+
+          if [ -z "$DATA_FAMILIES" ]; then
+            title='Blocked: Consumer Council extraction needs a decision'
+            printf '%s\n\n' 'This candidate carries **no tariff data**. The extraction read the source but could not resolve something in it, so nothing here can be merged into the published dataset. Resolve the questions below, then re-run the workflow.' > pr-body.md
+          else
+            title='Candidate tariff update from the Consumer Council source'
+            printf '%s\n\n' 'This candidate proposes a tariff-data change. Merging it publishes the new dataset, so **the review on this pull request is the gate**. Check the reconciliation below against the source before merging. Nothing has been merged or deployed automatically.' > pr-body.md
+            if [ -n "$REVIEW_ONLY" ]; then
+              printf '%s\n\n' "Note: the **${REVIEW_ONLY}** table is blocked on an unresolved question and contributes no data to this candidate. Only ${DATA_FAMILIES} is proposed for publication." >> pr-body.md
+            fi
+          fi
+          cat candidate/summary.md >> pr-body.md
+          printf '\n%s\n' '<!-- Opened by .github/workflows/tariff-extraction.yml for issue #17. Never auto-merged. -->' >> pr-body.md
+
+          gh pr create \
+            --base "${{ github.ref_name }}" \
+            --head "$BRANCH" \
+            --title "$title" \
+            --body-file pr-body.md
