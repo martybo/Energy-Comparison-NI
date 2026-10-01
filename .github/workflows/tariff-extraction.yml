@@ -114,6 +114,15 @@ jobs:
             BRANCH="$existing_branch"
             git fetch origin "$BRANCH"
             git switch -c "$BRANCH" "origin/$BRANCH"
+          elif git fetch origin "$BRANCH" 2>/dev/null; then
+            # A previous run pushed this branch without getting as far as
+            # opening the pull request — the commissioning run on 2026-10-01
+            # did exactly that, refused at the last step. Build on it, so a
+            # re-run fast-forwards instead of being rejected as a
+            # non-fast-forward, and so a reviewer's own commit on the candidate
+            # branch is not discarded.
+            echo "Reusing the branch a previous run pushed: $BRANCH."
+            git switch -c "$BRANCH" "origin/$BRANCH"
           else
             git switch -c "$BRANCH"
           fi
@@ -133,10 +142,15 @@ jobs:
 
           git add data docs/candidates
           if git diff --cached --quiet; then
-            echo 'Nothing to propose; not opening a pull request.'
-            exit 0
+            # Nothing new since the last run. That is not a reason to stop: the
+            # branch may already carry this material from a run that failed
+            # before opening the pull request, and there would then be a
+            # candidate nobody can see. Fall through to the push and the
+            # create, both of which are no-ops if they are already done.
+            echo 'No change to the candidate material since the last run.'
+          else
+            git commit -m "candidate(#17): Consumer Council extraction — ${OUTCOME}" -m "$(cat candidate/summary.md)"
           fi
-          git commit -m "candidate(#17): Consumer Council extraction — ${OUTCOME}" -m "$(cat candidate/summary.md)"
           git push -u origin "$BRANCH"
 
           if [ -n "$existing" ]; then
@@ -162,8 +176,11 @@ jobs:
           cat candidate/summary.md >> pr-body.md
           printf '\n%s\n' '<!-- Opened by .github/workflows/tariff-extraction.yml for issue #17. Never auto-merged. -->' >> pr-body.md
 
-          gh pr create \
+          if ! gh pr create \
             --base "${{ github.ref_name }}" \
             --head "$BRANCH" \
             --title "$title" \
-            --body-file pr-body.md
+            --body-file pr-body.md; then
+            echo "::error title=Candidate pull request not opened::The branch $BRANCH is pushed and this run's artifacts are uploaded, so nothing the extraction produced is lost. If the message above is \"GitHub Actions is not permitted to create or approve pull requests\", enable Settings -> Actions -> General -> Workflow permissions -> \"Allow GitHub Actions to create and approve pull requests\". The workflow already requests pull-requests: write, which is necessary but not sufficient on its own. Re-run this workflow afterwards; it will reuse the pushed branch."
+            exit 1
+          fi

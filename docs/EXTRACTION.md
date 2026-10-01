@@ -236,6 +236,24 @@ artefact on every run including a failed one, then does only what
 A scheduled run happens twice a month, so an open candidate for the same
 outcome is updated in place and commented on rather than opened again.
 
+### Repository settings it needs
+
+`permissions: pull-requests: write` is necessary but **not sufficient**. The
+repository (or organisation) must also have **Settings → Actions → General →
+Workflow permissions → "Allow GitHub Actions to create and approve pull
+requests"** enabled. Without it the job pushes the candidate branch and then
+fails at the last step with:
+
+```
+pull request create failed: GraphQL: GitHub Actions is not permitted to create or approve pull requests (createPullRequest)
+```
+
+The branch and the uploaded artefact survive that failure, so nothing the
+extraction produced is lost — re-running after enabling the setting reuses the
+pushed branch and opens the pull request. This setting only lets Actions *open*
+a pull request; it does not let anything merge one, and this workflow never
+attempts to.
+
 ### Commissioning
 
 As with the monitor, the first live `workflow_dispatch` is the real test — the
